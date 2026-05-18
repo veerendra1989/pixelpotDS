@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5"/>
-  <title>pixelpotDS - Paste a color, get a design system</title>
+  <title>hextodesign - Paste a color, get a design system</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Finlandica+Headline&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
   <script>
     (function() {
       try {
@@ -126,10 +126,6 @@
     radial-gradient(1100px 700px at 50% -100px, var(--brand-faint), transparent 60%),
     radial-gradient(900px 600px at 92% 12%, oklch(0.55 0.14 285 / 0.06), transparent 70%),
     var(--bg);
-}
-
-:root[data-theme="light"] .nav__logo::after {
-  background: radial-gradient(circle at 70% 70%, transparent 0%, rgba(0,0,0,0.25) 70%);
 }
 
 :root[data-theme="light"] .mock__head .lights span { background: var(--bg-4); }
@@ -381,27 +377,15 @@ body.grain::before {
 .nav__brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-weight: 600;
+  gap: 0;
+  font-family: "Finlandica Headline", sans-serif;
+  font-weight: 400;
+  font-size: 22px;
   letter-spacing: -0.01em;
-  font-size: 16px;
+  color: var(--ink);
+  text-decoration: none;
 }
-.nav__logo {
-  width: 26px;
-  height: 26px;
-  border-radius: 7px;
-  background:
-    radial-gradient(circle at 30% 28%, oklch(0.95 0.05 var(--brand-h)) 0%, var(--brand) 35%, oklch(0.45 0.16 var(--brand-h)) 100%);
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.12) inset, 0 8px 24px -6px var(--brand-soft);
-  position: relative;
-}
-.nav__logo::after {
-  content: "";
-  position: absolute;
-  inset: 4px;
-  border-radius: 4px;
-  background: radial-gradient(circle at 70% 70%, transparent 0%, rgba(0,0,0,0.45) 70%);
-}
+.nav__brand .brand-accent { color: var(--brand); }
 .nav__menu {
   display: flex;
   gap: 4px;
@@ -2704,22 +2688,7 @@ var {
     }, /*#__PURE__*/React.createElement("a", {
       className: "nav__brand",
       href: "#"
-    }, /*#__PURE__*/React.createElement("div", {
-      style: { height: 28, display: "flex", alignItems: "center" },
-      dangerouslySetInnerHTML: { __html: '<svg viewBox="0 0 195 48" height="28" xmlns="http://www.w3.org/2000/svg"><text x="0" y="38" font-family="Geist,ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="40" font-weight="800" letter-spacing="-0.02em" fill="var(--ink)">pixelp</text><circle cx="148" cy="26" r="10.5" fill="var(--brand)"/><text x="161" y="38" font-family="Geist,ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="40" font-weight="800" letter-spacing="-0.02em" fill="var(--ink)">t</text></svg>' }
-    }), /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: "var(--ink-3)",
-        fontWeight: 600,
-        fontSize: 16,
-        marginLeft: 2
-      }
-    }, "DS"), /*#__PURE__*/React.createElement("span", {
-      className: "nav__pill",
-      style: {
-        marginLeft: 6
-      }
-    }, "v3.2")), /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React.createElement("span", { className: "brand-accent" }, "#"), "hex", /*#__PURE__*/React.createElement("span", { className: "brand-accent" }, "to"), "design"), /*#__PURE__*/React.createElement("div", {
       className: "nav__menu"
     }, /*#__PURE__*/React.createElement("a", {
       href: "#playground"
@@ -2812,7 +2781,7 @@ var {
         }, "Paste a color, get a complete ", /*#__PURE__*/React.createElement("em", null, "design\u00A0system")),
         /*#__PURE__*/React.createElement("p", {
           className: "hero__sub"
-        }, "pixelpotDS generates your ",
+        }, "hextodesign generates your ",
           /*#__PURE__*/React.createElement("span", {
             ref: twRef,
             style: { color: "var(--brand)", fontWeight: 600 }
@@ -3168,7 +3137,7 @@ var {
       className: "marquee__item"
     }, /*#__PURE__*/React.createElement("span", {
       className: "b"
-    }, n), /*#__PURE__*/React.createElement("span", null, "shipped with pixelpotDS")))));
+    }, n), /*#__PURE__*/React.createElement("span", null, "shipped with hextodesign")))));
   }
   window.PPTop = {
     Nav,
@@ -5827,7 +5796,7 @@ var {
       role: "VP Design, Halcyon Studio",
       stat: ["18 months", "design ops replaced"]
     }), /*#__PURE__*/React.createElement(Testimonial, {
-      quote: "Our brand identity refresh shipped in 9 days, end-to-end. Tokens, Figma library, React package, marketing site, mobile app. pixelpotDS is the closest thing to magic I've used since Figma itself.",
+      quote: "Our brand identity refresh shipped in 9 days, end-to-end. Tokens, Figma library, React package, marketing site, mobile app. hextodesign is the closest thing to magic I've used since Figma itself.",
       name: "Jonas Kr\xFCger",
       role: "Head of Product, Northwind",
       stat: ["9 days", "brand refresh end-to-end"],
@@ -6128,21 +6097,9 @@ var {
         alignItems: "center",
         gap: 10
       }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: { height: 28, display: "flex", alignItems: "center" },
-      dangerouslySetInnerHTML: { __html: '<svg viewBox="0 0 195 48" height="28" xmlns="http://www.w3.org/2000/svg"><text x="0" y="38" font-family="Geist,ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="40" font-weight="800" letter-spacing="-0.02em" fill="var(--ink)">pixelp</text><circle cx="148" cy="26" r="10.5" fill="var(--brand)"/><text x="161" y="38" font-family="Geist,ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="40" font-weight="800" letter-spacing="-0.02em" fill="var(--ink)">t</text></svg>' }
-    }), /*#__PURE__*/React.createElement("span", {
-      style: {
-        fontWeight: 600,
-        fontSize: 16,
-        letterSpacing: "-0.01em"
-      }
     }, /*#__PURE__*/React.createElement("span", {
-      style: {
-        color: "var(--ink-3)",
-        fontWeight: 500
-      }
-    }, "DS"))), /*#__PURE__*/React.createElement("p", {
+      style: { fontFamily: '"Finlandica Headline", sans-serif', fontSize: 22, letterSpacing: "-0.01em", color: "var(--ink)" }
+    }, /*#__PURE__*/React.createElement("span", { style: { color: "var(--brand)" } }, "#"), "hex", /*#__PURE__*/React.createElement("span", { style: { color: "var(--brand)" } }, "to"), "design")), /*#__PURE__*/React.createElement("p", {
       style: {
         color: "var(--ink-3)",
         fontSize: 14,
@@ -6197,7 +6154,7 @@ var {
       className: "mini-btn mini-btn--primary themed"
     }, "Join")))), /*#__PURE__*/React.createElement("div", {
       className: "footer__bottom"
-    }, /*#__PURE__*/React.createElement("span", null, "\xA9 2026 pixelpotDS"), /*#__PURE__*/React.createElement("span", null, "Phase 0.5 \xB7 Privacy \xB7 Terms"))));
+    }, /*#__PURE__*/React.createElement("span", null, "\xA9 2026 hextodesign"), /*#__PURE__*/React.createElement("span", null, "Phase 0.5 \xB7 Privacy \xB7 Terms"))));
   }
   window.PPBot = {
     Bento,

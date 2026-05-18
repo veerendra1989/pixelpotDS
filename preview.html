@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5"/>
-  <title>pixelpotDS — Your Design System</title>
+  <title>hextodesign — Your Design System</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Finlandica+Headline&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <script>
     (function() {
       try { var t = localStorage.getItem("pp-theme") || "dark"; document.documentElement.setAttribute("data-theme", t); } catch(e) { document.documentElement.setAttribute("data-theme", "dark"); }
@@ -179,8 +179,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   overflow-y: auto; overflow-x: hidden;
 }
 :root[data-theme="light"] .sidebar { background: #fff; }
-.sidebar__logo { display: flex; align-items: center; gap: 10px; padding: 16px 20px; font-size: 15px; font-weight: 600; }
-.sidebar__logo-dot { width: 24px; height: 24px; border-radius: 7px; background: var(--brand); flex: none; }
+.sidebar__logo { display: flex; align-items: center; gap: 0; padding: 16px 20px; font-family: "Finlandica Headline", sans-serif; font-size: 18px; font-weight: 400; color: var(--ink); }
+.sidebar__logo .brand-accent { color: var(--brand); }
 .sidebar__divider { height: 1px; background: var(--line); margin: 0 16px; }
 .sidebar__section { padding: 14px 16px 10px; }
 .sidebar__label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--ink-4); margin-bottom: 8px; display: block; }
@@ -760,8 +760,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar" style="opacity:0">
   <div class="sidebar__logo">
-    <div class="sidebar__logo-dot" id="navDot"></div>
-    <span>pixelpotDS</span>
+    <span class="brand-accent">#</span>hex<span class="brand-accent">to</span>design
   </div>
   <div class="sidebar__divider"></div>
 
