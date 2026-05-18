@@ -1,0 +1,783 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5"/>
+  <title>pixelpotDS — Configure your design system</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script>
+    (function() {
+      var b = (localStorage.getItem("pp-brand") || "E8B26B").replace("#","");
+      window.location.replace("preview.html?brand=" + b);
+    })();
+  </script>
+  <script>
+    (function() {
+      try {
+        var t = localStorage.getItem("pp-theme") || "dark";
+        document.documentElement.setAttribute("data-theme", t);
+      } catch(e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+<style>
+/* =====================================================
+   pixelpotDS — generate.html design tokens
+   ===================================================== */
+:root {
+  --brand-h: 65;
+  --brand-c: 0.17;
+  --brand-l: 0.78;
+  --brand: oklch(var(--brand-l) var(--brand-c) var(--brand-h));
+  --brand-soft: oklch(var(--brand-l) var(--brand-c) var(--brand-h) / 0.18);
+  --brand-faint: oklch(var(--brand-l) var(--brand-c) var(--brand-h) / 0.08);
+  --brand-ink: oklch(0.18 0.05 var(--brand-h));
+  --card-bg: #fff;
+
+  --bg: #08080a;
+  --bg-1: #0c0c0f;
+  --bg-2: #111114;
+  --bg-3: #16161a;
+  --bg-4: #1d1d22;
+
+  --line: rgba(255,255,255,0.07);
+  --line-2: rgba(255,255,255,0.12);
+  --line-bright: rgba(255,255,255,0.22);
+
+  --ink: #f3f1ec;
+  --ink-2: #c8c5bd;
+  --ink-3: #8b877e;
+  --ink-4: #5a574f;
+
+  --pos: oklch(0.78 0.14 155);
+  --neg: oklch(0.70 0.18 25);
+
+  --f-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --f-mono: "Geist Mono", ui-monospace, monospace;
+
+  --r-1: 6px; --r-2: 10px; --r-3: 14px; --r-4: 20px; --r-5: 28px;
+
+  --shadow-card: 0 1px 0 rgba(255,255,255,0.04) inset, 0 30px 60px -30px rgba(0,0,0,0.6);
+  --nav-bg: rgba(8,8,10,0.7);
+
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg: #faf8f3; --bg-1: #f4f1e9; --bg-2: #ece8dd; --bg-3: #e2ddcf; --bg-4: #d4ceba;
+  --line: rgba(20,18,14,0.08); --line-2: rgba(20,18,14,0.14); --line-bright: rgba(20,18,14,0.28);
+  --ink: #14120e; --ink-2: #44403a; --ink-3: #78736a; --ink-4: #a8a294;
+  --brand-l: 0.62; --brand-c: 0.16;
+  --brand-ink: oklch(0.98 0.02 var(--brand-h));
+  --card-bg: #fff;
+  --brand-soft: oklch(var(--brand-l) var(--brand-c) var(--brand-h) / 0.22);
+  --brand-faint: oklch(var(--brand-l) var(--brand-c) var(--brand-h) / 0.10);
+  --shadow-card: 0 1px 0 rgba(255,255,255,0.6) inset, 0 20px 50px -25px rgba(40,30,10,0.18);
+  --nav-bg: rgba(250,248,243,0.8);
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-sans);
+  font-feature-settings: "ss01","cv11";
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+body {
+  background:
+    radial-gradient(900px 600px at 50% -60px, var(--brand-faint), transparent 60%),
+    var(--bg);
+}
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; cursor: pointer; }
+
+/* ===== NAV ===== */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 56px;
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.nav__logo {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 15px; font-weight: 600; letter-spacing: -0.01em;
+}
+.nav__logo-dot {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--brand); flex: none;
+}
+.nav__back {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--ink-3);
+  padding: 6px 12px; border-radius: var(--r-2);
+  border: 1px solid var(--line);
+  transition: color 0.15s, border-color 0.15s;
+}
+.nav__back:hover { color: var(--ink); border-color: var(--line-2); }
+.nav__back svg { width: 14px; height: 14px; }
+
+/* ===== LAYOUT ===== */
+.page {
+  max-width: 560px; margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+/* ===== STEPS ===== */
+.steps {
+  display: flex; align-items: center; gap: 0;
+  margin-bottom: 40px;
+}
+.step {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 500;
+  color: var(--ink-4);
+  letter-spacing: 0.02em;
+}
+.step.active { color: var(--brand); }
+.step.done { color: var(--pos); }
+.step__num {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 11px; font-weight: 600;
+  border: 1px solid currentColor;
+  flex: none;
+}
+.step.active .step__num { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.step.done .step__num { background: var(--pos); border-color: var(--pos); color: #fff; font-size: 10px; }
+.step__line {
+  flex: 1; height: 1px; background: var(--line);
+  margin: 0 10px; min-width: 24px;
+}
+
+/* ===== HEADER ===== */
+.page-head { margin-bottom: 36px; }
+.page-head h1 {
+  font-size: 28px; font-weight: 600;
+  letter-spacing: -0.03em; margin: 0 0 8px;
+  line-height: 1.2;
+}
+.page-head p { margin: 0; color: var(--ink-3); font-size: 14px; line-height: 1.6; }
+
+/* ===== FORM ===== */
+.form { display: flex; flex-direction: column; gap: 28px; }
+
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field__label {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--ink-3);
+  display: flex; align-items: center; gap: 8px;
+}
+.field__label .badge {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.04em;
+  padding: 2px 7px; border-radius: 99px;
+  background: var(--bg-3); color: var(--ink-4);
+  text-transform: uppercase;
+}
+.field__hint { font-size: 12px; color: var(--ink-4); margin-top: 2px; }
+
+/* ===== COLOR FIELD ===== */
+.color-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  background: var(--card-bg); border: 1px solid var(--line);
+  border-radius: var(--r-3);
+  transition: border-color 0.15s;
+}
+.color-row:focus-within { border-color: var(--brand); }
+.color-swatch {
+  width: 36px; height: 36px; border-radius: var(--r-2);
+  flex: none; cursor: pointer; position: relative; overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.1);
+}
+.color-swatch input[type="color"] {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  opacity: 0; cursor: pointer; border: none; padding: 0;
+}
+.color-hash {
+  font-size: 14px; color: var(--ink-4); font-family: var(--f-mono);
+  user-select: none;
+}
+.color-input {
+  flex: 1; background: none; border: none; outline: none;
+  font-size: 15px; font-family: var(--f-mono); font-weight: 500;
+  color: var(--ink); letter-spacing: 0.04em;
+  padding: 0;
+}
+.color-input::placeholder { color: var(--ink-4); }
+
+/* ===== FONT SELECTOR ===== */
+.font-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.font-card {
+  padding: 14px 16px;
+  background: var(--card-bg); border: 1px solid var(--line);
+  border-radius: var(--r-3); cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  text-align: left;
+}
+.font-card:hover { border-color: var(--line-2); background: var(--bg-3); }
+.font-card.selected {
+  border-color: var(--brand);
+  background: var(--brand-faint);
+}
+.font-card__name {
+  font-size: 13px; font-weight: 600; color: var(--ink);
+  margin-bottom: 4px;
+}
+.font-card__preview {
+  font-size: 18px; line-height: 1.2; color: var(--ink-2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.font-card__mono {
+  font-size: 10px; font-family: var(--f-mono);
+  color: var(--ink-4); margin-top: 6px;
+  letter-spacing: 0.04em;
+}
+.font-card__tag {
+  display: inline-block; font-size: 10px; font-weight: 500;
+  letter-spacing: 0.04em; padding: 2px 7px; border-radius: 99px;
+  background: var(--bg-4); color: var(--ink-4);
+  text-transform: uppercase; margin-top: 8px;
+}
+.font-card.selected .font-card__tag {
+  background: var(--brand-soft); color: var(--brand);
+}
+
+/* ===== LOGO UPLOAD ===== */
+.upload-zone {
+  display: block;
+  border: 1.5px dashed var(--line-2);
+  border-radius: var(--r-3);
+  padding: 28px 24px;
+  text-align: center; cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  background: var(--card-bg);
+  position: relative;
+}
+.upload-zone:hover, .upload-zone.drag-over {
+  border-color: var(--brand); background: var(--brand-faint);
+}
+.upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.upload-zone__icon {
+  width: 36px; height: 36px; border-radius: var(--r-2);
+  background: var(--bg-3); display: grid; place-items: center;
+  margin: 0 auto 12px; color: var(--ink-3);
+}
+.upload-zone__icon svg { width: 18px; height: 18px; }
+.upload-zone__text { font-size: 13px; color: var(--ink-3); }
+.upload-zone__text strong { color: var(--ink); font-weight: 500; }
+.upload-zone__sub { font-size: 11px; color: var(--ink-4); margin-top: 4px; }
+
+.logo-preview {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px;
+  background: var(--card-bg); border: 1px solid var(--line);
+  border-radius: var(--r-3);
+}
+.logo-preview img {
+  width: 48px; height: 48px; border-radius: var(--r-2);
+  object-fit: contain; background: var(--bg-3);
+  border: 1px solid var(--line);
+}
+.logo-preview__info { flex: 1; min-width: 0; }
+.logo-preview__name { font-size: 13px; font-weight: 500; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.logo-preview__size { font-size: 11px; color: var(--ink-4); margin-top: 2px; }
+.logo-preview__remove {
+  background: none; border: 1px solid var(--line); border-radius: var(--r-2);
+  padding: 6px 10px; font-size: 12px; color: var(--ink-3);
+  transition: color 0.15s, border-color 0.15s;
+}
+.logo-preview__remove:hover { color: var(--neg); border-color: var(--neg); }
+
+/* ===== GENERATE BUTTON ===== */
+.generate-btn {
+  width: 100%; padding: 16px 24px;
+  background: var(--brand); color: var(--brand-ink);
+  border: none; border-radius: var(--r-3);
+  font-size: 16px; font-weight: 600; letter-spacing: -0.01em;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: opacity 0.15s, transform 0.1s;
+  margin-top: 8px;
+}
+.generate-btn:hover { opacity: 0.9; }
+.generate-btn:active { transform: scale(0.99); }
+.generate-btn svg { width: 18px; height: 18px; }
+
+.form-meta {
+  text-align: center; font-size: 12px; color: var(--ink-4);
+  margin-top: 4px;
+}
+.form-meta span { color: var(--pos); }
+
+/* ===== DIVIDER ===== */
+.divider {
+  border: none; border-top: 1px solid var(--line);
+  margin: 0;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 480px) {
+  .page { padding: 32px 16px 60px; }
+  .page-head h1 { font-size: 24px; }
+  .steps { gap: 0; }
+  .step { font-size: 11px; gap: 5px; white-space: nowrap; }
+  .step__num { width: 20px; height: 20px; font-size: 10px; }
+  .step__line { min-width: 12px; margin: 0 6px; }
+  .font-grid { grid-template-columns: 1fr; }
+  .generate-btn { font-size: 15px; padding: 14px 20px; }
+}
+</style>
+</head>
+<body>
+<script src="engine.js"></script>
+
+<nav class="nav">
+  <a href="index.html" class="nav__logo">
+    <div class="nav__logo-dot" id="navDot"></div>
+    pixelpotDS
+  </a>
+  <a href="index.html" class="nav__back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M19 12H5M5 12l7 7M5 12l7-7"/>
+    </svg>
+    Back to playground
+  </a>
+</nav>
+
+<div class="page">
+  <!-- Step indicator -->
+  <div class="steps">
+    <div class="step done">
+      <div class="step__num">✓</div>
+      Preview
+    </div>
+    <div class="step__line"></div>
+    <div class="step active">
+      <div class="step__num">2</div>
+      Configure
+    </div>
+    <div class="step__line"></div>
+    <div class="step">
+      <div class="step__num">3</div>
+      Generate
+    </div>
+  </div>
+
+  <div class="page-head">
+    <h1>Configure your<br>design system</h1>
+    <p>Three inputs. Under 90 seconds. A complete, production-ready system.</p>
+  </div>
+
+  <form class="form" id="genForm" novalidate>
+
+    <!-- Field 1: Brand color -->
+    <div class="field">
+      <div class="field__label">Brand color</div>
+      <div class="color-row" id="colorRow">
+        <label class="color-swatch" id="colorSwatch">
+          <input type="color" id="colorPicker" value="#E8B26B"/>
+        </label>
+        <span class="color-hash">#</span>
+        <input
+          class="color-input"
+          id="colorInput"
+          type="text"
+          maxlength="6"
+          spellcheck="false"
+          placeholder="E8B26B"
+          value="E8B26B"
+        />
+      </div>
+      <div class="field__hint" id="colorHint"></div>
+    </div>
+
+    <hr class="divider"/>
+
+    <!-- Field 2: Font pairing -->
+    <div class="field">
+      <div class="field__label">Font pairing</div>
+      <div class="font-grid" id="fontGrid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <hr class="divider"/>
+
+    <!-- Field 3: Logo -->
+    <div class="field">
+      <div class="field__label">
+        Logo
+        <span class="badge">Optional</span>
+      </div>
+      <div id="logoArea">
+        <label class="upload-zone" id="uploadZone">
+          <input type="file" id="logoInput" accept="image/*" tabindex="-1"/>
+          <div class="upload-zone__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M16 12l-4-4-4 4M12 8v8"/>
+            </svg>
+          </div>
+          <div class="upload-zone__text">
+            <strong>Click to upload</strong> or drag & drop
+          </div>
+          <div class="upload-zone__sub">PNG, SVG, JPG · max 2 MB</div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" class="generate-btn" id="generateBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+      </svg>
+      Generate my design system
+    </button>
+    <p class="form-meta">
+      <span>Free</span> to preview &nbsp;·&nbsp; $49 to export all files
+    </p>
+
+  </form>
+</div>
+
+<script>
+(function() {
+  /* ── Font pairings catalogue ── */
+  const FONTS = [
+    {
+      id: "geist",
+      name: "Geist",
+      sans: "Geist",
+      mono: "Geist Mono",
+      preview: "Aa Bb Cc",
+      tag: "Modern",
+      googleUrl: null, // already loaded
+      cssVar: '"Geist", ui-sans-serif, sans-serif',
+      monoVar: '"Geist Mono", ui-monospace, monospace'
+    },
+    {
+      id: "inter",
+      name: "Inter",
+      sans: "Inter",
+      mono: "JetBrains Mono",
+      preview: "Aa Bb Cc",
+      tag: "Neutral",
+      googleUrl: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+      cssVar: '"Inter", ui-sans-serif, sans-serif',
+      monoVar: '"JetBrains Mono", ui-monospace, monospace'
+    },
+    {
+      id: "plus-jakarta",
+      name: "Plus Jakarta",
+      sans: "Plus Jakarta Sans",
+      mono: "Space Mono",
+      preview: "Aa Bb Cc",
+      tag: "Friendly",
+      googleUrl: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap",
+      cssVar: '"Plus Jakarta Sans", ui-sans-serif, sans-serif',
+      monoVar: '"Space Mono", ui-monospace, monospace'
+    },
+    {
+      id: "dm-sans",
+      name: "DM Sans",
+      sans: "DM Sans",
+      mono: "IBM Plex Mono",
+      preview: "Aa Bb Cc",
+      tag: "Clean",
+      googleUrl: "https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+      cssVar: '"DM Sans", ui-sans-serif, sans-serif',
+      monoVar: '"IBM Plex Mono", ui-monospace, monospace'
+    },
+    {
+      id: "outfit",
+      name: "Outfit",
+      sans: "Outfit",
+      mono: "Fira Code",
+      preview: "Aa Bb Cc",
+      tag: "Geometric",
+      googleUrl: "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap",
+      cssVar: '"Outfit", ui-sans-serif, sans-serif',
+      monoVar: '"Fira Code", ui-monospace, monospace'
+    },
+    {
+      id: "playfair",
+      name: "Playfair",
+      sans: "Playfair Display",
+      mono: "DM Mono",
+      preview: "Aa Bb Cc",
+      tag: "Editorial",
+      googleUrl: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap",
+      cssVar: '"Playfair Display", Georgia, serif',
+      monoVar: '"DM Mono", ui-monospace, monospace'
+    }
+  ];
+
+  /* ── State ── */
+  let selectedFont = "geist";
+  let logoDataUrl = null;
+  let logoFileName = null;
+
+  /* ── Apply brand from localStorage ── */
+  function hexToOklch(hex) {
+    hex = hex.replace("#", "");
+    const r = parseInt(hex.slice(0,2),16)/255;
+    const g = parseInt(hex.slice(2,4),16)/255;
+    const b = parseInt(hex.slice(4,6),16)/255;
+    const lr = r > 0.04045 ? Math.pow((r+0.055)/1.055,2.4) : r/12.92;
+    const lg = g > 0.04045 ? Math.pow((g+0.055)/1.055,2.4) : g/12.92;
+    const lb = b > 0.04045 ? Math.pow((b+0.055)/1.055,2.4) : b/12.92;
+    const X = 0.4122214708*lr + 0.5363325363*lg + 0.0514459929*lb;
+    const Y = 0.2119034982*lr + 0.6806995451*lg + 0.1073969566*lb;
+    const Z = 0.0883024619*lr + 0.2817188376*lg + 0.6299787005*lb;
+    const l = Math.cbrt(X); const m = Math.cbrt(Y); const s = Math.cbrt(Z);
+    const L = 0.2104542553*l + 0.7936177850*m - 0.0040720468*s;
+    const a_ = 1.9779984951*l - 2.4285922050*m + 0.4505937099*s;
+    const b_ = 0.0259040371*l + 0.7827717662*m - 0.8086757660*s;
+    const C = Math.sqrt(a_*a_+b_*b_);
+    const H = ((Math.atan2(b_,a_)*180/Math.PI)+360)%360;
+    return { L, C, H };
+  }
+
+  function applyBrand(hex) {
+    try {
+      const { L, C, H } = hexToOklch(hex);
+      const l = Math.min(0.85, Math.max(0.62, L));
+      const c = Math.min(0.20, Math.max(0.06, C));
+      const root = document.documentElement;
+      root.style.setProperty("--brand-l", l.toFixed(3));
+      root.style.setProperty("--brand-c", c.toFixed(3));
+      root.style.setProperty("--brand-h", H.toFixed(1));
+      const isDarkBrand = L < 0.55;
+      if (isDarkBrand) {
+        root.style.setProperty("--brand-ink", "#fff");
+        root.style.setProperty("--brand-l", Math.max(0.30, L).toFixed(3));
+      } else {
+        root.style.setProperty("--brand-ink", "oklch(0.18 0.05 " + H.toFixed(1) + ")");
+      }
+      document.getElementById("navDot").style.background = "var(--brand)";
+    } catch(e) {}
+  }
+
+  /* ── Init color from localStorage ── */
+  function initColor() {
+    let hex = "#E8B26B";
+    try {
+      const stored = localStorage.getItem("pp-brand");
+      if (stored && /^#[0-9a-fA-F]{6}$/.test(stored)) hex = stored;
+    } catch(e) {}
+    setColor(hex, false);
+  }
+
+  function setColor(hex, save) {
+    if (!/^#?[0-9a-fA-F]{6}$/.test(hex)) return;
+    const norm = hex.startsWith("#") ? hex : "#" + hex;
+    const val = norm.slice(1).toUpperCase();
+    document.getElementById("colorInput").value = val;
+    document.getElementById("colorPicker").value = norm;
+    document.getElementById("colorSwatch").style.background = norm;
+    applyBrand(norm);
+    document.body.style.background =
+      "radial-gradient(900px 600px at 50% -60px, var(--brand-faint), transparent 60%), var(--bg)";
+    if (save) {
+      try { localStorage.setItem("pp-brand", norm); } catch(e) {}
+    }
+  }
+
+  /* ── Color input wiring ── */
+  const colorInput = document.getElementById("colorInput");
+  const colorPicker = document.getElementById("colorPicker");
+
+  colorInput.addEventListener("input", function() {
+    const v = this.value.replace("#","").slice(0,6).toUpperCase();
+    this.value = v;
+    if (v.length === 6) setColor(v, true);
+  });
+
+  colorPicker.addEventListener("input", function() {
+    setColor(this.value.toUpperCase(), true);
+  });
+
+  /* ── Font grid ── */
+  function renderFontGrid() {
+    const grid = document.getElementById("fontGrid");
+    grid.innerHTML = "";
+    FONTS.forEach(function(f) {
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = "font-card" + (f.id === selectedFont ? " selected" : "");
+      card.dataset.id = f.id;
+      card.innerHTML =
+        '<div class="font-card__name">' + f.name + '</div>' +
+        '<div class="font-card__preview" style="font-family:' + f.cssVar + '">' + f.preview + '</div>' +
+        '<div class="font-card__mono">' + f.mono + '</div>' +
+        '<div class="font-card__tag">' + f.tag + '</div>';
+      card.addEventListener("click", function() { selectFont(f.id); });
+      grid.appendChild(card);
+    });
+  }
+
+  function selectFont(id) {
+    selectedFont = id;
+    document.querySelectorAll(".font-card").forEach(function(c) {
+      c.classList.toggle("selected", c.dataset.id === id);
+    });
+    const f = FONTS.find(function(x) { return x.id === id; });
+    if (f && f.googleUrl) loadGoogleFont(f.googleUrl);
+    // Re-render preview text with loaded font
+    setTimeout(function() {
+      document.querySelectorAll(".font-card__preview").forEach(function(el, i) {
+        el.style.fontFamily = FONTS[i] ? FONTS[i].cssVar : "";
+      });
+    }, 300);
+  }
+
+  function loadGoogleFont(url) {
+    if (document.querySelector('link[href="' + url + '"]')) return;
+    const link = document.createElement("link");
+    link.rel = "stylesheet"; link.href = url;
+    document.head.appendChild(link);
+  }
+
+  /* ── Logo upload ── */
+  const logoInput = document.getElementById("logoInput");
+  const uploadZone = document.getElementById("uploadZone");
+  const logoArea = document.getElementById("logoArea");
+
+  uploadZone.addEventListener("dragover", function(e) {
+    e.preventDefault(); uploadZone.classList.add("drag-over");
+  });
+  uploadZone.addEventListener("dragleave", function() {
+    uploadZone.classList.remove("drag-over");
+  });
+  uploadZone.addEventListener("drop", function(e) {
+    e.preventDefault(); uploadZone.classList.remove("drag-over");
+    const file = e.dataTransfer.files[0];
+    if (file) handleLogoFile(file);
+  });
+  logoInput.addEventListener("change", function() {
+    if (this.files[0]) handleLogoFile(this.files[0]);
+  });
+
+  function handleLogoFile(file) {
+    if (!file.type.startsWith("image/")) return;
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Logo must be under 2 MB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      logoDataUrl = e.target.result;
+      logoFileName = file.name;
+      const kb = (file.size / 1024).toFixed(0);
+      logoArea.innerHTML =
+        '<div class="logo-preview">' +
+        '<img src="' + logoDataUrl + '" alt="Logo preview"/>' +
+        '<div class="logo-preview__info">' +
+        '<div class="logo-preview__name">' + escHtml(file.name) + '</div>' +
+        '<div class="logo-preview__size">' + kb + ' KB · ' + file.type.split("/")[1].toUpperCase() + '</div>' +
+        '</div>' +
+        '<button type="button" class="logo-preview__remove" id="removeLogo">Remove</button>' +
+        '</div>';
+      document.getElementById("removeLogo").addEventListener("click", removeLogo);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function removeLogo() {
+    logoDataUrl = null; logoFileName = null;
+    logoArea.innerHTML =
+      '<label class="upload-zone" id="uploadZone">' +
+      '<input type="file" id="logoInput" accept="image/*" tabindex="-1"/>' +
+      '<div class="upload-zone__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M16 12l-4-4-4 4M12 8v8"/></svg></div>' +
+      '<div class="upload-zone__text"><strong>Click to upload</strong> or drag &amp; drop</div>' +
+      '<div class="upload-zone__sub">PNG, SVG, JPG · max 2 MB</div>' +
+      '</label>';
+    const newInput = document.getElementById("logoInput");
+    const newZone = document.getElementById("uploadZone");
+    newInput.addEventListener("change", function() { if(this.files[0]) handleLogoFile(this.files[0]); });
+    newZone.addEventListener("dragover", function(e) { e.preventDefault(); newZone.classList.add("drag-over"); });
+    newZone.addEventListener("dragleave", function() { newZone.classList.remove("drag-over"); });
+    newZone.addEventListener("drop", function(e) { e.preventDefault(); newZone.classList.remove("drag-over"); const f = e.dataTransfer.files[0]; if(f) handleLogoFile(f); });
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  /* ── Form submit ── */
+  document.getElementById("genForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const hexVal = colorInput.value.trim().toUpperCase();
+    if (!/^[0-9A-F]{6}$/.test(hexVal)) {
+      colorInput.focus();
+      document.getElementById("colorRow").style.borderColor = "var(--neg)";
+      return;
+    }
+
+    const font = FONTS.find(function(f) { return f.id === selectedFont; }) || FONTS[0];
+
+    try {
+      localStorage.setItem("pp-brand", "#" + hexVal);
+      localStorage.setItem("pp-font", JSON.stringify({
+        id: font.id,
+        name: font.name,
+        sans: font.sans,
+        mono: font.mono,
+        cssVar: font.cssVar,
+        monoVar: font.monoVar,
+        googleUrl: font.googleUrl
+      }));
+      if (logoDataUrl) {
+        localStorage.setItem("pp-logo", logoDataUrl);
+        localStorage.setItem("pp-logo-name", logoFileName || "logo");
+      } else {
+        localStorage.removeItem("pp-logo");
+        localStorage.removeItem("pp-logo-name");
+      }
+    } catch(e) {}
+
+    // Run the generation engine
+    try {
+      var ds = PPEngine.generate("#" + hexVal, font);
+      localStorage.setItem("pp-ds", JSON.stringify(ds));
+    } catch(err) {
+      alert("Generation failed: " + err.message);
+      return;
+    }
+
+    // Show brief loading state then navigate
+    const btn = document.getElementById("generateBtn");
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 0.8s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Generating…';
+    btn.disabled = true;
+
+    setTimeout(function() {
+      window.location.href = "preview.html";
+    }, 800);
+  });
+
+  /* ── Spin keyframe ── */
+  const style = document.createElement("style");
+  style.textContent = "@keyframes spin { to { transform: rotate(360deg); } }";
+  document.head.appendChild(style);
+
+  /* ── Init ── */
+  initColor();
+  renderFontGrid();
+
+})();
+</script>
+</body>
+</html>
