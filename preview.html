@@ -573,7 +573,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* --- Selection & Input --- */
 .c-toggle { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; color: var(--ink-2); }
-.c-toggle-track { width: 40px; height: 22px; border-radius: 11px; background: var(--bg-4); position: relative; transition: background 0.2s; }
+.c-toggle-track { width: 40px; min-width: 40px; height: 22px; border-radius: 11px; background: var(--bg-4); position: relative; transition: background 0.2s; flex-shrink: 0; }
 .c-toggle-track.on { background: var(--brand); }
 .c-toggle-thumb { width: 18px; height: 18px; border-radius: 50%; background: #fff; position: absolute; top: 2px; left: 2px; transition: left 0.2s; box-shadow: var(--shadow-sm); }
 .c-toggle-track.on .c-toggle-thumb { left: 20px; }
@@ -1432,10 +1432,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
     h += '<div class="ds-section-header"><span class="ds-section-num">12</span><h2 class="ds-section-title">Selection &amp; input</h2></div>';
     h += '<p class="ds-section-desc">Toggle, slider, autocomplete, datepicker, and button toggle group components.</p>';
 
-    h += '<div class="ds-subsection"><div class="ds-subsection-title">Slide toggle</div><div class="ds-preview"><div class="ds-preview-row" style="gap:32px">';
-    h += '<div class="c-toggle"><div class="c-toggle-track on" onclick="this.classList.toggle(\'on\')"><div class="c-toggle-thumb"></div></div> Notifications</div>';
-    h += '<div class="c-toggle"><div class="c-toggle-track" onclick="this.classList.toggle(\'on\')"><div class="c-toggle-thumb"></div></div> Dark mode</div>';
-    h += '<div class="c-toggle"><div class="c-toggle-track on" onclick="this.classList.toggle(\'on\')" style="opacity:0.5;pointer-events:none"><div class="c-toggle-thumb"></div></div> Disabled (on)</div>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Slide toggle</div><div class="ds-preview"><div style="display:flex;flex-direction:column;gap:16px;max-width:280px">';
+    h += '<div class="c-toggle"><div class="c-toggle-track on" onclick="this.classList.toggle(\'on\')"><div class="c-toggle-thumb"></div></div><span>Notifications</span></div>';
+    h += '<div class="c-toggle"><div class="c-toggle-track" onclick="this.classList.toggle(\'on\')"><div class="c-toggle-thumb"></div></div><span>Dark mode</span></div>';
+    h += '<div class="c-toggle"><div class="c-toggle-track on" style="opacity:0.5;pointer-events:none"><div class="c-toggle-thumb"></div></div><span style="opacity:0.5">Disabled (on)</span></div>';
     h += '</div></div></div>';
 
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Slider</div><div class="ds-preview"><div style="max-width:360px;display:flex;flex-direction:column;gap:20px">';
@@ -1443,10 +1443,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
     h += '<div class="c-slider"><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3);margin-bottom:6px"><span>Border radius</span><span style="font-weight:600;color:var(--ink)">40%</span></div><div class="c-slider-track"><div class="c-slider-fill" style="width:40%"></div><div class="c-slider-thumb" style="left:40%"></div></div></div>';
     h += '</div></div></div>';
 
-    h += '<div class="ds-subsection"><div class="ds-subsection-title">Autocomplete</div><div class="ds-preview"><div class="c-autocomplete">';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Autocomplete</div><div class="ds-preview"><div style="padding-bottom:120px"><div class="c-autocomplete">';
     h += '<input class="c-input" value="Ge" placeholder="Search fonts..."/>';
     h += '<div class="c-autocomplete-dropdown"><div class="c-autocomplete-option highlighted">Geist</div><div class="c-autocomplete-option">Geist Mono</div><div class="c-autocomplete-option">Georgia</div></div>';
-    h += '</div></div></div>';
+    h += '</div></div></div></div>';
 
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Date &amp; time picker</div><div class="ds-preview"><div class="ds-preview-row" style="gap:24px">';
     h += '<div class="c-datepicker"><input class="c-input" value="2024-03-15" style="width:160px"/><div class="c-datepicker-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div></div>';
@@ -1554,11 +1554,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
     h += '<div class="c-snackbar" style="background:var(--neg)">Export failed — check your connection <button class="c-snackbar-action" style="color:#fff;opacity:0.9">Retry</button></div>';
     h += '</div></div></div>';
 
-    h += '<div class="ds-subsection"><div class="ds-subsection-title">Tooltip</div><div class="ds-preview"><div class="ds-preview-row" style="gap:48px;padding:24px 0">';
-    h += '<div class="c-tooltip-wrap"><button class="c-btn c-btn--secondary c-btn--sm">Top</button><div class="c-tooltip c-tooltip--top">Tooltip on top</div></div>';
-    h += '<div class="c-tooltip-wrap"><button class="c-btn c-btn--secondary c-btn--sm">Right</button><div class="c-tooltip c-tooltip--right">Right tooltip</div></div>';
-    h += '<div class="c-tooltip-wrap"><button class="c-btn c-btn--secondary c-btn--sm">Bottom</button><div class="c-tooltip c-tooltip--bottom">Bottom tip</div></div>';
-    h += '<div class="c-tooltip-wrap"><button class="c-btn c-btn--secondary c-btn--sm">Left</button><div class="c-tooltip c-tooltip--left">Left aligned</div></div>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Tooltip</div><div class="ds-preview"><div style="display:grid;grid-template-columns:1fr 1fr;gap:40px 80px;max-width:400px;padding:40px 60px">';
+    h += '<div style="display:flex;justify-content:center"><div class="c-tooltip-wrap"><button class="c-btn c-btn--secondary c-btn--sm">Top</button><div class="c-tooltip c-tooltip--top">Top tooltip</div></div></div>';
+    h += '<div style="display:flex;justify-content:center"><div class="c-tooltip-wrap"><button class="c-btn c-btn--secondary c-btn--sm">Right</button><div class="c-tooltip c-tooltip--right">Right</div></div></div>';
+    h += '<div style="display:flex;justify-content:center"><div class="c-tooltip-wrap"><button class="c-btn c-btn--secondary c-btn--sm">Bottom</button><div class="c-tooltip c-tooltip--bottom">Bottom</div></div></div>';
+    h += '<div style="display:flex;justify-content:center"><div class="c-tooltip-wrap"><button class="c-btn c-btn--secondary c-btn--sm">Left</button><div class="c-tooltip c-tooltip--left">Left</div></div></div>';
     h += '</div></div></div>';
 
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Menu</div><div class="ds-preview"><div style="display:flex;gap:24px">';
