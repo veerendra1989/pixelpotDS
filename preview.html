@@ -869,6 +869,55 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .export-code .ev { color: var(--pos); }
 .export-code .ec { color: var(--ink-4); }
 
+/* ═══ LIGHT MODE OVERRIDES (new sections) ═══ */
+:root[data-theme="light"] .c-cmdk { background: #fff; border-color: #d5d2ca; box-shadow: 0 20px 60px rgba(0,0,0,0.12); }
+:root[data-theme="light"] .c-cmdk__input-wrap { border-bottom-color: #e5e2da; }
+:root[data-theme="light"] .c-cmdk__input { color: #14120e; }
+:root[data-theme="light"] .c-cmdk__kbd { background: #f0ede6; border-color: #d5d2ca; color: #5a574f; }
+:root[data-theme="light"] .c-cmdk__group-label { color: #78736a; }
+:root[data-theme="light"] .c-cmdk__item { color: #44403a; }
+:root[data-theme="light"] .c-cmdk__item:hover, :root[data-theme="light"] .c-cmdk__item--active { background: #f5f2ec; color: #14120e; }
+:root[data-theme="light"] .c-cmdk__item svg { color: #78736a; }
+:root[data-theme="light"] .c-cmdk__item-shortcut { color: #a8a294; }
+
+:root[data-theme="light"] .export-code { background: #faf8f4; border-color: #e5e2da; color: #44403a; }
+:root[data-theme="light"] .export-code .ek { color: #8b5c00; }
+:root[data-theme="light"] .export-code .ev { color: #1a6b3a; }
+:root[data-theme="light"] .export-code .ec { color: #a8a294; }
+:root[data-theme="light"] .export-tab { color: #78736a; }
+:root[data-theme="light"] .export-tab:hover { color: #44403a; }
+
+:root[data-theme="light"] .motion-card { background: #fff; border-color: #e5e2da; }
+:root[data-theme="light"] .motion-track { background: #e5e2da; }
+
+:root[data-theme="light"] .icon-size-box { background: #fff; border-color: #e5e2da; }
+
+:root[data-theme="light"] .grid-col { background: oklch(0.65 0.10 var(--brand-h) / 0.08); }
+
+:root[data-theme="light"] .c-dropzone { border-color: #d5d2ca; }
+:root[data-theme="light"] .c-dropzone__icon { color: #78736a; }
+
+:root[data-theme="light"] .focus-demo { background: #fff; border-color: #e5e2da; color: #44403a; }
+
+:root[data-theme="light"] .zindex-layer { border-color: #d5d2ca; }
+
+:root[data-theme="light"] .container-demo { border-color: #d5d2ca; }
+
+:root[data-theme="light"] .breakpoint-table th { color: #5a574f; border-bottom-color: #e5e2da; }
+:root[data-theme="light"] .breakpoint-table td { border-bottom-color: #f0ede6; color: #44403a; }
+
+:root[data-theme="light"] .duration-row { border-bottom-color: #f0ede6; }
+:root[data-theme="light"] .duration-bar { background: #e5e2da; }
+
+:root[data-theme="light"] .icon-text-row { border-bottom-color: #f0ede6; }
+
+:root[data-theme="light"] .chart-bar-demo { background: transparent; }
+
+:root[data-theme="light"] .responsive-frame { border-color: #e5e2da; }
+:root[data-theme="light"] .responsive-frame__bar { background: #f5f2ec; border-bottom-color: #e5e2da; }
+
+:root[data-theme="light"] .aspect-box { background: #f0ede6; }
+
 /* Custom scrollbar */
 .custom-scroll { scrollbar-width: thin; scrollbar-color: var(--bg-4) transparent; }
 .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -1888,12 +1937,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
     var iSvg = function(w) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + w + '" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'; };
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Size tokens</div><div class="ds-preview"><div class="icon-size-grid">';
     [12,16,20,24,32,40].forEach(function(s) {
-      h += '<div class="icon-size-cell"><div class="icon-size-box" style="width:' + (s+16) + 'px;height:' + (s+16) + 'px"><span style="width:' + s + 'px;height:' + s + 'px;display:block">' + iSvg(2) + '</span></div><div class="icon-size-label">' + s + 'px</div></div>';
+      h += '<div class="icon-size-cell"><div class="icon-size-box" style="width:' + (s+16) + 'px;height:' + (s+16) + 'px"><span style="width:' + s + 'px;height:' + s + 'px">' + iSvg(2) + '</span></div><div class="icon-size-label">' + s + 'px</div></div>';
     });
     h += '</div></div></div>';
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Stroke weights</div><div class="ds-preview"><div class="icon-stroke-grid">';
     [1,1.5,2,2.5,3].forEach(function(w) {
-      h += '<div class="icon-stroke-cell"><span style="width:32px;height:32px;display:block">' + iSvg(w) + '</span><div class="icon-stroke-label">' + w + 'px</div></div>';
+      h += '<div class="icon-stroke-cell"><span style="width:32px;height:32px;display:grid;place-items:center">' + iSvg(w) + '</span><div class="icon-stroke-label">' + w + 'px</div></div>';
     });
     h += '</div></div></div>';
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Icon + text alignment</div><div class="ds-preview">';
