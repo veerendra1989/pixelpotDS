@@ -1583,7 +1583,7 @@ body.grain::before {
   .hero {
     height: auto;
     min-height: auto;
-    padding: 100px 0 32px;
+    padding: 80px 0 32px;
   }
   .hero__inner {
     text-align: center;
@@ -1610,18 +1610,19 @@ body.grain::before {
     line-height: 1.55;
     margin-inline: auto;
     color: var(--ink-2);
+    min-height: 3.1em;
   }
 
-  /* Hex input: centered, faster glow */
+  /* Hex input: centered, bigger pill, faster glow, no generate button */
   .hex-input {
-    padding: 6px;
+    padding: 10px;
     margin-top: 24px;
     align-self: center;
     animation-duration: 1.5s;
   }
-  .hex-input__swatch { width: 36px; height: 36px; }
-  .hex-input input { font-size: 16px; width: 100px; padding: 0 10px; }
-  .hex-input button { height: 36px; padding: 0 18px; font-size: 14px; }
+  .hex-input__swatch { width: 44px; height: 44px; }
+  .hex-input input { font-size: 18px; width: 120px; padding: 0 12px; height: 44px; }
+  .hex-input button { display: none; }
   .hex-suggestions { justify-content: center; margin-top: 16px; }
 
   /* CTAs: full-width, bold, stacked */
