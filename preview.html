@@ -89,16 +89,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 @keyframes loGridFade { from { opacity: 0; } to { opacity: 1; } }
 
-/* Ambient glow */
-.lo-glow {
-  position: absolute; width: 500px; height: 500px; border-radius: 50%;
-  top: 50%; left: 50%; transform: translate(-50%, -50%);
-  background: radial-gradient(circle, var(--lo-color, #7B5BFF) 0%, transparent 70%);
-  opacity: 0.08;
-  animation: loGlowPulse 3s ease-in-out infinite;
-}
-@keyframes loGlowPulse { 0%, 100% { opacity: 0.06; transform: translate(-50%, -50%) scale(1); } 50% { opacity: 0.12; transform: translate(-50%, -50%) scale(1.1); } }
-
 /* Center hub */
 .lo-center { position: relative; z-index: 5; display: flex; flex-direction: column; align-items: center; gap: 0; }
 
@@ -110,43 +100,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
   animation: loOrbPulse 2.4s ease-in-out infinite;
 }
 @keyframes loOrbPulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.08); opacity: 1; } }
-.lo-orb-ring {
-  position: absolute; inset: -12px; border-radius: 50%;
-  border: 1px solid var(--lo-color, #7B5BFF);
-  opacity: 0.15; animation: loRingExpand 2.4s ease-in-out infinite;
-}
-.lo-orb-ring:nth-child(3) { inset: -24px; opacity: 0.08; animation-delay: 0.4s; }
-@keyframes loRingExpand { 0%, 100% { transform: scale(1); opacity: 0.15; } 50% { transform: scale(1.06); opacity: 0.08; } }
-
-/* Floating UI fragments */
-.lo-fragments { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
-.lo-frag {
-  position: absolute; border-radius: 6px;
-  border: 1px solid rgba(255,255,255,0.06);
-  background: rgba(255,255,255,0.02);
-  backdrop-filter: blur(1px);
-  opacity: 0;
-  animation: loFragIn 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-@keyframes loFragIn { to { opacity: 1; transform: translateY(0); } }
-
-/* Color swatches that appear */
-.lo-swatches {
-  position: absolute; z-index: 4;
-  display: flex; gap: 4px;
-  opacity: 0; animation: loSwatchIn 0.8s ease forwards;
-}
-@keyframes loSwatchIn { to { opacity: 1; transform: translateY(0) scale(1); } }
-.lo-swatch { width: 20px; height: 20px; border-radius: 4px; }
-
-/* Alignment guides */
-.lo-guide {
-  position: absolute; z-index: 2; opacity: 0;
-  animation: loGuideIn 0.6s ease forwards;
-}
-.lo-guide--h { height: 1px; background: var(--lo-color, #7B5BFF); }
-.lo-guide--v { width: 1px; background: var(--lo-color, #7B5BFF); }
-@keyframes loGuideIn { to { opacity: 0.12; } }
 
 /* Text */
 .lo-text {
@@ -164,13 +117,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .lo-progress { width: 160px; height: 2px; background: rgba(255,255,255,0.06); border-radius: 1px; margin-top: 28px; overflow: hidden; }
 .lo-progress-fill { height: 100%; width: 0; background: var(--lo-color, #7B5BFF); border-radius: 1px; transition: width 0.3s ease; }
 
-/* Floating vars */
-.lo-var {
-  position: absolute; z-index: 3; font-size: 10px; font-family: var(--f-mono);
-  color: rgba(255,255,255,0.12); opacity: 0; white-space: nowrap;
-  animation: loVarIn 0.8s ease forwards;
-}
-@keyframes loVarIn { to { opacity: 1; } }
 
 /* ═══════════════════════════════════════════
    SIDEBAR
@@ -187,6 +133,36 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .sidebar__divider { height: 1px; background: var(--line); margin: 0 16px; }
 .sidebar__section { padding: 14px 16px 10px; }
 .sidebar__label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--ink-4); margin-bottom: 8px; display: block; }
+.sidebar__colors { display: flex; flex-direction: column; gap: 6px; }
+.sidebar__color-item { display: flex; align-items: center; gap: 5px; position: relative; }
+.sidebar__color-swatch {
+  width: 28px; height: 28px; border-radius: 6px;
+  border: 1px solid var(--line-2); cursor: pointer; flex-shrink: 0; position: relative; overflow: hidden;
+}
+.sidebar__color-swatch input[type="color"] {
+  position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;
+}
+.sidebar__color-hex {
+  flex: 1; height: 28px; padding: 0 6px; border: 1px solid transparent; border-radius: 4px;
+  font-family: var(--f-mono); font-size: 11px; color: var(--ink); background: transparent;
+  outline: none; text-transform: uppercase; min-width: 0; transition: all 0.15s;
+}
+.sidebar__color-hex:focus { border-color: var(--brand); background: var(--bg-2); }
+:root[data-theme="light"] .sidebar__color-hex:focus { background-color: #fff; }
+.sidebar__color-name {
+  width: 56px; flex-shrink: 0; height: 28px; padding: 0 6px; border: 1px solid transparent; border-radius: 4px;
+  font-size: 10px; font-weight: 500; color: var(--ink-3); background: transparent;
+  outline: none; min-width: 0; transition: all 0.15s;
+}
+.sidebar__color-name:focus { border-color: var(--brand); background: var(--bg-2); color: var(--ink); }
+:root[data-theme="light"] .sidebar__color-name:focus { background-color: #fff; }
+.sidebar__color-remove {
+  width: 20px; height: 20px; border: none; border-radius: 4px; background: none;
+  color: var(--ink-4); cursor: pointer; display: grid; place-items: center; transition: all 0.15s; flex-shrink: 0; padding: 0; opacity: 0;
+}
+.sidebar__color-item:hover .sidebar__color-remove { opacity: 1; }
+.sidebar__color-remove:hover { background: var(--neg-soft); color: var(--neg); }
+.sidebar__color-remove svg { width: 12px; height: 12px; }
 .sidebar__color-row { display: flex; align-items: center; gap: 6px; }
 .sidebar__color-row .hash { font-size: 13px; color: var(--ink-4); font-family: var(--f-mono); }
 .sidebar__color-row input[type="text"] {
@@ -198,12 +174,19 @@ button { font: inherit; color: inherit; cursor: pointer; }
 :root[data-theme="light"] .sidebar__font-select { background-color: #fff; }
 .sidebar__color-row input[type="text"]:focus { border-color: var(--brand); }
 .sidebar__swatch {
-  width: 44px; height: 44px; border-radius: var(--r-1); background: var(--brand);
-  border: 1px solid var(--line-2); cursor: pointer; flex-shrink: 0; position: relative;
+  width: 44px; height: 44px; border-radius: var(--r-1);
+  border: 1px solid var(--line-2); cursor: pointer; flex-shrink: 0; position: relative; overflow: hidden;
 }
 .sidebar__swatch input[type="color"] {
   position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;
 }
+.sidebar__add-color {
+  display: flex; align-items: center; gap: 5px; width: 100%; height: 26px; padding: 0 8px;
+  border: 1px dashed var(--line-2); border-radius: 6px; background: none;
+  font-size: 11px; font-weight: 500; color: var(--ink-4); cursor: pointer; transition: all 0.15s;
+}
+.sidebar__add-color:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-faint); }
+.sidebar__add-color svg { width: 12px; height: 12px; }
 .sidebar__font-select {
   width: 100%; height: 44px; padding: 0 28px 0 10px; border: 1px solid var(--line-2); border-radius: var(--r-1);
   font-size: 13px; font-weight: 500; color: var(--ink); background: var(--bg-2);
@@ -251,7 +234,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
    MAIN CONTENT
    ═══════════════════════════════════════════ */
 .main-content {
-  margin-left: var(--sidebar-w); height: 100vh; overflow-y: auto;
+  margin-left: var(--sidebar-w); height: 100vh; overflow-y: auto; overflow-x: hidden;
   background: radial-gradient(900px 500px at 50% -60px, var(--brand-faint), transparent 60%), var(--bg);
 }
 .ds-body { max-width: 1000px; margin: 0 auto; padding: 32px 32px 100px; }
@@ -289,7 +272,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .ds-subsection-title { font-size: 14px; font-weight: 600; color: var(--ink-2); margin-bottom: 12px; letter-spacing: -0.1px; }
 
 /* ── Preview Card ── */
-.ds-preview { background: var(--card-bg); border: 1px solid var(--line); border-radius: var(--r-3); padding: 24px; margin-bottom: 12px; }
+.ds-preview { background: var(--card-bg); border: 1px solid var(--line); border-radius: var(--r-3); padding: 24px; margin-bottom: 12px; overflow: hidden; }
 .ds-preview-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--ink-4); margin-bottom: 12px; }
 .ds-preview-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 .ds-preview-col { display: flex; flex-direction: column; gap: 12px; }
@@ -739,6 +722,159 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .palette-row { flex-wrap: wrap; }
   .swatch { min-width: 60px; }
 }
+
+/* ═══ 17 GRID & LAYOUT ═══ */
+.grid-demo { display: grid; grid-template-columns: repeat(12, 1fr); gap: 8px; }
+.grid-col { background: var(--brand-faint); border: 1px solid var(--brand); border-radius: 4px; height: 40px; display: grid; place-items: center; font-size: 10px; font-family: var(--f-mono); color: var(--brand); font-weight: 600; }
+.grid-col--span { grid-column: span var(--span, 1); }
+.breakpoint-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.breakpoint-table th { text-align: left; padding: 8px 12px; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-3); border-bottom: 1px solid var(--line); }
+.breakpoint-table td { padding: 8px 12px; border-bottom: 1px solid var(--line); color: var(--ink-2); }
+.breakpoint-table td:first-child { font-weight: 600; color: var(--ink); font-family: var(--f-mono); }
+.container-demo { border: 1px dashed var(--brand); border-radius: 6px; padding: 10px; text-align: center; font-size: 11px; color: var(--brand); font-family: var(--f-mono); margin-bottom: 8px; }
+.aspect-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.aspect-box { background: var(--bg-3); border-radius: 6px; display: grid; place-items: center; font-size: 11px; font-family: var(--f-mono); color: var(--ink-3); }
+.aspect-box--1-1 { aspect-ratio: 1/1; }
+.aspect-box--4-3 { aspect-ratio: 4/3; }
+.aspect-box--16-9 { aspect-ratio: 16/9; }
+.aspect-box--21-9 { aspect-ratio: 21/9; }
+
+/* ═══ 18 MOTION ═══ */
+.motion-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.motion-card { background: var(--bg-2); border: 1px solid var(--line); border-radius: 8px; padding: 16px; text-align: center; }
+.motion-card__label { font-size: 12px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+.motion-card__meta { font-size: 10px; color: var(--ink-4); font-family: var(--f-mono); margin-bottom: 12px; }
+.motion-track { height: 4px; background: var(--bg-4); border-radius: 2px; position: relative; overflow: hidden; }
+.motion-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--brand); position: absolute; top: -6px; left: 0; }
+.motion-card:hover .motion-dot { left: calc(100% - 16px); }
+.duration-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.duration-row:last-child { border-bottom: none; }
+.duration-label { font-size: 12px; font-weight: 600; color: var(--ink); width: 60px; flex-shrink: 0; }
+.duration-value { font-size: 11px; font-family: var(--f-mono); color: var(--ink-3); width: 50px; flex-shrink: 0; }
+.duration-bar { flex: 1; height: 6px; background: var(--bg-4); border-radius: 3px; overflow: hidden; }
+.duration-fill { height: 100%; background: var(--brand); border-radius: 3px; transition: width 0.3s ease; }
+
+/* ═══ 19 ICONS ═══ */
+.icon-size-grid { display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; }
+.icon-size-cell { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.icon-size-box { display: grid; place-items: center; background: var(--bg-2); border: 1px solid var(--line); border-radius: 6px; color: var(--ink); }
+.icon-size-box span { display: grid; place-items: center; }
+.icon-size-label { font-size: 10px; font-family: var(--f-mono); color: var(--ink-4); }
+.icon-text-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.icon-text-row:last-child { border-bottom: none; }
+.icon-text-row svg { flex-shrink: 0; color: var(--ink-2); }
+.icon-stroke-grid { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+.icon-stroke-cell { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.icon-stroke-label { font-size: 10px; font-family: var(--f-mono); color: var(--ink-4); }
+
+/* ═══ 20 DATA VIZ ═══ */
+.chart-palette { display: flex; gap: 0; border-radius: 8px; overflow: hidden; height: 48px; }
+.chart-swatch { flex: 1; display: grid; place-items: center; font-size: 10px; font-family: var(--f-mono); }
+.chart-bar-demo { display: flex; align-items: end; gap: 6px; height: 120px; padding-top: 12px; }
+.chart-bar { flex: 1; border-radius: 4px 4px 0 0; min-width: 20px; transition: height 0.5s ease; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+.chart-legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ink-2); }
+.chart-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+/* ═══ 21 FORM VALIDATION ═══ */
+.form-demo { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 600px; }
+.form-demo--full { grid-column: 1 / -1; }
+.c-field { display: flex; flex-direction: column; gap: 4px; }
+.c-field__label { font-size: 12px; font-weight: 500; color: var(--ink-2); }
+.c-field__input { height: 40px; padding: 0 12px; border: 1px solid var(--line-2); border-radius: 6px; font-size: 13px; color: var(--ink); background: var(--bg-2); outline: none; transition: border-color 0.15s; }
+:root[data-theme="light"] .c-field__input { background: #fff; }
+.c-field__input:focus { border-color: var(--brand); }
+.c-field__hint { font-size: 11px; color: var(--ink-4); }
+.c-field--error .c-field__input { border-color: var(--neg); }
+.c-field--error .c-field__hint { color: var(--neg); }
+.c-field--success .c-field__input { border-color: var(--pos); }
+.c-field--success .c-field__hint { color: var(--pos); }
+.c-field--warn .c-field__input { border-color: var(--warn); }
+.c-field--warn .c-field__hint { color: var(--warn); }
+.c-field__textarea { min-height: 80px; padding: 10px 12px; border: 1px solid var(--line-2); border-radius: 6px; font-size: 13px; color: var(--ink); background: var(--bg-2); outline: none; resize: vertical; font-family: inherit; }
+:root[data-theme="light"] .c-field__textarea { background: #fff; }
+
+/* ═══ 22 DROPZONE ═══ */
+.c-dropzone { border: 2px dashed var(--line-2); border-radius: 10px; padding: 32px; text-align: center; transition: all 0.2s; cursor: pointer; }
+.c-dropzone:hover, .c-dropzone--hover { border-color: var(--brand); background: var(--brand-faint); }
+.c-dropzone__icon { margin-bottom: 12px; color: var(--ink-3); }
+.c-dropzone__text { font-size: 14px; color: var(--ink-2); margin-bottom: 4px; }
+.c-dropzone__hint { font-size: 12px; color: var(--ink-4); }
+.c-dropzone--uploading { border-color: var(--brand); background: var(--brand-faint); }
+.c-dropzone--success { border-color: var(--pos); background: oklch(0.40 0.10 155 / 0.06); }
+.c-dropzone--error { border-color: var(--neg); background: oklch(0.40 0.10 25 / 0.06); }
+.dropzone-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* ═══ 23 COMMAND PALETTE ═══ */
+.c-cmdk { background: var(--bg-2); border: 1px solid var(--line); border-radius: 12px; width: 100%; max-width: 520px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.c-cmdk__input-wrap { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+.c-cmdk__input-wrap svg { color: var(--ink-4); flex-shrink: 0; }
+.c-cmdk__input { flex: 1; border: none; background: none; font-size: 15px; color: var(--ink); outline: none; font-family: inherit; }
+.c-cmdk__input::placeholder { color: var(--ink-4); }
+.c-cmdk__kbd { font-size: 10px; font-family: var(--f-mono); color: var(--ink-4); background: var(--bg-3); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--line); }
+.c-cmdk__group { padding: 8px; }
+.c-cmdk__group-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-4); padding: 4px 8px; }
+.c-cmdk__item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 6px; cursor: pointer; transition: background 0.1s; color: var(--ink-2); font-size: 13px; }
+.c-cmdk__item:hover, .c-cmdk__item--active { background: var(--brand-faint); color: var(--ink); }
+.c-cmdk__item svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--ink-3); }
+.c-cmdk__item-shortcut { margin-left: auto; font-size: 10px; font-family: var(--f-mono); color: var(--ink-4); }
+
+/* ═══ 24 ACCESSIBILITY ═══ */
+.focus-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.focus-demo { height: 44px; border-radius: 8px; display: grid; place-items: center; font-size: 12px; font-weight: 500; cursor: pointer; background: var(--bg-2); border: 1px solid var(--line); color: var(--ink-2); transition: all 0.15s; }
+.focus-demo:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.focus-demo--offset:focus-visible { outline-offset: 4px; }
+.focus-demo--thick:focus-visible { outline-width: 3px; }
+.zindex-stack { position: relative; height: 200px; }
+.zindex-layer { position: absolute; border-radius: 8px; padding: 10px 14px; font-size: 12px; font-weight: 500; border: 1px solid var(--line); display: flex; align-items: flex-start; gap: 6px; }
+.zindex-layer__badge { font-size: 10px; font-family: var(--f-mono); background: var(--bg-4); padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
+
+/* ═══ 25 THEME COMPARE ═══ */
+.theme-split { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+.theme-split__pane { padding: 24px; }
+.theme-split__pane--dark { background: #0f1118; color: #f3f1ec; }
+.theme-split__pane--light { background: #f7f5f0; color: #14120e; }
+.theme-split__label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
+.theme-split__pane--dark .theme-split__label { color: #8b877e; }
+.theme-split__pane--light .theme-split__label { color: #78736a; }
+.theme-card { border-radius: 8px; padding: 16px; }
+.theme-split__pane--dark .theme-card { background: #181b24; border: 1px solid #2a2d36; }
+.theme-split__pane--light .theme-card { background: #fff; border: 1px solid #e5e2da; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.theme-card__title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.theme-card__desc { font-size: 12px; margin-bottom: 12px; }
+.theme-split__pane--dark .theme-card__desc { color: #8b877e; }
+.theme-split__pane--light .theme-card__desc { color: #78736a; }
+.theme-card__btn { display: inline-flex; align-items: center; height: 32px; padding: 0 14px; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
+.theme-card__input { width: 100%; height: 36px; padding: 0 10px; border-radius: 6px; font-size: 13px; margin-bottom: 10px; outline: none; }
+.theme-split__pane--dark .theme-card__input { background: #0f1118; border: 1px solid #2a2d36; color: #f3f1ec; }
+.theme-split__pane--light .theme-card__input { background: #f7f5f0; border: 1px solid #e5e2da; color: #14120e; }
+
+/* ═══ 26 RESPONSIVE ═══ */
+.responsive-frames { display: grid; grid-template-columns: 1fr; gap: 24px; }
+.responsive-frame { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.responsive-frame__bar { display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: var(--bg-2); border-bottom: 1px solid var(--line); }
+.responsive-frame__dot { width: 8px; height: 8px; border-radius: 50%; }
+.responsive-frame__label { margin-left: auto; font-size: 10px; font-family: var(--f-mono); color: var(--ink-4); }
+.responsive-frame__body { padding: 16px; background: var(--bg); }
+.responsive-card-demo { display: flex; gap: 12px; }
+.responsive-card-demo--stack { flex-direction: column; }
+
+/* ═══ 27 TOKEN EXPORT ═══ */
+.export-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--line); margin-bottom: 0; }
+.export-tab { padding: 8px 16px; font-size: 12px; font-weight: 600; color: var(--ink-4); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; background: none; border-top: none; border-left: none; border-right: none; }
+.export-tab:hover { color: var(--ink-2); }
+.export-tab--active { color: var(--brand); border-bottom-color: var(--brand); }
+.export-code { background: var(--bg-2); border-radius: 0 0 8px 8px; padding: 16px; overflow-x: auto; font-family: var(--f-mono); font-size: 12px; line-height: 1.7; color: var(--ink-2); white-space: pre; border: 1px solid var(--line); border-top: none; max-height: 400px; overflow-y: auto; }
+.export-code .ek { color: var(--brand); }
+.export-code .ev { color: var(--pos); }
+.export-code .ec { color: var(--ink-4); }
+
+/* Custom scrollbar */
+.custom-scroll { scrollbar-width: thin; scrollbar-color: var(--bg-4) transparent; }
+.custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.custom-scroll::-webkit-scrollbar-track { background: transparent; }
+.custom-scroll::-webkit-scrollbar-thumb { background: var(--bg-4); border-radius: 3px; }
+.custom-scroll::-webkit-scrollbar-thumb:hover { background: var(--ink-4); }
 </style>
 </head>
 <body>
@@ -746,13 +882,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 <!-- LOADING OVERLAY -->
 <div class="loading-overlay" id="loadingOverlay">
   <div class="lo-grid"></div>
-  <div class="lo-glow"></div>
-  <div class="lo-fragments" id="loFragments"></div>
   <div class="lo-center">
     <div class="lo-orb-wrap">
       <div class="lo-orb"></div>
-      <div class="lo-orb-ring"></div>
-      <div class="lo-orb-ring"></div>
     </div>
     <div class="lo-text" id="loadingText">Generating your design language</div>
     <div class="lo-step" id="loadingStep">Analyzing brand color...</div>
@@ -768,14 +900,14 @@ button { font: inherit; color: inherit; cursor: pointer; }
   <div class="sidebar__divider"></div>
 
   <div class="sidebar__section">
-    <div class="sidebar__label">Brand color</div>
-    <div class="sidebar__color-row">
-      <span class="hash">#</span>
-      <input type="text" id="colorInput" maxlength="6" value="E8B26B" spellcheck="false"/>
-      <div class="sidebar__swatch" id="colorSwatch">
-        <input type="color" id="colorPicker" value="#E8B26B"/>
-      </div>
+    <div class="sidebar__label">Brand colors</div>
+    <div class="sidebar__colors" id="colorsList">
+      <!-- primary color rendered by JS -->
     </div>
+    <button class="sidebar__add-color" id="addColorBtn" style="margin-top:10px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add color
+    </button>
   </div>
 
   <div class="sidebar__section">
@@ -802,6 +934,17 @@ button { font: inherit; color: inherit; cursor: pointer; }
     <a href="#indicators"><span class="sidebar__nav-num">14</span> Indicators</a>
     <a href="#overlays"><span class="sidebar__nav-num">15</span> Overlays</a>
     <a href="#navext"><span class="sidebar__nav-num">16</span> Nav Ext</a>
+    <a href="#grid"><span class="sidebar__nav-num">17</span> Grid</a>
+    <a href="#motion"><span class="sidebar__nav-num">18</span> Motion</a>
+    <a href="#icons"><span class="sidebar__nav-num">19</span> Icons</a>
+    <a href="#dataviz"><span class="sidebar__nav-num">20</span> Data Viz</a>
+    <a href="#validation"><span class="sidebar__nav-num">21</span> Validation</a>
+    <a href="#upload"><span class="sidebar__nav-num">22</span> Upload</a>
+    <a href="#cmdk"><span class="sidebar__nav-num">23</span> Cmd Palette</a>
+    <a href="#a11y"><span class="sidebar__nav-num">24</span> A11y</a>
+    <a href="#themecompare"><span class="sidebar__nav-num">25</span> Themes</a>
+    <a href="#responsive"><span class="sidebar__nav-num">26</span> Responsive</a>
+    <a href="#tokens"><span class="sidebar__nav-num">27</span> Tokens</a>
   </nav>
 
   <div class="sidebar__bottom">
@@ -859,72 +1002,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
     overlay.style.setProperty("--lo-color", brandCSS);
     document.querySelector(".lo-orb").style.background = brandCSS;
-    document.querySelector(".lo-glow").style.background = "radial-gradient(circle, " + brandCSS + " 0%, transparent 70%)";
-
-    var fragContainer = document.getElementById("loFragments");
-    fragContainer.innerHTML = "";
-
-    var fragments = [
-      { w: 80, h: 28, x: "18%", y: "30%", delay: 0.6, ty: 20, label: "" },
-      { w: 120, h: 14, x: "70%", y: "25%", delay: 0.9, ty: -15, label: "" },
-      { w: 60, h: 60, x: "75%", y: "55%", delay: 1.2, ty: 12, label: "" },
-      { w: 100, h: 20, x: "15%", y: "65%", delay: 1.5, ty: -10, label: "" },
-      { w: 40, h: 40, x: "25%", y: "45%", delay: 1.0, ty: 18, label: "" },
-      { w: 90, h: 12, x: "65%", y: "72%", delay: 1.8, ty: -8, label: "" }
-    ];
-    fragments.forEach(function(f) {
-      var el = document.createElement("div");
-      el.className = "lo-frag";
-      el.style.cssText = "width:" + f.w + "px;height:" + f.h + "px;left:" + f.x + ";top:" + f.y + ";animation-delay:" + f.delay + "s;transform:translateY(" + f.ty + "px);";
-      fragContainer.appendChild(el);
-    });
-
-    var palette = PPEngine.generate(brandHex);
-    var brandShades = palette.color.brand;
-    var shadeKeys = [100, 300, 500, 700, 900];
-    var swatchPositions = [
-      { x: "12%", y: "52%", delay: 2.2 },
-      { x: "80%", y: "40%", delay: 2.5 }
-    ];
-    swatchPositions.forEach(function(pos) {
-      var row = document.createElement("div");
-      row.className = "lo-swatches";
-      row.style.cssText = "left:" + pos.x + ";top:" + pos.y + ";animation-delay:" + pos.delay + "s;transform:translateY(8px) scale(0.9);";
-      shadeKeys.forEach(function(k) {
-        var sw = document.createElement("div");
-        sw.className = "lo-swatch";
-        sw.style.background = brandShades[k].hex;
-        row.appendChild(sw);
-      });
-      fragContainer.appendChild(row);
-    });
-
-    var guides = [
-      { cls: "lo-guide--h", css: "width:180px;left:calc(50% - 220px);top:38%;animation-delay:1.6s;" },
-      { cls: "lo-guide--h", css: "width:140px;left:calc(50% + 80px);top:62%;animation-delay:2.0s;" },
-      { cls: "lo-guide--v", css: "height:120px;left:38%;top:calc(50% - 60px);animation-delay:1.8s;" },
-      { cls: "lo-guide--v", css: "height:80px;left:62%;top:calc(50% - 20px);animation-delay:2.2s;" }
-    ];
-    guides.forEach(function(g) {
-      var el = document.createElement("div");
-      el.className = "lo-guide " + g.cls;
-      el.style.cssText = g.css;
-      fragContainer.appendChild(el);
-    });
-
-    var vars = [
-      { text: "--brand-500", x: "10%", y: "22%", delay: 2.6 },
-      { text: "--radius-md: 6px", x: "78%", y: "78%", delay: 3.0 },
-      { text: "--spacing-4: 16px", x: "72%", y: "18%", delay: 3.2 },
-      { text: "--font-size-body: 16px", x: "8%", y: "76%", delay: 3.4 }
-    ];
-    vars.forEach(function(v) {
-      var el = document.createElement("div");
-      el.className = "lo-var";
-      el.textContent = v.text;
-      el.style.cssText = "left:" + v.x + ";top:" + v.y + ";animation-delay:" + v.delay + "s;";
-      fragContainer.appendChild(el);
-    });
 
     var steps = [
       { t: 0, text: "Analyzing brand color..." },
@@ -1054,35 +1131,169 @@ button { font: inherit; color: inherit; cursor: pointer; }
     if (btn && btn.dataset.mode) setTheme(btn.dataset.mode);
   });
 
-  /* ═══ Sidebar: color picker ═══ */
-  var colorInput = document.getElementById("colorInput");
-  var colorPicker = document.getElementById("colorPicker");
-  var regenTimer = null;
+  /* ═══ Color name suggestion ═══ */
+  function suggestColorName(hexVal) {
+    var rgb = PPEngine.hexToRgb(hexVal);
+    var oklch = PPEngine.rgbToOklch(rgb[0], rgb[1], rgb[2]);
+    var H = oklch.H, L = oklch.L, C = oklch.C;
+    if (C < 0.04) {
+      if (L > 0.9) return "White";
+      if (L > 0.7) return "Silver";
+      if (L > 0.4) return "Gray";
+      if (L > 0.2) return "Charcoal";
+      return "Black";
+    }
+    var names = [
+      { min: 0, max: 15, name: "Red" },
+      { min: 15, max: 40, name: "Orange" },
+      { min: 40, max: 70, name: "Amber" },
+      { min: 70, max: 95, name: "Yellow" },
+      { min: 95, max: 130, name: "Lime" },
+      { min: 130, max: 165, name: "Green" },
+      { min: 165, max: 195, name: "Teal" },
+      { min: 195, max: 230, name: "Cyan" },
+      { min: 230, max: 265, name: "Blue" },
+      { min: 265, max: 290, name: "Indigo" },
+      { min: 290, max: 320, name: "Purple" },
+      { min: 320, max: 345, name: "Pink" },
+      { min: 345, max: 361, name: "Red" }
+    ];
+    var hue = "";
+    for (var i = 0; i < names.length; i++) {
+      if (H >= names[i].min && H < names[i].max) { hue = names[i].name; break; }
+    }
+    if (!hue) hue = "Brand";
+    return hue;
+  }
 
-  function commitColor(newHex) {
-    if (!/^#[0-9a-fA-F]{6}$/.test(newHex)) return;
-    hex = newHex;
-    colorInput.value = newHex.replace("#","").toUpperCase();
-    colorPicker.value = newHex;
-    root.style.setProperty("--brand-h", PPEngine.rgbToOklch.apply(null, PPEngine.hexToRgb(newHex)).H.toFixed(1));
+  /* ═══ Multi-color management ═══ */
+  var brandColors = [{ id: "primary", name: "Primary", hex: hex }];
+  try {
+    var saved = JSON.parse(localStorage.getItem("pp-colors"));
+    if (saved && saved.length) brandColors = saved;
+    else brandColors[0].hex = hex;
+  } catch(e) {}
+  // Ensure primary always matches the brand param
+  if (brandParam) { brandColors[0].hex = hex; brandColors[0].name = "Primary"; }
+  hex = brandColors[0].hex;
+
+  var colorsList = document.getElementById("colorsList");
+  var addColorBtn = document.getElementById("addColorBtn");
+  var regenTimer = null;
+  var colorIdCounter = brandColors.length;
+
+  function saveColors() {
+    try { localStorage.setItem("pp-colors", JSON.stringify(brandColors)); } catch(e) {}
+  }
+
+  function renderColorItems() {
+    colorsList.innerHTML = "";
+    brandColors.forEach(function(c, idx) {
+      var item = document.createElement("div");
+      item.className = "sidebar__color-item";
+      item.dataset.idx = idx;
+
+      /* Swatch */
+      var swatch = document.createElement("div");
+      swatch.className = "sidebar__color-swatch";
+      swatch.style.background = c.hex;
+      var picker = document.createElement("input");
+      picker.type = "color";
+      picker.value = c.hex;
+      swatch.appendChild(picker);
+      item.appendChild(swatch);
+
+      /* Hex input */
+      var textInput = document.createElement("input");
+      textInput.type = "text";
+      textInput.className = "sidebar__color-hex";
+      textInput.maxLength = 6;
+      textInput.value = c.hex.replace("#","").toUpperCase();
+      textInput.spellcheck = false;
+      item.appendChild(textInput);
+
+      /* Name input */
+      var nameInput = document.createElement("input");
+      nameInput.type = "text";
+      nameInput.className = "sidebar__color-name";
+      nameInput.value = c.name;
+      nameInput.placeholder = idx === 0 ? "Primary" : "Name";
+      nameInput.spellcheck = false;
+      item.appendChild(nameInput);
+
+      /* Remove button (not for primary) */
+      if (idx > 0) {
+        var removeBtn = document.createElement("button");
+        removeBtn.className = "sidebar__color-remove";
+        removeBtn.title = "Remove";
+        removeBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+        removeBtn.addEventListener("click", function() {
+          brandColors.splice(idx, 1);
+          saveColors();
+          renderColorItems();
+          scheduleRegen();
+        });
+        item.appendChild(removeBtn);
+      }
+
+      /* Events */
+      textInput.addEventListener("input", function() {
+        var v = this.value.replace(/[^0-9a-fA-F]/g, "").slice(0, 6).toUpperCase();
+        this.value = v;
+        if (v.length === 6) {
+          var newHex = "#" + v;
+          brandColors[idx].hex = newHex;
+          swatch.style.background = newHex;
+          picker.value = newHex;
+          if (idx === 0) { hex = newHex; root.style.setProperty("--brand-h", PPEngine.rgbToOklch.apply(null, PPEngine.hexToRgb(newHex)).H.toFixed(1)); }
+          saveColors();
+          scheduleRegen();
+        }
+      });
+      picker.addEventListener("input", function() {
+        var newHex = this.value.toUpperCase();
+        brandColors[idx].hex = newHex;
+        textInput.value = newHex.replace("#","");
+        swatch.style.background = newHex;
+        if (idx === 0) { hex = newHex; root.style.setProperty("--brand-h", PPEngine.rgbToOklch.apply(null, PPEngine.hexToRgb(newHex)).H.toFixed(1)); }
+        saveColors();
+        scheduleRegen();
+      });
+      nameInput.addEventListener("input", function() {
+        brandColors[idx].name = this.value;
+        saveColors();
+        scheduleRegen();
+      });
+
+      colorsList.appendChild(item);
+    });
+  }
+
+  function scheduleRegen() {
     clearTimeout(regenTimer);
     regenTimer = setTimeout(function() {
+      hex = brandColors[0].hex;
       var scrollTop = mainContent.scrollTop;
-      ds = generateDS(newHex, fontConf);
+      ds = generateDS(hex, fontConf);
       renderPreview(ds);
       setTheme(currentTheme);
       mainContent.scrollTop = scrollTop;
     }, 300);
   }
 
-  colorInput.addEventListener("input", function() {
-    var v = this.value.replace(/[^0-9a-fA-F]/g, "").slice(0, 6).toUpperCase();
-    this.value = v;
-    if (v.length === 6) commitColor("#" + v);
+  addColorBtn.addEventListener("click", function() {
+    var randomHues = [0, 30, 60, 120, 180, 210, 260, 300, 330];
+    var rH = randomHues[Math.floor(Math.random() * randomHues.length)];
+    var newHex = PPEngine.oklchToHex(0.60, 0.15, rH).toUpperCase();
+    var name = suggestColorName(newHex);
+    colorIdCounter++;
+    brandColors.push({ id: "color-" + colorIdCounter, name: name, hex: newHex });
+    saveColors();
+    renderColorItems();
+    scheduleRegen();
   });
-  colorPicker.addEventListener("input", function() {
-    commitColor(this.value.toUpperCase());
-  });
+
+  renderColorItems();
 
   /* ═══ Sidebar: font selector ═══ */
   var fontSelect = document.getElementById("fontSelect");
@@ -1128,13 +1339,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
     loadFont(fontConf);
     setTheme(currentTheme);
 
-    var ci = colorInput || document.getElementById("colorInput");
-    var cp = colorPicker || document.getElementById("colorPicker");
-    if (ci) ci.value = ds.meta.source.replace("#","").toUpperCase();
-    if (cp) cp.value = ds.meta.source;
+    /* Sync sidebar color items */
+    renderColorItems();
 
     var source = ds.meta.source.toUpperCase();
-    var shadeCount = Object.keys(brand).length;
+    var shadeCount = Object.keys(brand).length * brandColors.length;
     var typeCount = Object.keys(typo.scale).length;
     var spacingCount = Object.keys(spacing.tokens).length;
 
@@ -1168,12 +1377,25 @@ button { font: inherit; color: inherit; cursor: pointer; }
     h += '<div class="ds-section-header"><span class="ds-section-num">01</span><h2 class="ds-section-title">Color system</h2></div>';
     h += '<p class="ds-section-desc">Token-based color palette generated in OKLCH color space for perceptual uniformity. All colors referenced via CSS custom properties.</p>';
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Brand palette</div>';
-    h += '<div class="ds-preview"><div class="palette-row">';
-    Object.keys(brand).forEach(function(stop) {
-      var b = brand[stop]; var fg = isLight(b.hex) ? "#111" : "#fff";
-      h += '<div class="swatch" style="background:' + b.hex + ';color:' + fg + '"><div class="swatch__label">' + stop + '</div><div class="swatch__hex">' + b.hex + '</div></div>';
+    h += '<div class="ds-preview">';
+    /* All brand color palettes in one box */
+    var allPalettes = [{ name: brandColors[0].name || "Primary", palette: brand }];
+    for (var ci = 1; ci < brandColors.length; ci++) {
+      var extraHex = brandColors[ci].hex;
+      if (!/^#[0-9a-fA-F]{6}$/.test(extraHex)) continue;
+      allPalettes.push({ name: brandColors[ci].name || ("Color " + (ci + 1)), palette: PPEngine.generate(extraHex).color.brand });
+    }
+    allPalettes.forEach(function(p, pi) {
+      if (pi > 0) h += '<div style="height:1px;background:var(--line);margin:16px 0"></div>';
+      h += '<div style="font-size:12px;font-weight:600;color:var(--ink-3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.04em">' + esc(p.name) + '</div>';
+      h += '<div class="palette-row">';
+      Object.keys(p.palette).forEach(function(stop) {
+        var b = p.palette[stop]; var fg = isLight(b.hex) ? "#111" : "#fff";
+        h += '<div class="swatch" style="background:' + b.hex + ';color:' + fg + '"><div class="swatch__label">' + stop + '</div><div class="swatch__hex">' + b.hex + '</div></div>';
+      });
+      h += '</div>';
     });
-    h += '</div></div></div>';
+    h += '</div></div>';
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Semantic colors</div><div class="color-grid">';
     Object.keys(semantic).forEach(function(key) {
       var s = semantic[key];
@@ -1609,7 +1831,219 @@ button { font: inherit; color: inherit; cursor: pointer; }
     h += '<span>Items per page:</span><select class="c-paginator-select"><option>10</option><option>25</option><option>50</option></select>';
     h += '<span>1 – 10 of 48</span>';
     h += '<div class="c-paginator-actions"><button class="c-paginator-btn" disabled><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg></button><button class="c-paginator-btn" disabled><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><button class="c-paginator-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button><button class="c-paginator-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg></button></div>';
-    h += '</div></div></div></section></main>';
+    h += '</div></div></div></section>';
+
+    /* ═══ 17 GRID & LAYOUT ═══ */
+    h += '<section class="ds-section" id="grid">';
+    h += '<div class="ds-section-header"><span class="ds-section-num">17</span><h2 class="ds-section-title">Grid &amp; Layout</h2></div>';
+    h += '<p class="ds-section-desc">12-column grid system, container widths, breakpoints, and aspect ratio utilities.</p>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">12-column grid</div><div class="ds-preview">';
+    h += '<div class="grid-demo" style="margin-bottom:12px">';
+    for (var gi = 1; gi <= 12; gi++) h += '<div class="grid-col">' + gi + '</div>';
+    h += '</div><div class="grid-demo" style="margin-bottom:12px">';
+    [6,6].forEach(function(s) { h += '<div class="grid-col grid-col--span" style="--span:' + s + '">span ' + s + '</div>'; });
+    h += '</div><div class="grid-demo" style="margin-bottom:12px">';
+    [4,4,4].forEach(function(s) { h += '<div class="grid-col grid-col--span" style="--span:' + s + '">span ' + s + '</div>'; });
+    h += '</div><div class="grid-demo">';
+    [3,6,3].forEach(function(s) { h += '<div class="grid-col grid-col--span" style="--span:' + s + '">span ' + s + '</div>'; });
+    h += '</div></div></div>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Breakpoints</div><div class="ds-preview">';
+    h += '<table class="breakpoint-table"><thead><tr><th>Token</th><th>Width</th><th>Cols</th><th>Gutter</th><th>Use</th></tr></thead><tbody>';
+    [["xs","0–479px",4,"16px","Phone portrait"],["sm","480–639px",4,"16px","Phone landscape"],["md","640–767px",8,"20px","Small tablet"],["lg","768–1023px",12,"24px","Tablet"],["xl","1024–1279px",12,"24px","Laptop"],["2xl","1280px+",12,"32px","Desktop"]].forEach(function(b){
+      h += '<tr><td>' + b[0] + '</td><td>' + b[1] + '</td><td>' + b[2] + '</td><td>' + b[3] + '</td><td>' + b[4] + '</td></tr>';
+    });
+    h += '</tbody></table></div></div>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Container widths</div><div class="ds-preview">';
+    [["sm","640px"],["md","768px"],["lg","1024px"],["xl","1280px"],["2xl","1536px"]].forEach(function(c) {
+      h += '<div class="container-demo" style="max-width:' + c[1] + '">container-' + c[0] + ' · ' + c[1] + '</div>';
+    });
+    h += '</div></div>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Aspect ratios</div><div class="ds-preview"><div class="aspect-grid">';
+    h += '<div class="aspect-box aspect-box--1-1">1 : 1</div><div class="aspect-box aspect-box--4-3">4 : 3</div><div class="aspect-box aspect-box--16-9">16 : 9</div><div class="aspect-box aspect-box--21-9">21 : 9</div>';
+    h += '</div></div></div></section>';
+
+    /* ═══ 18 MOTION ═══ */
+    h += '<section class="ds-section" id="motion">';
+    h += '<div class="ds-section-header"><span class="ds-section-num">18</span><h2 class="ds-section-title">Motion</h2></div>';
+    h += '<p class="ds-section-desc">Animation timing and easing tokens. Hover each card to preview the curve.</p>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Easing curves</div><div class="ds-preview"><div class="motion-grid">';
+    [["Ease Out","cubic-bezier(0.16,1,0.3,1)","Enter / appear"],["Ease In","cubic-bezier(0.55,0.06,0.68,0.19)","Exit / disappear"],["Ease In-Out","cubic-bezier(0.45,0,0.55,1)","Move / resize"],["Spring","cubic-bezier(0.34,1.56,0.64,1)","Bounce / pop-in"],["Linear","linear","Progress / loading"],["Snappy","cubic-bezier(0.2,0,0,1)","Quick interactions"]].forEach(function(e) {
+      h += '<div class="motion-card"><div class="motion-card__label">' + e[0] + '</div><div class="motion-card__meta">' + e[2] + '</div>';
+      h += '<div class="motion-track"><div class="motion-dot" style="transition:left 0.6s ' + e[1] + '"></div></div>';
+      h += '<div style="margin-top:8px;font-size:10px;font-family:var(--f-mono);color:var(--ink-4)">' + e[1] + '</div></div>';
+    });
+    h += '</div></div></div>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Duration tokens</div><div class="ds-preview">';
+    [["Instant",100,"Hover, focus"],["Fast",150,"Toggles, buttons"],["Normal",200,"Tooltips, menus"],["Moderate",300,"Modals, panels"],["Slow",500,"Page transitions"],["Slower",800,"Complex animations"]].forEach(function(d) {
+      h += '<div class="duration-row"><span class="duration-label">' + d[0] + '</span><span class="duration-value">' + d[1] + 'ms</span>';
+      h += '<div class="duration-bar"><div class="duration-fill" style="width:' + Math.min(d[1]/8, 100) + '%"></div></div>';
+      h += '<span style="font-size:11px;color:var(--ink-4);width:120px;text-align:right">' + d[2] + '</span></div>';
+    });
+    h += '</div></div></section>';
+
+    /* ═══ 19 ICONS ═══ */
+    h += '<section class="ds-section" id="icons">';
+    h += '<div class="ds-section-header"><span class="ds-section-num">19</span><h2 class="ds-section-title">Icon system</h2></div>';
+    h += '<p class="ds-section-desc">Icon sizing tokens, stroke-weight guidelines, and text-icon alignment.</p>';
+    var iSvg = function(w) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + w + '" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'; };
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Size tokens</div><div class="ds-preview"><div class="icon-size-grid">';
+    [12,16,20,24,32,40].forEach(function(s) {
+      h += '<div class="icon-size-cell"><div class="icon-size-box" style="width:' + (s+16) + 'px;height:' + (s+16) + 'px"><span style="width:' + s + 'px;height:' + s + 'px;display:block">' + iSvg(2) + '</span></div><div class="icon-size-label">' + s + 'px</div></div>';
+    });
+    h += '</div></div></div>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Stroke weights</div><div class="ds-preview"><div class="icon-stroke-grid">';
+    [1,1.5,2,2.5,3].forEach(function(w) {
+      h += '<div class="icon-stroke-cell"><span style="width:32px;height:32px;display:block">' + iSvg(w) + '</span><div class="icon-stroke-label">' + w + 'px</div></div>';
+    });
+    h += '</div></div></div>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Icon + text alignment</div><div class="ds-preview">';
+    [[14,16,"Caption with icon"],[16,20,"Body text with icon"],[20,24,"Heading with icon"],[28,32,"Title with icon"]].forEach(function(t) {
+      h += '<div class="icon-text-row"><svg width="' + t[1] + '" height="' + t[1] + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+      h += '<span style="font-size:' + t[0] + 'px">' + t[2] + '</span><span style="margin-left:auto;font-size:10px;font-family:var(--f-mono);color:var(--ink-4)">' + t[0] + 'px / ' + t[1] + 'px</span></div>';
+    });
+    h += '</div></div></section>';
+
+    /* ═══ 20 DATA VIZ ═══ */
+    h += '<section class="ds-section" id="dataviz">';
+    h += '<div class="ds-section-header"><span class="ds-section-num">20</span><h2 class="ds-section-title">Data visualization</h2></div>';
+    h += '<p class="ds-section-desc">Chart color palette derived from brand hue. Categorical and sequential sequences.</p>';
+    var cHue = ds.color.hue;
+    var cColors = [];
+    [0,60,120,180,240,300,40,200].forEach(function(off) { cColors.push(PPEngine.oklchToHex(0.65, 0.15, (cHue + off) % 360).toUpperCase()); });
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Categorical palette</div><div class="ds-preview"><div class="chart-palette">';
+    var catN = ["Primary","Secondary","Tertiary","Quaternary","Quinary","Senary","Septenary","Octonary"];
+    cColors.forEach(function(c, i) { h += '<div class="chart-swatch" style="background:' + c + ';color:' + (isLight(c) ? "#111" : "#fff") + '">' + (i+1) + '</div>'; });
+    h += '</div><div class="chart-legend">';
+    cColors.forEach(function(c, i) { h += '<div class="chart-legend-item"><div class="chart-legend-dot" style="background:' + c + '"></div>' + catN[i] + ' · ' + c + '</div>'; });
+    h += '</div></div></div>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Bar chart demo</div><div class="ds-preview"><div class="chart-bar-demo">';
+    [65,85,45,72,90,55,78,40].forEach(function(v, i) { h += '<div class="chart-bar" style="height:' + v + '%;background:' + cColors[i] + '"></div>'; });
+    h += '</div></div></div>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Sequential scale</div><div class="ds-preview"><div class="chart-palette">';
+    for (var si = 0; si < 8; si++) { var sHex = PPEngine.oklchToHex(0.35 + si * 0.08, 0.05 + si * 0.015, cHue).toUpperCase(); h += '<div class="chart-swatch" style="background:' + sHex + ';color:' + (isLight(sHex) ? "#111" : "#fff") + '">' + ((si+1)*100) + '</div>'; }
+    h += '</div></div></div></section>';
+
+    /* ═══ 21 FORM VALIDATION ═══ */
+    h += '<section class="ds-section" id="validation">';
+    h += '<div class="ds-section-header"><span class="ds-section-num">21</span><h2 class="ds-section-title">Form validation</h2></div>';
+    h += '<p class="ds-section-desc">Complete form with inline validation states — error, success, and warning.</p>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Registration form</div><div class="ds-preview"><div class="form-demo">';
+    h += '<div class="c-field c-field--success"><label class="c-field__label">First name</label><input class="c-field__input" value="Veerendra" readonly/><span class="c-field__hint"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px"><polyline points="20 6 9 17 4 12"/></svg> Looks good</span></div>';
+    h += '<div class="c-field c-field--success"><label class="c-field__label">Last name</label><input class="c-field__input" value="Kumar" readonly/><span class="c-field__hint"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px"><polyline points="20 6 9 17 4 12"/></svg> Looks good</span></div>';
+    h += '<div class="c-field c-field--error form-demo--full"><label class="c-field__label">Email address</label><input class="c-field__input" value="veerendra@" readonly/><span class="c-field__hint"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Please enter a valid email</span></div>';
+    h += '<div class="c-field c-field--warn"><label class="c-field__label">Password</label><input class="c-field__input" type="password" value="abc123" readonly/><span class="c-field__hint"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:-2px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg> Weak — add symbols &amp; uppercase</span></div>';
+    h += '<div class="c-field c-field--warn"><label class="c-field__label">Confirm</label><input class="c-field__input" type="password" value="abc123" readonly/><span class="c-field__hint">Passwords match</span></div>';
+    h += '<div class="c-field form-demo--full"><label class="c-field__label">Bio</label><textarea class="c-field__textarea" readonly>Full stack developer with 10+ years experience.</textarea><span class="c-field__hint">120 / 280 characters</span></div>';
+    h += '</div></div></div></section>';
+
+    /* ═══ 22 FILE UPLOAD ═══ */
+    h += '<section class="ds-section" id="upload">';
+    h += '<div class="ds-section-header"><span class="ds-section-num">22</span><h2 class="ds-section-title">File upload</h2></div>';
+    h += '<p class="ds-section-desc">Drag-and-drop dropzone with idle, hover, uploading, success, and error states.</p>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Dropzone states</div><div class="ds-preview"><div class="dropzone-grid">';
+    h += '<div class="c-dropzone"><div class="c-dropzone__icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div><div class="c-dropzone__text">Drag files here or click to browse</div><div class="c-dropzone__hint">PNG, JPG, SVG up to 10MB</div></div>';
+    h += '<div class="c-dropzone c-dropzone--hover"><div class="c-dropzone__icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div><div class="c-dropzone__text" style="color:var(--brand)">Drop to upload</div><div class="c-dropzone__hint">Release to start</div></div>';
+    h += '<div class="c-dropzone c-dropzone--uploading"><div class="c-dropzone__icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.5" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg></div><div class="c-dropzone__text">Uploading design-tokens.json...</div><div style="width:80%;max-width:200px;height:4px;background:var(--bg-4);border-radius:2px;margin:8px auto 0;overflow:hidden"><div style="width:65%;height:100%;background:var(--brand);border-radius:2px"></div></div><div class="c-dropzone__hint" style="margin-top:6px">65% · 2.4 MB / 3.7 MB</div></div>';
+    h += '<div class="c-dropzone c-dropzone--success"><div class="c-dropzone__icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--pos)" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="c-dropzone__text" style="color:var(--pos)">Upload complete</div><div class="c-dropzone__hint">design-tokens.json · 3.7 MB</div></div>';
+    h += '</div></div></div></section>';
+
+    /* ═══ 23 COMMAND PALETTE ═══ */
+    h += '<section class="ds-section" id="cmdk">';
+    h += '<div class="ds-section-header"><span class="ds-section-num">23</span><h2 class="ds-section-title">Command palette</h2></div>';
+    h += '<p class="ds-section-desc">⌘K-style search overlay for quick navigation and actions.</p>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Command menu</div><div class="ds-preview" style="display:flex;justify-content:center;padding:32px">';
+    h += '<div class="c-cmdk"><div class="c-cmdk__input-wrap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="c-cmdk__input" placeholder="Type a command or search..." readonly/><span class="c-cmdk__kbd">ESC</span></div>';
+    h += '<div class="c-cmdk__group"><div class="c-cmdk__group-label">Actions</div>';
+    h += '<div class="c-cmdk__item c-cmdk__item--active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg> New project<span class="c-cmdk__item-shortcut">⌘ N</span></div>';
+    h += '<div class="c-cmdk__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Import tokens<span class="c-cmdk__item-shortcut">⌘ I</span></div>';
+    h += '<div class="c-cmdk__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export design system<span class="c-cmdk__item-shortcut">⌘ E</span></div></div>';
+    h += '<div class="c-cmdk__group"><div class="c-cmdk__group-label">Navigation</div>';
+    h += '<div class="c-cmdk__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r="0.5"/><circle cx="17.5" cy="10.5" r="0.5"/><circle cx="8.5" cy="7.5" r="0.5"/><circle cx="6.5" cy="12.5" r="0.5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.04-.23-.29-.37-.65-.37-1.06 0-.83.67-1.5 1.5-1.5H16c3.31 0 6-2.69 6-6 0-4.97-4.03-9-10-9z"/></svg> Color system<span class="c-cmdk__item-shortcut">G C</span></div>';
+    h += '<div class="c-cmdk__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg> Typography<span class="c-cmdk__item-shortcut">G T</span></div>';
+    h += '<div class="c-cmdk__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Components<span class="c-cmdk__item-shortcut">G K</span></div></div></div></div></div></section>';
+
+    /* ═══ 24 ACCESSIBILITY ═══ */
+    h += '<section class="ds-section" id="a11y">';
+    h += '<div class="ds-section-header"><span class="ds-section-num">24</span><h2 class="ds-section-title">Accessibility</h2></div>';
+    h += '<p class="ds-section-desc">Focus ring tokens, keyboard indicators, and z-index stacking scale.</p>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Focus indicators</div><div class="ds-preview"><div class="focus-grid">';
+    h += '<button class="focus-demo" tabindex="0">Default ring</button><button class="focus-demo focus-demo--offset" tabindex="0">Offset ring</button><button class="focus-demo focus-demo--thick" tabindex="0">Thick ring</button><button class="focus-demo" tabindex="0" style="border-radius:99px">Pill shape</button>';
+    h += '</div><div class="ds-spec" style="margin-top:16px"><span class="k">--focus-ring:</span>      <span class="v">2px solid var(--brand)</span>;\n<span class="k">--focus-offset:</span>    <span class="v">2px</span>;\n<span class="k">--focus-ring-lg:</span>   <span class="v">3px solid var(--brand)</span>;\n<span class="k">--focus-offset-lg:</span> <span class="v">4px</span>;</div></div></div>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Z-index scale</div><div class="ds-preview"><div class="zindex-stack">';
+    h += '<div class="zindex-layer" style="z-index:1;background:var(--bg-2);inset:auto auto 0 0;width:70%"><span class="zindex-layer__badge">z-1</span> Page content</div>';
+    h += '<div class="zindex-layer" style="z-index:10;background:var(--bg-3);top:60px;left:30px;width:65%"><span class="zindex-layer__badge">z-10</span> Sticky header</div>';
+    h += '<div class="zindex-layer" style="z-index:20;background:var(--bg-4);top:35px;left:60px;width:55%"><span class="zindex-layer__badge">z-20</span> Dropdown</div>';
+    h += '<div class="zindex-layer" style="z-index:30;background:var(--brand-faint);top:10px;left:90px;width:50%;border-color:var(--brand)"><span class="zindex-layer__badge">z-30</span> Modal overlay</div>';
+    h += '<div class="zindex-layer" style="z-index:40;background:var(--bg-2);top:0;right:0;width:35%"><span class="zindex-layer__badge">z-40</span> Toast</div>';
+    h += '</div><div class="ds-spec" style="margin-top:16px"><span class="k">--z-base:</span>     <span class="v">1</span>;     <span class="c">/* page content */</span>\n<span class="k">--z-sticky:</span>   <span class="v">10</span>;    <span class="c">/* sticky header */</span>\n<span class="k">--z-dropdown:</span> <span class="v">20</span>;    <span class="c">/* dropdown, popover */</span>\n<span class="k">--z-modal:</span>    <span class="v">30</span>;    <span class="c">/* modal, dialog */</span>\n<span class="k">--z-toast:</span>    <span class="v">40</span>;    <span class="c">/* toast, snackbar */</span>\n<span class="k">--z-tooltip:</span>  <span class="v">50</span>;    <span class="c">/* tooltip (top) */</span></div></div></div></section>';
+
+    /* ═══ 25 THEME COMPARE ═══ */
+    var b500 = brand[500].hex;
+    h += '<section class="ds-section" id="themecompare">';
+    h += '<div class="ds-section-header"><span class="ds-section-num">25</span><h2 class="ds-section-title">Theme comparison</h2></div>';
+    h += '<p class="ds-section-desc">Side-by-side dark &amp; light preview — proves your system works on any background.</p>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Card component</div><div class="ds-preview" style="padding:0"><div class="theme-split">';
+    h += '<div class="theme-split__pane theme-split__pane--dark"><div class="theme-split__label">Dark theme</div><div class="theme-card"><div class="theme-card__title">Project overview</div><div class="theme-card__desc">Track your design tokens across 3 platforms.</div><input class="theme-card__input" value="My design system" readonly/><div style="display:flex;gap:8px"><button class="theme-card__btn" style="background:' + b500 + ';color:' + (isLight(b500) ? "#111" : "#fff") + '">Save changes</button><button class="theme-card__btn" style="background:#2a2d36;color:#f3f1ec">Cancel</button></div></div></div>';
+    h += '<div class="theme-split__pane theme-split__pane--light"><div class="theme-split__label">Light theme</div><div class="theme-card"><div class="theme-card__title">Project overview</div><div class="theme-card__desc">Track your design tokens across 3 platforms.</div><input class="theme-card__input" value="My design system" readonly/><div style="display:flex;gap:8px"><button class="theme-card__btn" style="background:' + b500 + ';color:' + (isLight(b500) ? "#111" : "#fff") + '">Save changes</button><button class="theme-card__btn" style="background:#e5e2da;color:#14120e">Cancel</button></div></div></div>';
+    h += '</div></div></div>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Alert &amp; badges</div><div class="ds-preview" style="padding:0"><div class="theme-split">';
+    h += '<div class="theme-split__pane theme-split__pane--dark"><div class="theme-split__label">Dark</div><div style="padding:10px 14px;background:oklch(0.40 0.10 155/0.12);border-radius:8px;border:1px solid oklch(0.50 0.12 155/0.3);margin-bottom:10px"><span style="color:#7cd4a8;font-size:13px;font-weight:500">&#10003; System generated successfully.</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><span style="display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:99px;background:' + b500 + ';color:' + (isLight(b500)?"#111":"#fff") + ';font-size:11px;font-weight:600">Brand</span><span style="display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:99px;background:oklch(0.50 0.18 25/0.15);color:#f09070;font-size:11px;font-weight:600">Error</span><span style="display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:99px;background:oklch(0.55 0.14 75/0.15);color:#d4b85a;font-size:11px;font-weight:600">Warning</span></div></div>';
+    h += '<div class="theme-split__pane theme-split__pane--light"><div class="theme-split__label">Light</div><div style="padding:10px 14px;background:oklch(0.78 0.14 155/0.12);border-radius:8px;border:1px solid oklch(0.60 0.12 155/0.3);margin-bottom:10px"><span style="color:#2a7a50;font-size:13px;font-weight:500">&#10003; System generated successfully.</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><span style="display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:99px;background:' + b500 + ';color:' + (isLight(b500)?"#111":"#fff") + ';font-size:11px;font-weight:600">Brand</span><span style="display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:99px;background:oklch(0.70 0.18 25/0.12);color:#b83a20;font-size:11px;font-weight:600">Error</span><span style="display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:99px;background:oklch(0.75 0.16 75/0.12);color:#8a6d10;font-size:11px;font-weight:600">Warning</span></div></div>';
+    h += '</div></div></div></section>';
+
+    /* ═══ 26 RESPONSIVE ═══ */
+    h += '<section class="ds-section" id="responsive">';
+    h += '<div class="ds-section-header"><span class="ds-section-num">26</span><h2 class="ds-section-title">Responsive</h2></div>';
+    h += '<p class="ds-section-desc">Same card component at mobile, tablet, and desktop breakpoints.</p>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Breakpoint preview</div><div class="ds-preview"><div class="responsive-frames">';
+    [["Mobile · 375px","375px",true],["Tablet · 768px","768px",false],["Desktop · 1280px","100%",false]].forEach(function(rs) {
+      h += '<div class="responsive-frame" style="max-width:' + rs[1] + '"><div class="responsive-frame__bar"><div class="responsive-frame__dot" style="background:#ff5f57"></div><div class="responsive-frame__dot" style="background:#ffbd2e"></div><div class="responsive-frame__dot" style="background:#28c840"></div><span class="responsive-frame__label">' + rs[0] + '</span></div>';
+      h += '<div class="responsive-frame__body"><div class="responsive-card-demo' + (rs[2] ? " responsive-card-demo--stack" : "") + '">';
+      h += '<div style="' + (rs[2] ? "width:100%" : "width:80px;flex-shrink:0") + ';height:' + (rs[2] ? "120px" : "80px") + ';background:var(--brand-faint);border:1px solid var(--brand);border-radius:8px;display:grid;place-items:center;color:var(--brand);font-size:10px">Image</div>';
+      h += '<div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px">Card title</div><div style="font-size:12px;color:var(--ink-3);margin-bottom:10px">Description text that adapts to available width at each breakpoint.</div>';
+      h += '<div style="display:flex;gap:8px;' + (rs[2] ? "flex-direction:column" : "") + '"><button style="height:32px;padding:0 14px;border:none;border-radius:6px;background:var(--brand);color:var(--brand-ink);font-size:12px;font-weight:600;cursor:pointer">Action</button><button style="height:32px;padding:0 14px;border:1px solid var(--line-2);border-radius:6px;background:none;color:var(--ink-2);font-size:12px;cursor:pointer">Secondary</button></div></div></div></div></div>';
+    });
+    h += '</div></div></div></section>';
+
+    /* ═══ 27 TOKEN EXPORT ═══ */
+    h += '<section class="ds-section" id="tokens">';
+    h += '<div class="ds-section-header"><span class="ds-section-num">27</span><h2 class="ds-section-title">Token export</h2></div>';
+    h += '<p class="ds-section-desc">Preview of your design tokens in CSS variables, Tailwind config, and raw JSON.</p>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Export preview</div><div class="ds-preview" style="padding:0">';
+    var cssT = '<span class="ec">/* Brand colors */</span>\n';
+    Object.keys(brand).forEach(function(s) { cssT += '<span class="ek">--brand-' + s + ':</span> <span class="ev">' + brand[s].hex.toLowerCase() + '</span>;\n'; });
+    cssT += '\n<span class="ec">/* Semantic */</span>\n';
+    Object.keys(semantic).forEach(function(k) { cssT += '<span class="ek">--' + k + ':</span> <span class="ev">' + semantic[k].base.toLowerCase() + '</span>;\n'; });
+    cssT += '\n<span class="ec">/* Typography */</span>\n<span class="ek">--font-sans:</span> <span class="ev">' + esc(typo.families.cssVar) + '</span>;\n<span class="ek">--font-mono:</span> <span class="ev">' + esc(typo.families.monoVar) + '</span>;\n';
+    Object.keys(typo.scale).forEach(function(k) { cssT += '<span class="ek">--text-' + k + ':</span> <span class="ev">' + typo.scale[k].size + 'px</span>;\n'; });
+    cssT += '\n<span class="ec">/* Spacing */</span>\n';
+    Object.keys(spacing.tokens).forEach(function(k) { cssT += '<span class="ek">--space-' + k + ':</span> <span class="ev">' + spacing.tokens[k] + '</span>;\n'; });
+    cssT += '\n<span class="ec">/* Radius */</span>\n';
+    Object.keys(radius).forEach(function(k) { cssT += '<span class="ek">--radius-' + k + ':</span> <span class="ev">' + radius[k] + '</span>;\n'; });
+
+    var twT = '<span class="ec">// tailwind.config.js</span>\nmodule.exports = {\n  theme: {\n    extend: {\n      <span class="ek">colors</span>: {\n        <span class="ek">brand</span>: {\n';
+    Object.keys(brand).forEach(function(s) { twT += '          <span class="ek">' + s + '</span>: <span class="ev">"' + brand[s].hex.toLowerCase() + '"</span>,\n'; });
+    twT += '        },\n';
+    Object.keys(semantic).forEach(function(k) { twT += '        <span class="ek">' + k + '</span>: <span class="ev">"' + semantic[k].base.toLowerCase() + '"</span>,\n'; });
+    twT += '      },\n      <span class="ek">fontFamily</span>: {\n        <span class="ek">sans</span>: [<span class="ev">' + esc(typo.families.cssVar) + '</span>],\n        <span class="ek">mono</span>: [<span class="ev">' + esc(typo.families.monoVar) + '</span>],\n      },\n      <span class="ek">borderRadius</span>: {\n';
+    Object.keys(radius).forEach(function(k) { twT += '        <span class="ek">' + k + '</span>: <span class="ev">"' + radius[k] + '"</span>,\n'; });
+    twT += '      },\n    }\n  }\n}';
+
+    var jsT = '{\n  <span class="ek">"color"</span>: {\n    <span class="ek">"brand"</span>: {\n';
+    Object.keys(brand).forEach(function(s) { jsT += '      <span class="ek">"' + s + '"</span>: <span class="ev">"' + brand[s].hex.toLowerCase() + '"</span>,\n'; });
+    jsT += '    },\n    <span class="ek">"semantic"</span>: {\n';
+    Object.keys(semantic).forEach(function(k) { jsT += '      <span class="ek">"' + k + '"</span>: <span class="ev">"' + semantic[k].base.toLowerCase() + '"</span>,\n'; });
+    jsT += '    }\n  },\n  <span class="ek">"typography"</span>: {\n    <span class="ek">"fontFamily"</span>: <span class="ev">"' + esc(typo.families.sans) + '"</span>,\n    <span class="ek">"scale"</span>: {\n';
+    Object.keys(typo.scale).forEach(function(k) { jsT += '      <span class="ek">"' + k + '"</span>: { <span class="ek">"size"</span>: <span class="ev">' + typo.scale[k].size + '</span>, <span class="ek">"weight"</span>: <span class="ev">' + typo.scale[k].weight + '</span> },\n'; });
+    jsT += '    }\n  }\n}';
+
+    h += '<div class="export-tabs" id="exportTabs"><button class="export-tab export-tab--active" data-tab="css">CSS Variables</button><button class="export-tab" data-tab="tw">Tailwind</button><button class="export-tab" data-tab="json">JSON</button></div>';
+    h += '<div class="export-code custom-scroll" id="exportCode-css">' + cssT + '</div>';
+    h += '<div class="export-code custom-scroll" id="exportCode-tw" style="display:none">' + twT + '</div>';
+    h += '<div class="export-code custom-scroll" id="exportCode-json" style="display:none">' + jsT + '</div>';
+    h += '</div></div></section>';
+
+    h += '</main>';
 
     document.getElementById("app").innerHTML = h;
     bindInteractions();
@@ -1650,6 +2084,22 @@ button { font: inherit; color: inherit; cursor: pointer; }
         });
       });
     });
+
+    /* Export tab switching */
+    var exportTabs = document.getElementById("exportTabs");
+    if (exportTabs) {
+      exportTabs.querySelectorAll(".export-tab").forEach(function(tab) {
+        tab.addEventListener("click", function() {
+          exportTabs.querySelectorAll(".export-tab").forEach(function(t) { t.classList.remove("export-tab--active"); });
+          this.classList.add("export-tab--active");
+          var target = this.dataset.tab;
+          ["css","tw","json"].forEach(function(id) {
+            var el = document.getElementById("exportCode-" + id);
+            if (el) el.style.display = id === target ? "" : "none";
+          });
+        });
+      });
+    }
 
     /* Scroll spy for sidebar nav */
     var sections = document.querySelectorAll(".ds-section[id]");
