@@ -204,41 +204,22 @@ body.grain::before {
 }
 
 .section {
-  padding: 60px 0;
+  padding: 50px 0;
   position: relative;
 }
 
 .section--tight {
-  padding: 40px 0;
+  padding: 30px 0;
 }
 
 @media (max-width: 720px) {
-  .section { padding: 48px 0; }
-  .section--tight { padding: 32px 0; }
+  .section { padding: 40px 0; }
+  .section--tight { padding: 24px 0; }
 }
 
 /* ===== type utilities ===== */
 .eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--f-mono);
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-  padding: 6px 10px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.eyebrow .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--brand);
-  box-shadow: 0 0 12px var(--brand);
+  display: none;
 }
 
 .section-title {
@@ -271,11 +252,11 @@ body.grain::before {
   align-items: flex-end;
   justify-content: space-between;
   gap: 32px;
-  margin-bottom: 56px;
+  margin-bottom: 40px;
 }
 
 @media (max-width: 720px) {
-  .section-head { flex-direction: column; align-items: flex-start; margin-bottom: 36px; }
+  .section-head { flex-direction: column; align-items: flex-start; margin-bottom: 28px; }
 }
 
 /* ===== buttons ===== */
@@ -1581,86 +1562,131 @@ body.grain::before {
   .hero__stage { height: 280px; }
 }
 
-/* ===== MOBILE RESPONSIVE — 480px and below ===== */
+/* ===== MOBILE — 480px and below ===== */
 @media (max-width: 480px) {
-  /* 20px side padding across the page */
+
+  /* ── Global: 20px side padding ── */
   .wrap { width: calc(100% - 40px); }
 
-  /* Nav: tighter spacing */
-  .nav__inner { height: 56px; }
+  /* ── Nav ── */
+  .nav__inner { height: 52px; }
   .nav__brand { font-size: 22px; }
   .nav__cta .btn { padding: 8px 14px; font-size: 13px; }
 
-  /* Hero: center-aligned, auto height */
+  /* ── Hero: clean centered layout, NO background animation ── */
   .hero {
     height: auto;
     min-height: auto;
-    padding: 32px 0 24px;
+    padding: 40px 0 32px;
   }
-  .hero__inner { text-align: center; }
-  .hero__title { font-size: 28px; margin: 10px 0 12px; }
-  .hero__sub { font-size: 15px; margin-inline: auto; }
-  .hero__stage { height: 300px; }
-  .hero__cross { display: none; }
-  .eyebrow { align-self: center; }
+  .hero__inner {
+    text-align: center;
+    gap: 0;
+  }
+  /* Hide all floating cards, grid, canvas, crosses on mobile */
+  .hero__stage,
+  .hero__grid,
+  .hero__canvas,
+  .hero__bg,
+  .hero__cross { display: none !important; }
 
-  /* Hex input: center */
-  .hex-input { padding: 6px; margin-top: 16px; align-self: center; }
-  .hex-input__swatch { width: 38px; height: 38px; }
+  .hero__title {
+    font-size: 30px;
+    margin: 0 0 14px;
+    line-height: 1.1;
+  }
+  .hero__sub {
+    font-size: 15px;
+    margin-inline: auto;
+    color: var(--ink-3);
+  }
+
+  /* Hex input: centered, slightly smaller */
+  .hex-input {
+    padding: 6px;
+    margin-top: 20px;
+    align-self: center;
+  }
+  .hex-input__swatch { width: 36px; height: 36px; }
   .hex-input input { font-size: 15px; width: 100px; padding: 0 10px; }
-  .hex-input button { height: 38px; padding: 0 20px; font-size: 14px; }
-  .hex-suggestions { justify-content: center; }
+  .hex-input button { height: 36px; padding: 0 18px; font-size: 14px; }
+  .hex-suggestions { justify-content: center; margin-top: 14px; }
 
-  /* Hero CTAs: full-width, no extra internal padding, bigger look */
+  /* CTAs: full-width, bold, stacked */
   .hero__ctas {
     flex-direction: column;
     gap: 10px;
     width: 100%;
+    margin-top: 24px;
   }
   .hero__ctas .btn {
     justify-content: center;
     width: 100%;
     padding: 16px 18px;
     font-size: 15px;
+    font-weight: 600;
     border-radius: 12px;
   }
-  .hero__meta { font-size: 11px; gap: 12px; justify-content: center; }
+  .hero__meta {
+    font-size: 11px;
+    gap: 8px 16px;
+    justify-content: center;
+    margin-top: 16px;
+  }
 
-  /* Section titles smaller */
-  .section-title { font-size: clamp(26px, 7vw, 34px); }
-  .section-sub { font-size: 15px; }
+  /* ── Section titles ── */
+  .section-title { font-size: clamp(24px, 7vw, 32px); }
+  .section-sub { font-size: 14px; line-height: 1.5; }
+  .section-head { margin-bottom: 24px; }
 
-  /* Bento / "Eight files" — compact cards */
-  .bento { grid-template-columns: 1fr; grid-auto-rows: auto; gap: 10px; }
-  .bento > * { grid-column: span 1 !important; grid-row: auto !important; }
-  .bento__cell { min-height: auto; padding: 16px; }
-  .bento__big { grid-column: span 1 !important; }
-  .bento__title { font-size: 16px; }
-  .bento__desc { font-size: 12px; margin-top: 4px; }
-
-  /* Playground: compact treatment */
-  .pg { border-radius: var(--r-3); }
-  .pg-generate { padding: 32px 16px 12px; }
+  /* ── Playground: compact card ── */
+  .pg { border-radius: var(--r-2); }
+  .pg-generate { padding: 28px 16px 12px; }
   .pg-generate__label { font-size: 13px; }
   .pg__bar { flex-wrap: wrap; padding: 10px 12px; gap: 8px; }
   .pg__tabs { padding: 3px; }
   .pg__tabs button { font-size: 10px; padding: 5px 8px; }
   .pg__hue { width: 100%; }
-  .pg__canvas { grid-template-columns: 1fr; padding: 14px; gap: 12px; }
+  .pg__canvas { grid-template-columns: 1fr; padding: 14px; gap: 10px; }
   .pg__color { font-size: 11px; padding: 3px 3px 3px 10px; }
-  .section-head { margin-bottom: 28px; }
 
-  /* Flow steps: compact */
-  .flow__step { min-height: auto; padding: 18px 16px 20px; gap: 12px; }
+  /* ── Bento / Deliverables: compact list ── */
+  .bento { grid-template-columns: 1fr; grid-auto-rows: auto; gap: 8px; }
+  .bento > * { grid-column: span 1 !important; grid-row: auto !important; }
+  .bento__cell {
+    min-height: auto;
+    padding: 16px;
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+  }
+  .bento__big { grid-column: span 1 !important; }
+  .bento__title { font-size: 15px; margin-top: 0; }
+  .bento__desc { font-size: 12px; margin-top: 2px; }
+  .bento__label { font-size: 9px; }
+
+  /* ── Flow / Generator steps ── */
+  .flow__step { min-height: auto; padding: 16px; gap: 10px; }
   .flow__title { font-size: 15px; }
-  .flow__desc { font-size: 12px; }
-  .flow__viz { height: 80px; }
+  .flow__desc { font-size: 12px; line-height: 1.45; }
+  .flow__viz { height: 72px; }
 
-  /* Showcase: single column, shorter */
-  .showcase > * { aspect-ratio: 16/9; }
+  /* ── Showcase ── */
+  .showcase > * { aspect-ratio: 3/2; }
 
-  /* Footer: clean single-column mobile layout */
-  .footer { padding: 40px 0 24px; }
+  /* ── Pricing ── */
+  .price { padding: 20px; }
+  .price__amount { font-size: 40px; }
+  .price__tag { font-size: 12px; min-height: auto; margin-bottom: 18px; }
+  .price__list { font-size: 13px; gap: 8px; margin-bottom: 20px; }
+
+  /* ── FAQ ── */
+  .faq__q h3 { font-size: 15px; }
+  .faq__a { font-size: 13px; }
+  .faq__row { padding: 18px 0; }
+
+  /* ── Footer: clean 2-col mobile ── */
+  .footer { padding: 36px 0 20px; }
   .footer__inner {
     grid-template-columns: 1fr 1fr;
     gap: 24px 16px;
@@ -1669,45 +1695,34 @@ body.grain::before {
     grid-column: 1 / -1;
     padding-bottom: 16px;
     border-bottom: 1px solid var(--line);
-    margin-bottom: 4px;
   }
-  .footer h4 { font-size: 11px; margin-bottom: 12px; }
-  .footer ul { gap: 8px; }
+  .footer h4 { font-size: 10px; margin-bottom: 10px; }
+  .footer ul { gap: 6px; }
   .footer ul a { font-size: 13px; }
   .footer__inner > *:last-child {
     grid-column: 1 / -1;
     padding-top: 16px;
     border-top: 1px solid var(--line);
-    margin-top: 4px;
   }
-  .footer__giant { margin-top: 24px; }
+  .footer__giant { display: none; }
   .footer__bottom {
-    margin-top: 32px;
+    margin-top: 24px;
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
+    gap: 4px;
+    font-size: 11px;
   }
-
-  /* Pricing cards: tighter padding */
-  .price { padding: 22px; }
-  .price__amount { font-size: 42px; }
-
-  /* FAQ: smaller text */
-  .faq__q h3 { font-size: 16px; }
-  .faq__a { font-size: 14px; }
 }
 
-/* ===== MOBILE RESPONSIVE — 375px and below (small phones) ===== */
+/* ===== 375px and below (small phones) ===== */
 @media (max-width: 375px) {
   .wrap { width: calc(100% - 40px); }
-  .hero__title { font-size: 26px; }
+  .hero__title { font-size: 27px; }
   .nav__brand { font-size: 20px; }
   .hex-input input { width: 80px; font-size: 14px; }
-  .hex-input button { padding: 0 16px; font-size: 13px; }
+  .hex-input button { padding: 0 14px; font-size: 13px; }
   .hex-suggestions button { width: 28px; height: 28px; border-radius: 8px; }
   .hex-suggestions .label { font-size: 10px; margin-right: 2px; }
-  .bento__cell { padding: 14px; }
-  .bento__title { font-size: 15px; }
 }
 </style></head>
 <body class="grain"><div id="root"></div>
@@ -2925,25 +2940,6 @@ var {
       /*#__PURE__*/React.createElement("div", {
         className: "wrap hero__inner"
       }, /*#__PURE__*/React.createElement("div", null,
-        // Available now badge
-        /*#__PURE__*/React.createElement("div", {
-          style: { display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 16,
-            padding: "6px 14px", borderRadius: 999, border: "1px solid var(--line)",
-            background: "var(--bg)", fontSize: 12, color: "var(--ink-3)" }
-        },
-          /*#__PURE__*/React.createElement("span", {
-            style: { position: "relative", display: "inline-flex", width: 8, height: 8 }
-          },
-            /*#__PURE__*/React.createElement("span", {
-              style: { position: "absolute", inset: 0, borderRadius: "50%", background: "var(--pos)",
-                animation: "ping 1.5s cubic-bezier(0,0,0.2,1) infinite", opacity: 0.6 }
-            }),
-            /*#__PURE__*/React.createElement("span", {
-              style: { width: 8, height: 8, borderRadius: "50%", background: "var(--pos)" }
-            })
-          ),
-          "Available now"
-        ),
         /*#__PURE__*/React.createElement("h1", {
           className: "hero__title"
         }, "Paste a color, get a complete ", /*#__PURE__*/React.createElement("em", null, "design\u00A0system")),
