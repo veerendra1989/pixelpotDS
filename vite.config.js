@@ -8,6 +8,12 @@ export default defineConfig({
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'DENY',
       'Content-Security-Policy': "frame-ancestors 'none';"
+    },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true
+      }
     }
   },
   build: {

@@ -219,13 +219,10 @@
   window.addEventListener("load", function() {
     setTimeout(function() {
       try {
-        // Remove PPEngine from global scope after it's been used
-        if (window.PPEngine) {
-          var _engine = window.PPEngine;
-          delete window.PPEngine;
-          // Re-attach as non-enumerable, non-configurable
-          Object.defineProperty(window, "PPEngine", {
-            value: _engine,
+        // Protect PPColorUtils (lightweight color math — no generation logic)
+        if (window.PPColorUtils) {
+          Object.defineProperty(window, "PPColorUtils", {
+            value: window.PPColorUtils,
             writable: false,
             enumerable: false,
             configurable: false

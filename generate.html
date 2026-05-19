@@ -344,7 +344,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 </style>
 </head>
 <body>
-<script src="engine.js"></script>
+<script src="/color-utils.js"></script>
 
 <nav class="nav">
   <a href="index.html" class="nav__logo">
@@ -751,23 +751,35 @@ button { font: inherit; color: inherit; cursor: pointer; }
       }
     } catch(e) {}
 
-    // Run the generation engine
-    try {
-      var ds = PPEngine.generate("#" + hexVal, font);
-      localStorage.setItem("pp-ds", JSON.stringify(ds));
-    } catch(err) {
-      alert("Generation failed: " + err.message);
-      return;
-    }
-
-    // Show brief loading state then navigate
+    // Show loading state
     const btn = document.getElementById("generateBtn");
     btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 0.8s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Generating…';
     btn.disabled = true;
 
-    setTimeout(function() {
-      window.location.href = "preview.html";
-    }, 800);
+    // Call the API to generate
+    var payload = { hex: "#" + hexVal };
+    if (font) payload.font = { sans: font.sans, mono: font.mono, cssVar: font.cssVar, monoVar: font.monoVar };
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/generate", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState !== 4) return;
+      if (xhr.status === 200) {
+        try {
+          var ds = JSON.parse(xhr.responseText);
+          localStorage.setItem("pp-ds", JSON.stringify(ds));
+          window.location.href = "preview.html";
+        } catch(e) {
+          alert("Failed to parse response");
+          btn.innerHTML = "Generate"; btn.disabled = false;
+        }
+      } else {
+        alert("Generation failed (HTTP " + xhr.status + ")");
+        btn.innerHTML = "Generate"; btn.disabled = false;
+      }
+    };
+    xhr.send(JSON.stringify(payload));
   });
 
   /* ── Spin keyframe ── */

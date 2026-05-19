@@ -188,6 +188,23 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .sidebar__add-color:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-faint); }
 .sidebar__add-color svg { width: 12px; height: 12px; }
+.sidebar__generate-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  width: calc(100% - 32px); margin: 12px 16px; padding: 12px 18px;
+  border: 1px solid transparent; border-radius: 10px;
+  background: var(--brand); color: var(--brand-ink);
+  font-size: 14px; font-weight: 600; letter-spacing: -0.005em;
+  cursor: pointer; white-space: nowrap;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.06) inset, 0 10px 30px -8px var(--brand-soft);
+  transition: transform 120ms ease, background 200ms, box-shadow 200ms, filter 200ms;
+}
+.sidebar__generate-btn:hover { transform: translateY(-1px); filter: brightness(1.05); box-shadow: 0 0 0 1px rgba(255,255,255,0.15) inset, 0 14px 40px -8px var(--brand-soft); }
+.sidebar__generate-btn:active { transform: translateY(0); }
+.sidebar__generate-btn.loading { opacity: 0.7; pointer-events: none; }
+.sidebar__generate-btn.loading svg { animation: spin 0.8s linear infinite; }
+.sidebar__generate-btn.pulse { animation: btnPulse 1.5s ease infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes btnPulse { 0%,100% { box-shadow: 0 0 0 0 var(--brand-soft); } 50% { box-shadow: 0 0 0 8px transparent; } }
 .sidebar__font-select {
   width: 100%; height: 44px; padding: 0 28px 0 10px; border: 1px solid var(--line-2); border-radius: var(--r-1);
   font-size: 13px; font-weight: 500; color: var(--ink); background: var(--bg-2);
@@ -246,7 +263,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .ds-hero { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--r-3); padding: 40px 36px; margin-bottom: 40px; position: relative; overflow: hidden; }
 .hero__theme-toggle { position: absolute; top: 16px; right: 16px; z-index: 2; display: flex; align-items: center; gap: 2px; padding: 3px; background: var(--bg-3); border: 1px solid var(--line); border-radius: 99px; }
 :root[data-theme="light"] .hero__theme-toggle { background: var(--bg-2); }
-.ds-hero::before { content: ''; position: absolute; top: -80px; right: -40px; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, var(--brand-soft), transparent 70%); }
+.ds-hero::before { display: none; }
 .ds-hero h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; position: relative; z-index: 1; }
 .ds-hero p { font-size: 14px; color: var(--ink-3); max-width: 560px; line-height: 1.7; position: relative; z-index: 1; }
 .ds-hero p strong { color: var(--brand-text, var(--brand)); font-weight: 600; }
@@ -711,17 +728,183 @@ button { font: inherit; color: inherit; cursor: pointer; }
   :root { --sidebar-w: 220px; }
   .ds-body { padding: 24px 20px 100px; }
 }
+
+/* ═══════════════════════════════════════════
+   MOBILE HEADER (hidden on desktop)
+   ═══════════════════════════════════════════ */
+.mobile-header { display: none; }
+.mobile-config { display: none; }
+.mobile-tabs { display: none; }
+
 @media (max-width: 768px) {
   :root { --sidebar-w: 0px; }
-  .sidebar { display: none; }
+
+  /* Hide desktop sidebar */
+  .sidebar { display: none !important; }
   body { overflow: auto; }
-  .main-content { margin-left: 0; height: auto; }
-  .ds-hero { padding: 28px 20px; }
-  .ds-hero h1 { font-size: 22px; }
-  .ds-hero-stats { gap: 20px; flex-wrap: wrap; }
-  .surface-pair { grid-template-columns: 1fr; }
+  .main-content { margin-left: 0; height: auto; overflow: visible; }
+
+  /* ── Mobile header ── */
+  .mobile-header {
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 200;
+    padding: 14px 16px; height: 64px;
+    background: var(--bg-1); border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  :root[data-theme="light"] .mobile-header { background: rgba(255,255,255,0.92); }
+  .mobile-header__logo {
+    font-family: "Finlandica Headline", sans-serif; font-size: 22px; font-weight: 500; color: var(--ink);
+  }
+  .mobile-header__logo .brand-accent { color: var(--brand); }
+  .mobile-header__actions { display: flex; align-items: center; gap: 8px; }
+  .mobile-header__icon-btn {
+    width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 10px;
+    background: var(--bg-2); color: var(--ink-3); cursor: pointer;
+    display: grid; place-items: center; transition: all 0.15s;
+  }
+  .mobile-header__icon-btn:hover { border-color: var(--brand); color: var(--brand); }
+  .mobile-header__icon-btn svg { width: 18px; height: 18px; }
+  .mobile-header__icon-btn.active { background: var(--brand-faint); border-color: var(--brand); color: var(--brand); }
+
+  /* ── Collapsible config panel ── */
+  .mobile-config {
+    display: none; /* toggled via JS */
+    flex-direction: column; gap: 12px;
+    padding: 16px; background: var(--bg-1);
+    border-bottom: 1px solid var(--line);
+    animation: slideDown 0.25s ease;
+  }
+  .mobile-config.open { display: flex; }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+  :root[data-theme="light"] .mobile-config { background: #fff; }
+
+  .mobile-config__row { display: flex; align-items: center; gap: 10px; }
+  .mobile-config__label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--ink-4); margin-bottom: 6px; }
+
+  .mobile-config .sidebar__colors { gap: 8px; }
+  .mobile-config .sidebar__color-item { gap: 8px; }
+  .mobile-config .sidebar__color-swatch { width: 36px; height: 36px; border-radius: 8px; }
+  .mobile-config .sidebar__color-hex { height: 36px; font-size: 13px; padding: 0 8px; }
+  .mobile-config .sidebar__color-name { height: 36px; font-size: 11px; width: 64px; }
+  .mobile-config .sidebar__add-color { height: 36px; font-size: 12px; border-radius: 8px; }
+  .mobile-config .sidebar__font-select { height: 42px; font-size: 14px; }
+  .mobile-config .sidebar__generate-btn {
+    width: 100%; margin: 4px 0 0;
+  }
+
+  /* ── Horizontal section tabs ── */
+  .mobile-tabs {
+    display: flex; align-items: center;
+    position: sticky; top: 64px; z-index: 190;
+    padding: 10px 12px; height: auto; min-height: 52px; gap: 4px;
+    background: var(--bg-1); border-bottom: 1px solid var(--line);
+    overflow-x: auto; overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .mobile-tabs::-webkit-scrollbar { display: none; }
+  :root[data-theme="light"] .mobile-tabs { background: rgba(255,255,255,0.95); }
+  .mobile-tab {
+    flex-shrink: 0; padding: 6px 14px; border-radius: 99px;
+    font-size: 12px; font-weight: 500; color: var(--ink-3);
+    background: none; border: 1px solid transparent;
+    cursor: pointer; white-space: nowrap; transition: all 0.15s;
+    text-decoration: none;
+  }
+  .mobile-tab:hover { color: var(--ink); background: var(--bg-2); }
+  .mobile-tab.active { background: var(--brand-faint); color: var(--brand); border-color: var(--brand-soft); font-weight: 600; }
+
+  /* ── Content adjustments ── */
+  .ds-body { padding: 20px 16px 80px; }
+  .ds-hero { padding: 24px 18px; border-radius: 12px; }
+  .ds-hero h1 { font-size: 20px; }
+  .ds-hero p { font-size: 13px; }
+  .ds-hero-stats { gap: 16px; flex-wrap: wrap; }
+  .ds-hero-stat-val { font-size: 22px; }
+  .hero__chips { flex-wrap: wrap; gap: 6px; }
+  .hero__chip { font-size: 10px; padding: 3px 8px; }
+  .hero__theme-toggle { top: 12px; right: 12px; }
+
+  /* Section headers */
+  .ds-section { margin-bottom: 32px; }
+  .ds-section-header { margin-bottom: 14px; padding-bottom: 12px; }
+  .ds-section-title { font-size: 20px; }
+  .ds-section-desc { font-size: 13px; }
+  .ds-subsection-title { font-size: 13px; }
+
+  /* Palette */
   .palette-row { flex-wrap: wrap; }
-  .swatch { min-width: 60px; }
+  .swatch { min-width: 55px; flex: 1; }
+  .swatch__label { font-size: 10px; }
+  .swatch__hex { font-size: 8px; }
+
+  /* Surfaces */
+  .surface-pair { grid-template-columns: 1fr; }
+
+  /* Color grid */
+  .color-grid { grid-template-columns: 1fr 1fr; }
+
+  /* Typography specimens */
+  .type-specimen div[style*="font-size"] { word-break: break-word; }
+
+  /* Spacing */
+  .space-bar { max-width: 200px !important; }
+
+  /* Radius & shadows */
+  .radius-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .ds-preview-row { flex-wrap: wrap; gap: 12px; }
+
+  /* Component previews */
+  .btn-grid { flex-wrap: wrap; gap: 8px; }
+  .form-demo { grid-template-columns: 1fr; }
+  .theme-split { grid-template-columns: 1fr !important; }
+  .theme-split__pane { padding: 18px; }
+  .theme-card__btn { font-size: 12px !important; padding: 8px 12px !important; }
+  .responsive-frames { flex-direction: column; }
+  .responsive-frame { width: 100% !important; }
+  .grid-demo { grid-template-columns: repeat(6, 1fr); }
+  .aspect-grid { grid-template-columns: repeat(2, 1fr); }
+  .motion-grid { grid-template-columns: 1fr; }
+  .icon-size-grid { gap: 12px; }
+  .chart-palette { flex-wrap: wrap; }
+
+  /* Cards — override inline grid-template-columns */
+  .ds-preview > div[style*="repeat(3"] { grid-template-columns: 1fr !important; max-width: 100% !important; }
+  .ds-preview > div[style*="repeat(4"] { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Card media height */
+  .c-card-media { height: 120px; }
+
+  /* Metric cards */
+  .metric-card { padding: 12px; }
+  .metric-value { font-size: 22px; }
+
+  /* Button toggle group */
+  .c-btn-toggle-group { flex-shrink: 0; }
+
+  /* Tables overflow */
+  .breakpoint-table { display: block; overflow-x: auto; }
+  .ds-spec { overflow-x: auto; white-space: pre; }
+
+  /* Sidenav component */
+  .c-sidenav { flex-direction: column; height: auto; }
+  .c-sidenav-drawer { width: 100%; border-right: none; border-bottom: 1px solid var(--line); flex-direction: row; overflow-x: auto; padding: 4px; }
+
+  /* Toolbar */
+  .c-toolbar { flex-wrap: wrap; }
+
+  /* Datepicker row */
+  .ds-preview > div[style*="display:flex"][style*="gap:40px"] { gap: 16px !important; flex-wrap: wrap !important; }
+
+  /* Dropzone grid */
+  .dropzone-grid { grid-template-columns: 1fr !important; }
+
+  /* Spec blocks */
+  .ds-spec { font-size: 11px; padding: 12px; }
+
+  /* Export section */
+  .export-grid { grid-template-columns: 1fr; }
 }
 
 /* ═══ 17 GRID & LAYOUT ═══ */
@@ -965,6 +1148,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
     <select class="sidebar__font-select" id="fontSelect"></select>
   </div>
 
+  <button class="sidebar__generate-btn" id="regenBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    Generate
+  </button>
+
   <div class="sidebar__divider"></div>
 
   <nav class="sidebar__nav" id="dsNav">
@@ -1006,12 +1194,69 @@ button { font: inherit; color: inherit; cursor: pointer; }
   </div>
 </aside>
 
+<!-- MOBILE HEADER -->
+<header class="mobile-header" id="mobileHeader">
+  <div class="mobile-header__logo">
+    <span class="brand-accent">#</span>hex<span class="brand-accent">to</span>design
+  </div>
+  <div class="mobile-header__actions">
+    <button class="mobile-header__icon-btn" id="mobileConfigToggle" title="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+    </button>
+    <button class="mobile-header__icon-btn" id="mobileUserBtn" title="Account">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- MOBILE CONFIG PANEL (collapsed by default) -->
+<div class="mobile-config" id="mobileConfig">
+  <div>
+    <div class="mobile-config__label">Brand colors</div>
+    <div class="sidebar__colors" id="mobileColorsList"></div>
+    <button class="sidebar__add-color" id="mobileAddColorBtn" style="margin-top:8px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add color
+    </button>
+  </div>
+  <div>
+    <div class="mobile-config__label">Font pairing</div>
+    <select class="sidebar__font-select" id="mobileFontSelect"></select>
+  </div>
+  <button class="sidebar__generate-btn" id="mobileRegenBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    Generate
+  </button>
+</div>
+
+<!-- MOBILE TABS -->
+<nav class="mobile-tabs" id="mobileTabs">
+  <a href="#colors" class="mobile-tab active">Colors</a>
+  <a href="#typography" class="mobile-tab">Type</a>
+  <a href="#spacing" class="mobile-tab">Spacing</a>
+  <a href="#elevation" class="mobile-tab">Elevation</a>
+  <a href="#buttons" class="mobile-tab">Buttons</a>
+  <a href="#forms" class="mobile-tab">Forms</a>
+  <a href="#data" class="mobile-tab">Data</a>
+  <a href="#navigation" class="mobile-tab">Nav</a>
+  <a href="#feedback" class="mobile-tab">Feedback</a>
+  <a href="#patterns" class="mobile-tab">Patterns</a>
+  <a href="#cards" class="mobile-tab">Cards</a>
+  <a href="#selection" class="mobile-tab">Selection</a>
+  <a href="#overlays" class="mobile-tab">Overlays</a>
+  <a href="#dataviz" class="mobile-tab">Data Viz</a>
+  <a href="#validation" class="mobile-tab">Validation</a>
+  <a href="#a11y" class="mobile-tab">A11y</a>
+  <a href="#themecompare" class="mobile-tab">Themes</a>
+  <a href="#tokens" class="mobile-tab">Tokens</a>
+</nav>
+
 <!-- MAIN -->
 <div class="main-content" id="mainContent" style="opacity:0">
   <div id="app"></div>
 </div>
 
-<script src="engine.js"></script>
+<script src="/color-utils.js"></script>
 <script>
 (function() {
   /* ═══ Font catalogue ═══ */
@@ -1046,7 +1291,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
   /* ═══ Loading animation ═══ */
   function runLoadingAnimation(brandHex, callback) {
-    var rgb = PPEngine.hexToRgb(brandHex);
+    var rgb = PPColorUtils.hexToRgb(brandHex);
     var r = Math.round(rgb[0]*255), g = Math.round(rgb[1]*255), b = Math.round(rgb[2]*255);
     var brandCSS = brandHex;
 
@@ -1090,32 +1335,77 @@ button { font: inherit; color: inherit; cursor: pointer; }
     setTimeout(function() { overlay.style.display = "none"; }, 700);
   }
 
-  /* ═══ Generate + render ═══ */
-  function generateDS(brandHex, font) {
-    var ds = PPEngine.generate(brandHex, font);
-    try {
-      localStorage.setItem("pp-ds", JSON.stringify(ds));
-      localStorage.setItem("pp-brand", brandHex);
-      localStorage.setItem("pp-font", JSON.stringify(font));
-    } catch(e) {}
-    return ds;
+  /* ═══ Generate via API ═══ */
+  var API_BASE = window.location.hostname === "localhost" ? "/api" : "/api";
+
+  function generateDSAsync(brandHex, font, callback) {
+    var payload = { hex: brandHex };
+    if (font) payload.font = { sans: font.sans, mono: font.mono, cssVar: font.cssVar, monoVar: font.monoVar };
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", API_BASE + "/generate", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState !== 4) return;
+      if (xhr.status === 200) {
+        try {
+          var ds = JSON.parse(xhr.responseText);
+          try {
+            localStorage.setItem("pp-ds", JSON.stringify(ds));
+            localStorage.setItem("pp-brand", brandHex);
+            localStorage.setItem("pp-font", JSON.stringify(font));
+          } catch(e) {}
+          callback(null, ds);
+        } catch(e) {
+          callback(new Error("Failed to parse response"));
+        }
+      } else if (xhr.status === 429) {
+        callback(new Error("Rate limit exceeded. Please wait a moment and try again."));
+      } else {
+        callback(new Error("Generation failed (HTTP " + xhr.status + ")"));
+      }
+    };
+    xhr.send(JSON.stringify(payload));
   }
 
   var ds;
-  if (needsGeneration) {
-    ds = generateDS(hex, fontConf);
+  var _extraPalettes = [];
+
+  function initRender(dsData, showOverlay) {
+    ds = dsData;
     root.style.setProperty("--brand-h", ds.color.hue.toFixed(1));
     root.style.setProperty("--brand-c", Math.min(0.20, Math.max(0.06, ds.color.chroma)).toFixed(3));
-    runLoadingAnimation(hex, function() {
+    fetchExtraPalettes(function(extras) {
+      _extraPalettes = extras;
       renderPreview(ds);
-      revealPage();
+      if (showOverlay) {
+        revealPage();
+      } else {
+        overlay.style.display = "none";
+        sidebar.style.opacity = "1";
+        mainContent.style.opacity = "1";
+      }
+    });
+  }
+
+  if (needsGeneration) {
+    runLoadingAnimation(hex, function() {
+      /* reveal happens after API returns — loading bar fills while we wait */
+    });
+    generateDSAsync(hex, fontConf, function(err, result) {
+      if (err) { stepEl.textContent = "Error: " + err.message; return; }
+      initRender(result, true);
     });
   } else {
-    try { ds = JSON.parse(dsRaw); } catch(e) { ds = generateDS(hex, fontConf); }
-    overlay.style.display = "none";
-    sidebar.style.opacity = "1";
-    mainContent.style.opacity = "1";
-    renderPreview(ds);
+    try { ds = JSON.parse(dsRaw); } catch(e) { ds = null; }
+    if (ds) {
+      initRender(ds, false);
+    } else {
+      generateDSAsync(hex, fontConf, function(err, result) {
+        if (err) { stepEl.textContent = "Error: " + err.message; return; }
+        initRender(result, false);
+      });
+    }
   }
 
   /* ═══ Load Google font ═══ */
@@ -1141,8 +1431,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
       btn.classList.toggle("active", btn.dataset.mode === mode);
     });
     if (!ds) return;
-    var srcRgb = PPEngine.hexToRgb(ds.meta.source);
-    var srcOklch = PPEngine.rgbToOklch(srcRgb[0], srcRgb[1], srcRgb[2]);
+    var srcRgb = PPColorUtils.hexToRgb(ds.meta.source);
+    var srcOklch = PPColorUtils.rgbToOklch(srcRgb[0], srcRgb[1], srcRgb[2]);
     var isDarkBrand = srcOklch.L < 0.65;
     var H = ds.color.hue;
     var brandC = Math.min(0.20, Math.max(0.06, ds.color.chroma));
@@ -1158,8 +1448,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
       brandL = mode === "light" ? Math.max(0.62, srcOklch.L) : Math.max(0.78, srcOklch.L);
       if (mode === "light") brandC = Math.min(0.16, brandC);
       root.style.setProperty("--brand-ink", "oklch(0.18 0.05 " + H.toFixed(1) + ")");
-      var brandHex = PPEngine.oklchToHex(brandL, brandC, H);
-      var brandRgb = PPEngine.hexToRgb(brandHex);
+      var brandHex = PPColorUtils.oklchToHex(brandL, brandC, H);
+      var brandRgb = PPColorUtils.hexToRgb(brandHex);
       var brandLum = 0.2126 * brandRgb[0] + 0.7152 * brandRgb[1] + 0.0722 * brandRgb[2];
       var pageLum = mode === "light" ? 0.92 : 0.01;
       var ratio = (Math.max(brandLum, pageLum) + 0.05) / (Math.min(brandLum, pageLum) + 0.05);
@@ -1183,8 +1473,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
   /* ═══ Color name suggestion ═══ */
   function suggestColorName(hexVal) {
-    var rgb = PPEngine.hexToRgb(hexVal);
-    var oklch = PPEngine.rgbToOklch(rgb[0], rgb[1], rgb[2]);
+    var rgb = PPColorUtils.hexToRgb(hexVal);
+    var oklch = PPColorUtils.rgbToOklch(rgb[0], rgb[1], rgb[2]);
     var H = oklch.H, L = oklch.L, C = oklch.C;
     if (C < 0.04) {
       if (L > 0.9) return "White";
@@ -1229,7 +1519,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
   var colorsList = document.getElementById("colorsList");
   var addColorBtn = document.getElementById("addColorBtn");
-  var regenTimer = null;
   var colorIdCounter = brandColors.length;
 
   function saveColors() {
@@ -1281,7 +1570,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
           brandColors.splice(idx, 1);
           saveColors();
           renderColorItems();
-          scheduleRegen();
+          markDirty();
         });
         item.appendChild(removeBtn);
       }
@@ -1295,9 +1584,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
           brandColors[idx].hex = newHex;
           swatch.style.background = newHex;
           picker.value = newHex;
-          if (idx === 0) { hex = newHex; root.style.setProperty("--brand-h", PPEngine.rgbToOklch.apply(null, PPEngine.hexToRgb(newHex)).H.toFixed(1)); }
+          if (idx === 0) { hex = newHex; root.style.setProperty("--brand-h", PPColorUtils.rgbToOklch.apply(null, PPColorUtils.hexToRgb(newHex)).H.toFixed(1)); }
           saveColors();
-          scheduleRegen();
+          markDirty();
         }
       });
       picker.addEventListener("input", function() {
@@ -1305,42 +1594,90 @@ button { font: inherit; color: inherit; cursor: pointer; }
         brandColors[idx].hex = newHex;
         textInput.value = newHex.replace("#","");
         swatch.style.background = newHex;
-        if (idx === 0) { hex = newHex; root.style.setProperty("--brand-h", PPEngine.rgbToOklch.apply(null, PPEngine.hexToRgb(newHex)).H.toFixed(1)); }
+        if (idx === 0) { hex = newHex; root.style.setProperty("--brand-h", PPColorUtils.rgbToOklch.apply(null, PPColorUtils.hexToRgb(newHex)).H.toFixed(1)); }
         saveColors();
-        scheduleRegen();
+        markDirty();
       });
       nameInput.addEventListener("input", function() {
         brandColors[idx].name = this.value;
         saveColors();
-        scheduleRegen();
       });
 
       colorsList.appendChild(item);
     });
   }
 
-  function scheduleRegen() {
-    clearTimeout(regenTimer);
-    regenTimer = setTimeout(function() {
-      hex = brandColors[0].hex;
-      var scrollTop = mainContent.scrollTop;
-      ds = generateDS(hex, fontConf);
-      renderPreview(ds);
-      setTheme(currentTheme);
-      mainContent.scrollTop = scrollTop;
-    }, 300);
+  /* ═══ Dirty state + Generate button ═══ */
+  var regenBtn = document.getElementById("regenBtn");
+  var _isDirty = false;
+
+  function markDirty() {
+    _isDirty = true;
+    regenBtn.classList.add("pulse");
+  }
+
+  function triggerRegen() {
+    if (regenBtn.classList.contains("loading")) return;
+    _isDirty = false;
+    regenBtn.classList.remove("pulse");
+    regenBtn.classList.add("loading");
+    regenBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Generating…';
+
+    hex = brandColors[0].hex;
+    var scrollTop = mainContent.scrollTop;
+    generateDSAsync(hex, fontConf, function(err, result) {
+      if (err) {
+        regenBtn.classList.remove("loading");
+        regenBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="5 3 19 12 5 21 5 3"/></svg> Generate';
+        return;
+      }
+      ds = result;
+      fetchExtraPalettes(function(extras) {
+        _extraPalettes = extras;
+        renderPreview(ds);
+        setTheme(currentTheme);
+        mainContent.scrollTop = scrollTop;
+        regenBtn.classList.remove("loading");
+        regenBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="5 3 19 12 5 21 5 3"/></svg> Generate';
+      });
+    });
+  }
+
+  regenBtn.addEventListener("click", triggerRegen);
+
+  /* Pre-fetch extra color palettes (for multi-color) */
+  function fetchExtraPalettes(callback) {
+    if (brandColors.length <= 1) return callback([]);
+    var results = [];
+    var pending = brandColors.length - 1;
+    for (var i = 1; i < brandColors.length; i++) {
+      (function(idx) {
+        var extraHex = brandColors[idx].hex;
+        if (!/^#[0-9a-fA-F]{6}$/.test(extraHex)) { pending--; if (pending === 0) callback(results); return; }
+        generateDSAsync(extraHex, null, function(err, extraDs) {
+          if (!err) {
+            results.push({ idx: idx, name: brandColors[idx].name || ("Color " + (idx + 1)), palette: extraDs.color.brand });
+          }
+          pending--;
+          if (pending === 0) {
+            results.sort(function(a, b) { return a.idx - b.idx; });
+            callback(results);
+          }
+        });
+      })(i);
+    }
   }
 
   addColorBtn.addEventListener("click", function() {
     var randomHues = [0, 30, 60, 120, 180, 210, 260, 300, 330];
     var rH = randomHues[Math.floor(Math.random() * randomHues.length)];
-    var newHex = PPEngine.oklchToHex(0.60, 0.15, rH).toUpperCase();
+    var newHex = PPColorUtils.oklchToHex(0.60, 0.15, rH).toUpperCase();
     var name = suggestColorName(newHex);
     colorIdCounter++;
     brandColors.push({ id: "color-" + colorIdCounter, name: name, hex: newHex });
     saveColors();
     renderColorItems();
-    scheduleRegen();
+    markDirty();
   });
 
   renderColorItems();
@@ -1360,16 +1697,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
     if (!f) return;
     fontConf = f;
     loadFont(f);
-    var scrollTop = mainContent.scrollTop;
-    ds = generateDS(hex, f);
-    renderPreview(ds);
-    setTheme(currentTheme);
-    mainContent.scrollTop = scrollTop;
+    markDirty();
   });
 
   /* ═══ Helpers ═══ */
   function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-  function isLight(h) { var rgb = PPEngine.hexToRgb(h); return 0.2126*rgb[0]+0.7152*rgb[1]+0.0722*rgb[2] > 0.5; }
+  function isLight(h) { var rgb = PPColorUtils.hexToRgb(h); return 0.2126*rgb[0]+0.7152*rgb[1]+0.0722*rgb[2] > 0.5; }
 
   /* ═══ Render preview ═══ */
   function renderPreview(ds) {
@@ -1430,10 +1763,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
     h += '<div class="ds-preview">';
     /* All brand color palettes in one box */
     var allPalettes = [{ name: brandColors[0].name || "Primary", palette: brand }];
-    for (var ci = 1; ci < brandColors.length; ci++) {
-      var extraHex = brandColors[ci].hex;
-      if (!/^#[0-9a-fA-F]{6}$/.test(extraHex)) continue;
-      allPalettes.push({ name: brandColors[ci].name || ("Color " + (ci + 1)), palette: PPEngine.generate(extraHex).color.brand });
+    if (_extraPalettes && _extraPalettes.length) {
+      _extraPalettes.forEach(function(ep) { allPalettes.push({ name: ep.name, palette: ep.palette }); });
     }
     allPalettes.forEach(function(p, pi) {
       if (pi > 0) h += '<div style="height:1px;background:var(--line);margin:16px 0"></div>';
@@ -1959,7 +2290,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
     h += '<p class="ds-section-desc">Chart color palette derived from brand hue. Categorical and sequential sequences.</p>';
     var cHue = ds.color.hue;
     var cColors = [];
-    [0,60,120,180,240,300,40,200].forEach(function(off) { cColors.push(PPEngine.oklchToHex(0.65, 0.15, (cHue + off) % 360).toUpperCase()); });
+    [0,60,120,180,240,300,40,200].forEach(function(off) { cColors.push(PPColorUtils.oklchToHex(0.65, 0.15, (cHue + off) % 360).toUpperCase()); });
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Categorical palette</div><div class="ds-preview"><div class="chart-palette">';
     var catN = ["Primary","Secondary","Tertiary","Quaternary","Quinary","Senary","Septenary","Octonary"];
     cColors.forEach(function(c, i) { h += '<div class="chart-swatch" style="background:' + c + ';color:' + (isLight(c) ? "#111" : "#fff") + '">' + (i+1) + '</div>'; });
@@ -1970,7 +2301,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
     [65,85,45,72,90,55,78,40].forEach(function(v, i) { h += '<div class="chart-bar" style="height:' + v + '%;background:' + cColors[i] + '"></div>'; });
     h += '</div></div></div>';
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Sequential scale</div><div class="ds-preview"><div class="chart-palette">';
-    for (var si = 0; si < 8; si++) { var sHex = PPEngine.oklchToHex(0.35 + si * 0.08, 0.05 + si * 0.015, cHue).toUpperCase(); h += '<div class="chart-swatch" style="background:' + sHex + ';color:' + (isLight(sHex) ? "#111" : "#fff") + '">' + ((si+1)*100) + '</div>'; }
+    for (var si = 0; si < 8; si++) { var sHex = PPColorUtils.oklchToHex(0.35 + si * 0.08, 0.05 + si * 0.015, cHue).toUpperCase(); h += '<div class="chart-swatch" style="background:' + sHex + ';color:' + (isLight(sHex) ? "#111" : "#fff") + '">' + ((si+1)*100) + '</div>'; }
     h += '</div></div></div></section>';
 
     /* ═══ 21 FORM VALIDATION ═══ */
@@ -2173,6 +2504,172 @@ button { font: inherit; color: inherit; cursor: pointer; }
         if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     });
+  }
+
+  /* ═══ Mobile: config toggle ═══ */
+  var mobileConfigToggle = document.getElementById("mobileConfigToggle");
+  var mobileConfig = document.getElementById("mobileConfig");
+  if (mobileConfigToggle) {
+    mobileConfigToggle.addEventListener("click", function() {
+      var isOpen = mobileConfig.classList.toggle("open");
+      mobileConfigToggle.classList.toggle("active", isOpen);
+    });
+  }
+
+  /* ═══ Mobile: sync color list with desktop ═══ */
+  var mobileColorsList = document.getElementById("mobileColorsList");
+  var mobileAddColorBtn = document.getElementById("mobileAddColorBtn");
+  var mobileFontSelect = document.getElementById("mobileFontSelect");
+  var mobileRegenBtn = document.getElementById("mobileRegenBtn");
+
+  /* Mirror renderColorItems for mobile */
+  var _origRenderColorItems = renderColorItems;
+  renderColorItems = function() {
+    _origRenderColorItems();
+    /* Duplicate into mobile list */
+    if (mobileColorsList) {
+      mobileColorsList.innerHTML = "";
+      brandColors.forEach(function(c, idx) {
+        var item = document.createElement("div");
+        item.className = "sidebar__color-item";
+
+        var swatch = document.createElement("div");
+        swatch.className = "sidebar__color-swatch";
+        swatch.style.background = c.hex;
+        var picker = document.createElement("input");
+        picker.type = "color"; picker.value = c.hex;
+        swatch.appendChild(picker);
+        item.appendChild(swatch);
+
+        var textInput = document.createElement("input");
+        textInput.type = "text"; textInput.className = "sidebar__color-hex";
+        textInput.maxLength = 6; textInput.value = c.hex.replace("#","").toUpperCase();
+        textInput.spellcheck = false;
+        item.appendChild(textInput);
+
+        var nameInput = document.createElement("input");
+        nameInput.type = "text"; nameInput.className = "sidebar__color-name";
+        nameInput.value = c.name; nameInput.placeholder = idx === 0 ? "Primary" : "Name";
+        nameInput.spellcheck = false;
+        item.appendChild(nameInput);
+
+        if (idx > 0) {
+          var removeBtn = document.createElement("button");
+          removeBtn.className = "sidebar__color-remove";
+          removeBtn.title = "Remove";
+          removeBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+          removeBtn.style.opacity = "1";
+          removeBtn.addEventListener("click", function() {
+            brandColors.splice(idx, 1); saveColors(); renderColorItems(); markDirty();
+          });
+          item.appendChild(removeBtn);
+        }
+
+        textInput.addEventListener("input", function() {
+          var v = this.value.replace(/[^0-9a-fA-F]/g, "").slice(0, 6).toUpperCase();
+          this.value = v;
+          if (v.length === 6) {
+            var newHex = "#" + v;
+            brandColors[idx].hex = newHex; swatch.style.background = newHex; picker.value = newHex;
+            if (idx === 0) { hex = newHex; root.style.setProperty("--brand-h", PPColorUtils.rgbToOklch.apply(null, PPColorUtils.hexToRgb(newHex)).H.toFixed(1)); }
+            saveColors(); markDirty();
+          }
+        });
+        picker.addEventListener("input", function() {
+          var newHex = this.value.toUpperCase();
+          brandColors[idx].hex = newHex; textInput.value = newHex.replace("#",""); swatch.style.background = newHex;
+          if (idx === 0) { hex = newHex; root.style.setProperty("--brand-h", PPColorUtils.rgbToOklch.apply(null, PPColorUtils.hexToRgb(newHex)).H.toFixed(1)); }
+          saveColors(); markDirty();
+        });
+        nameInput.addEventListener("input", function() { brandColors[idx].name = this.value; saveColors(); });
+
+        mobileColorsList.appendChild(item);
+      });
+    }
+  };
+
+  /* Mobile add-color button */
+  if (mobileAddColorBtn) {
+    mobileAddColorBtn.addEventListener("click", function() {
+      var randomHues = [0, 30, 60, 120, 180, 210, 260, 300, 330];
+      var rH = randomHues[Math.floor(Math.random() * randomHues.length)];
+      var newHex = PPColorUtils.oklchToHex(0.60, 0.15, rH).toUpperCase();
+      var name = suggestColorName(newHex);
+      colorIdCounter++;
+      brandColors.push({ id: "color-" + colorIdCounter, name: name, hex: newHex });
+      saveColors(); renderColorItems(); markDirty();
+    });
+  }
+
+  /* Mobile font selector — populate & sync */
+  if (mobileFontSelect) {
+    FONTS.forEach(function(f) {
+      var opt = document.createElement("option");
+      opt.value = f.id; opt.textContent = f.name + " · " + f.tag;
+      mobileFontSelect.appendChild(opt);
+    });
+    if (fontConf && fontConf.id) mobileFontSelect.value = fontConf.id;
+    mobileFontSelect.addEventListener("change", function() {
+      var f = FONTS.find(function(x) { return x.id === mobileFontSelect.value; });
+      if (!f) return;
+      fontConf = f; loadFont(f); markDirty();
+      if (fontSelect) fontSelect.value = f.id;
+    });
+  }
+
+  /* Mobile generate button */
+  if (mobileRegenBtn) {
+    mobileRegenBtn.addEventListener("click", function() { triggerRegen(); });
+  }
+
+  /* ═══ Mobile: tab highlighting on scroll ═══ */
+  var mobileTabs = document.getElementById("mobileTabs");
+  if (mobileTabs) {
+    var tabLinks = mobileTabs.querySelectorAll(".mobile-tab");
+
+    /* Click → smooth scroll + close config */
+    tabLinks.forEach(function(tab) {
+      tab.addEventListener("click", function(e) {
+        e.preventDefault();
+        var id = this.getAttribute("href").slice(1);
+        var target = document.getElementById(id);
+        if (target) {
+          var offset = 64 + 52 + 12; /* header + tabs + gap */
+          var top = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: top, behavior: "smooth" });
+        }
+        /* Close config if open */
+        if (mobileConfig.classList.contains("open")) {
+          mobileConfig.classList.remove("open");
+          mobileConfigToggle.classList.remove("active");
+        }
+      });
+    });
+
+    /* Highlight active tab on scroll */
+    var _scrollTimer;
+    function updateActiveTab() {
+      var sections = document.querySelectorAll(".ds-section[id]");
+      var offset = 64 + 52 + 20;
+      var found = null;
+      sections.forEach(function(sec) {
+        var rect = sec.getBoundingClientRect();
+        if (rect.top <= offset + 50) found = sec.id;
+      });
+      if (found) {
+        tabLinks.forEach(function(t) {
+          var isActive = t.getAttribute("href") === "#" + found;
+          t.classList.toggle("active", isActive);
+          if (isActive) {
+            t.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+          }
+        });
+      }
+    }
+    window.addEventListener("scroll", function() {
+      clearTimeout(_scrollTimer);
+      _scrollTimer = setTimeout(updateActiveTab, 60);
+    }, { passive: true });
   }
 
 })();
