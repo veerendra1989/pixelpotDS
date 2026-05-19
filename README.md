@@ -1,4 +1,6 @@
-# pixelpotDS - Phase 0.5
+# hextodesign
+
+Paste a hex color, get a complete design system. https://hextodesign.com
 
 ## Setup
 

@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILE=$(jq -r '.tool_input.file_path // empty' 2>/dev/null); case \"$FILE\" in *.html) cd /Users/veerendra/pixelpotDS && node -e \"const vm=require('vm'),html=require('fs').readFileSync('$FILE','utf8');[...html.matchAll(/<script(?![^>]*src)[^>]*>([\\s\\S]*?)<\\/script>/g)].forEach((m,i)=>{try{new vm.Script(m[1]);}catch(e){console.error('\\u274c JS syntax error in script '+i+': '+e.message);process.exit(1);}});console.log('\\u2705 JS OK: $FILE');\" 2>&1;; esac || true",
+            "statusMessage": "Validating JS syntax…"
+          }
+        ]
+      }
+    ]
+  }
+}

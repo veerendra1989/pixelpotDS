@@ -1,4 +1,4 @@
-/*  pixelpotDS — Design System Generation Engine
+/*  hextodesign — Design System Generation Engine
     Takes hex + font config → produces a complete token set.
     Pure math, no dependencies. */
 
@@ -287,7 +287,7 @@
 
     return {
       meta: {
-        generator: "pixelpotDS",
+        generator: "hextodesign",
         version: "0.5.0",
         created: new Date().toISOString(),
         source: hex
