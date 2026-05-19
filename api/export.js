@@ -88,8 +88,13 @@ module.exports = function handler(req, res) {
     }));
   }
 
-  // Tier check
-  var tier = (body.tier || "free").toLowerCase();
+  // Tier check — accept string ("starter") or number (1)
+  var tier = body.tier || "free";
+  if (typeof tier === "number") {
+    var tierNames = ["free", "starter", "pro", "studio"];
+    tier = tierNames[tier] || "free";
+  }
+  tier = String(tier).toLowerCase();
   var tierLevel = TIER_LEVELS[tier];
   if (tierLevel === undefined) tierLevel = 0;
 
