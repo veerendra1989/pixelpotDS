@@ -581,6 +581,8 @@ body.grain::before {
   margin-top: 22px;
   flex-wrap: wrap;
 }
+.hero-cta-mobile { display: none; }
+.hero-cta-desktop { display: inline; }
 .hero__meta {
   margin-top: 18px;
   display: flex;
@@ -1573,11 +1575,15 @@ body.grain::before {
   .nav__brand { font-size: 22px; }
   .nav__cta .btn { padding: 8px 14px; font-size: 13px; }
 
+  /* ── Hero CTA label swap ── */
+  .hero-cta-desktop { display: none; }
+  .hero-cta-mobile { display: inline; }
+
   /* ── Hero: clean centered layout, NO background animation ── */
   .hero {
     height: auto;
     min-height: auto;
-    padding: 40px 0 32px;
+    padding: 100px 0 32px;
   }
   .hero__inner {
     text-align: center;
@@ -1594,26 +1600,29 @@ body.grain::before {
   }
 
   .hero__title {
-    font-size: 30px;
-    margin: 0 0 14px;
-    line-height: 1.1;
+    font-size: 34px;
+    margin: 0 0 16px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
   }
   .hero__sub {
-    font-size: 15px;
+    font-size: 16px;
+    line-height: 1.55;
     margin-inline: auto;
-    color: var(--ink-3);
+    color: var(--ink-2);
   }
 
-  /* Hex input: centered, slightly smaller */
+  /* Hex input: centered, faster glow */
   .hex-input {
     padding: 6px;
-    margin-top: 20px;
+    margin-top: 24px;
     align-self: center;
+    animation-duration: 1.5s;
   }
   .hex-input__swatch { width: 36px; height: 36px; }
-  .hex-input input { font-size: 15px; width: 100px; padding: 0 10px; }
+  .hex-input input { font-size: 16px; width: 100px; padding: 0 10px; }
   .hex-input button { height: 36px; padding: 0 18px; font-size: 14px; }
-  .hex-suggestions { justify-content: center; margin-top: 14px; }
+  .hex-suggestions { justify-content: center; margin-top: 16px; }
 
   /* CTAs: full-width, bold, stacked */
   .hero__ctas {
@@ -1626,20 +1635,21 @@ body.grain::before {
     justify-content: center;
     width: 100%;
     padding: 16px 18px;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
     border-radius: 12px;
   }
   .hero__meta {
-    font-size: 11px;
+    font-size: 12px;
     gap: 8px 16px;
     justify-content: center;
-    margin-top: 16px;
+    margin-top: 18px;
+    color: var(--ink-2);
   }
 
   /* ── Section titles ── */
-  .section-title { font-size: clamp(24px, 7vw, 32px); }
-  .section-sub { font-size: 14px; line-height: 1.5; }
+  .section-title { font-size: clamp(26px, 7.5vw, 34px); }
+  .section-sub { font-size: 15px; line-height: 1.55; color: var(--ink-2); }
   .section-head { margin-bottom: 24px; }
 
   /* ── Playground: compact card ── */
@@ -1648,18 +1658,21 @@ body.grain::before {
   .pg-generate__label { font-size: 13px; }
   .pg__bar {
     flex-direction: column;
-    padding: 12px 16px;
-    gap: 10px;
+    padding: 20px 16px 24px;
+    gap: 14px;
     align-items: stretch;
   }
   .pg__tabs { display: none; }
-  .pg__bar > div { width: 100%; flex-direction: column; gap: 10px; }
+  .pg__bar > div { width: 100%; flex-direction: column; gap: 14px; }
   .pg__hue { width: 100% !important; height: 12px; }
   .pg__color {
     align-self: flex-start;
     font-size: 12px;
     padding: 6px 14px 6px 6px;
   }
+
+  /* Hide "Generate my design system" CTA inside playground on mobile */
+  .pg-generate { display: none; }
   .pg__canvas { grid-template-columns: 1fr; padding: 14px; gap: 10px; }
 
   /* Hide subscription, dashboard, reviewer cards on mobile playground */
@@ -1678,8 +1691,8 @@ body.grain::before {
     gap: 10px;
   }
   .bento__big { grid-column: span 1 !important; }
-  .bento__big .bento__title { font-size: 18px; }
-  .bento__title { font-size: 15px; margin-top: 0; }
+  .bento__big .bento__title { font-size: 20px; }
+  .bento__title { font-size: 16px; margin-top: 0; }
   .bento__desc { display: none; }
   .bento__label { font-size: 9px; }
 
@@ -1695,8 +1708,8 @@ body.grain::before {
 
   /* ── Flow / Generator steps ── */
   .flow__step { min-height: auto; padding: 16px; gap: 10px; }
-  .flow__title { font-size: 15px; }
-  .flow__desc { font-size: 12px; line-height: 1.45; }
+  .flow__title { font-size: 16px; }
+  .flow__desc { font-size: 13px; line-height: 1.5; color: var(--ink-2); }
   .flow__viz { height: 72px; }
 
   /* ── Showcase ── */
@@ -1705,12 +1718,12 @@ body.grain::before {
   /* ── Pricing ── */
   .price { padding: 20px; }
   .price__amount { font-size: 40px; }
-  .price__tag { font-size: 12px; min-height: auto; margin-bottom: 18px; }
-  .price__list { font-size: 13px; gap: 8px; margin-bottom: 20px; }
+  .price__tag { font-size: 13px; min-height: auto; margin-bottom: 18px; color: var(--ink-2); }
+  .price__list { font-size: 14px; gap: 10px; margin-bottom: 20px; }
 
   /* ── FAQ ── */
-  .faq__q h3 { font-size: 15px; }
-  .faq__a { font-size: 13px; }
+  .faq__q h3 { font-size: 16px; }
+  .faq__a { font-size: 14px; line-height: 1.55; color: var(--ink-2); }
   .faq__row { padding: 18px 0; }
 
   /* ── Footer: clean 2-col mobile ── */
@@ -1724,9 +1737,9 @@ body.grain::before {
     padding-bottom: 16px;
     border-bottom: 1px solid var(--line);
   }
-  .footer h4 { font-size: 10px; margin-bottom: 10px; }
-  .footer ul { gap: 6px; }
-  .footer ul a { font-size: 13px; }
+  .footer h4 { font-size: 11px; margin-bottom: 10px; }
+  .footer ul { gap: 8px; }
+  .footer ul a { font-size: 14px; }
   .footer__inner > *:last-child {
     grid-column: 1 / -1;
     padding-top: 16px;
@@ -3007,8 +3020,19 @@ var {
           )
         ),
         /*#__PURE__*/React.createElement("div", { className: "hero__ctas" },
-          /*#__PURE__*/React.createElement("a", { className: "btn btn--primary", href: "#playground" },
-            "Try the Playground ", /*#__PURE__*/React.createElement(Icon.arrow, { className: "arr" })
+          /*#__PURE__*/React.createElement("a", { className: "btn btn--primary", href: "#playground",
+            onClick: function(e) {
+              if (window.innerWidth <= 480) {
+                e.preventDefault();
+                try { var h = document.documentElement.style.getPropertyValue("--brand-h") || "65"; localStorage.setItem("pp-brand-hue", h); } catch(_) {}
+                var b = localStorage.getItem("pp-brand") || "E8B26B";
+                window.location.href = "preview.html?brand=" + b.replace("#","");
+              }
+            }
+          },
+            /*#__PURE__*/React.createElement("span", { className: "hero-cta-desktop" }, "Try the Playground "),
+            /*#__PURE__*/React.createElement("span", { className: "hero-cta-mobile" }, "Generate "),
+            /*#__PURE__*/React.createElement(Icon.arrow, { className: "arr" })
           ),
           /*#__PURE__*/React.createElement("a", { className: "btn btn--ghost", href: "#pricing" }, "See pricing")
         ),
