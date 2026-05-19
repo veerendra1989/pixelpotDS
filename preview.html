@@ -179,7 +179,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   overflow-y: auto; overflow-x: hidden;
 }
 :root[data-theme="light"] .sidebar { background: #fff; }
-.sidebar__logo { display: flex; align-items: center; gap: 0; padding: 16px 20px; font-family: "Finlandica Headline", sans-serif; font-size: 26px; font-weight: 500; color: var(--ink); }
+.sidebar__logo { display: flex; align-items: center; gap: 0; padding: 16px 20px; font-family: "Finlandica Headline", sans-serif; font-size: 28px; font-weight: 500; color: var(--ink); }
 .sidebar__logo .brand-accent { color: var(--brand); }
 .sidebar__divider { height: 1px; background: var(--line); margin: 0 16px; }
 .sidebar__section { padding: 14px 16px 10px; }
@@ -572,11 +572,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .c-divider--vertical { display: inline-block; width: 1px; height: 32px; background: var(--line); vertical-align: middle; margin: 0 12px; border: none; }
 
 /* --- Selection & Input --- */
-.c-toggle { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; color: var(--ink-2); }
-.c-toggle-track { width: 40px; min-width: 40px; height: 22px; border-radius: 11px; background: var(--bg-4); position: relative; transition: background 0.2s; flex-shrink: 0; }
-.c-toggle-track.on { background: var(--brand); }
-.c-toggle-thumb { width: 18px; height: 18px; border-radius: 50%; background: #fff; position: absolute; top: 2px; left: 2px; transition: left 0.2s; box-shadow: var(--shadow-sm); }
-.c-toggle-track.on .c-toggle-thumb { left: 20px; }
+.c-slide-toggle { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; color: var(--ink-2); white-space: nowrap; }
+.c-slide-toggle-track { width: 40px; min-width: 40px; height: 22px; border-radius: 11px; background: var(--bg-4); position: relative; transition: background 0.2s; flex-shrink: 0; }
+.c-slide-toggle-track.on { background: var(--brand); }
+.c-slide-toggle-thumb { width: 18px; height: 18px; border-radius: 50%; background: #fff; position: absolute; top: 2px; left: 2px; transition: left 0.2s; box-shadow: var(--shadow-sm); }
+.c-slide-toggle-track.on .c-slide-toggle-thumb { left: 20px; }
 
 .c-slider { width: 100%; }
 .c-slider-track { width: 100%; height: 4px; background: var(--bg-4); border-radius: 2px; position: relative; }
@@ -1431,10 +1431,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
     h += '<div class="ds-section-header"><span class="ds-section-num">12</span><h2 class="ds-section-title">Selection &amp; input</h2></div>';
     h += '<p class="ds-section-desc">Toggle, slider, autocomplete, datepicker, and button toggle group components.</p>';
 
-    h += '<div class="ds-subsection"><div class="ds-subsection-title">Slide toggle</div><div class="ds-preview"><div style="display:flex;flex-direction:column;gap:16px;max-width:280px">';
-    h += '<div class="c-toggle"><div class="c-toggle-track on" onclick="this.classList.toggle(\'on\')"><div class="c-toggle-thumb"></div></div><span>Notifications</span></div>';
-    h += '<div class="c-toggle"><div class="c-toggle-track" onclick="this.classList.toggle(\'on\')"><div class="c-toggle-thumb"></div></div><span>Dark mode</span></div>';
-    h += '<div class="c-toggle"><div class="c-toggle-track on" style="opacity:0.5;pointer-events:none"><div class="c-toggle-thumb"></div></div><span style="opacity:0.5">Disabled (on)</span></div>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Slide toggle</div><div class="ds-preview"><div style="display:flex;gap:40px;flex-wrap:wrap">';
+    h += '<div class="c-slide-toggle"><div class="c-slide-toggle-track on" onclick="this.classList.toggle(\'on\')"><div class="c-slide-toggle-thumb"></div></div><span>Notifications</span></div>';
+    h += '<div class="c-slide-toggle"><div class="c-slide-toggle-track" onclick="this.classList.toggle(\'on\')"><div class="c-slide-toggle-thumb"></div></div><span>Dark mode</span></div>';
+    h += '<div class="c-slide-toggle"><div class="c-slide-toggle-track on" style="opacity:0.5;pointer-events:none"><div class="c-slide-toggle-thumb"></div></div><span style="opacity:0.5">Disabled (on)</span></div>';
     h += '</div></div></div>';
 
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Slider</div><div class="ds-preview"><div style="max-width:360px;display:flex;flex-direction:column;gap:20px">';
