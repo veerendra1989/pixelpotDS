@@ -209,17 +209,47 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .sidebar__generate-btn.pulse { animation: btnPulse 1.5s ease infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes btnPulse { 0%,100% { box-shadow: 0 0 0 0 var(--brand-soft); } 50% { box-shadow: 0 0 0 8px transparent; } }
-.sidebar__font-select {
-  width: 100%; height: 44px; padding: 0 28px 0 10px; border: 1px solid var(--line-2); border-radius: var(--r-1);
+/* ── Font Picker ── */
+.font-picker { position: relative; width: 100%; }
+.font-picker__input {
+  width: 100%; height: 44px; padding: 0 32px 0 10px; border: 1px solid var(--line-2); border-radius: var(--r-1);
   font-size: 13px; font-weight: 500; color: var(--ink); background: var(--bg-2);
-  outline: none; appearance: none; cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2344403a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 12px center;
+  outline: none; cursor: text; box-sizing: border-box;
+  background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2344403a' stroke-width='2.5' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M21 21l-4.35-4.35'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
 }
-.sidebar__font-select:focus { border-color: var(--brand); }
-:root[data-theme="dark"] .sidebar__font-select {
-  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23c8c5bd' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+.font-picker__input:focus { border-color: var(--brand); }
+.font-picker__input::placeholder { color: var(--ink-4); font-weight: 400; }
+:root[data-theme="dark"] .font-picker__input {
+  background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23c8c5bd' stroke-width='2.5' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M21 21l-4.35-4.35'/%3E%3C/svg%3E");
 }
+.font-picker__dropdown {
+  display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+  max-height: 280px; overflow-y: auto; z-index: 90;
+  background: var(--bg-1); border: 1px solid var(--line-2); border-radius: var(--r-1);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+.font-picker__dropdown.open { display: block; }
+.font-picker__group-label {
+  padding: 8px 10px 4px; font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--ink-4); position: sticky; top: 0; background: var(--bg-1);
+}
+.font-picker__item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 10px; cursor: pointer; font-size: 13px; color: var(--ink);
+  transition: background 0.1s;
+}
+.font-picker__item:hover, .font-picker__item.highlighted { background: var(--bg-3); }
+.font-picker__item.active { color: var(--brand); font-weight: 600; }
+.font-picker__item-name { font-weight: 500; }
+.font-picker__item-tag { font-size: 11px; color: var(--ink-4); }
+.font-picker__empty { padding: 16px 10px; font-size: 12px; color: var(--ink-4); text-align: center; }
+.font-picker__preview {
+  margin-top: 8px; padding: 10px; border: 1px solid var(--line); border-radius: var(--r-1);
+  background: var(--bg-2); font-size: 16px; line-height: 1.4; color: var(--ink);
+  min-height: 44px; display: flex; align-items: center;
+}
+.font-picker__preview-label { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-4); margin-top: 8px; margin-bottom: 2px; }
 :root[data-theme="dark"] .c-select {
   background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23c8c5bd' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 }
@@ -792,7 +822,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .mobile-config .sidebar__color-hex { height: 36px; font-size: 13px; padding: 0 8px; }
   .mobile-config .sidebar__color-name { height: 36px; font-size: 11px; width: 64px; }
   .mobile-config .sidebar__add-color { height: 36px; font-size: 12px; border-radius: 8px; }
-  .mobile-config .sidebar__font-select { height: 42px; font-size: 14px; }
+  .mobile-config .font-picker__input { height: 42px; font-size: 14px; }
   .mobile-config .sidebar__generate-btn {
     width: 100%; margin: 4px 0 0;
   }
@@ -1149,7 +1179,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
   <div class="sidebar__section">
     <div class="sidebar__label">Font pairing</div>
-    <select class="sidebar__font-select" id="fontSelect"></select>
+    <div class="font-picker" id="fontPicker">
+      <input class="font-picker__input" id="fontSearch" type="text" placeholder="Search Google Fonts..." autocomplete="off" />
+      <div class="font-picker__dropdown" id="fontDropdown"></div>
+    </div>
+    <div class="font-picker__preview-label">Preview</div>
+    <div class="font-picker__preview" id="fontPreview">The quick brown fox jumps over the lazy dog</div>
   </div>
 
   <button class="sidebar__generate-btn" id="regenBtn">
@@ -1225,7 +1260,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
   </div>
   <div>
     <div class="mobile-config__label">Font pairing</div>
-    <select class="sidebar__font-select" id="mobileFontSelect"></select>
+    <div class="font-picker" id="mobileFontPicker">
+      <input class="font-picker__input" id="mobileFontSearch" type="text" placeholder="Search Google Fonts..." autocomplete="off" />
+      <div class="font-picker__dropdown" id="mobileFontDropdown"></div>
+    </div>
   </div>
   <button class="sidebar__generate-btn" id="mobileRegenBtn">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -1264,7 +1302,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 <script>
 (function() {
   /* ═══ Font catalogue ═══ */
-  var FONTS = [
+  /* ── Preset font pairings (recommended) ── */
+  var FONT_PAIRINGS = [
     { id:"geist", name:"Geist", sans:"Geist", mono:"Geist Mono", tag:"Modern", googleUrl:null, cssVar:'"Geist", ui-sans-serif, sans-serif', monoVar:'"Geist Mono", ui-monospace, monospace' },
     { id:"inter", name:"Inter", sans:"Inter", mono:"JetBrains Mono", tag:"Neutral", googleUrl:"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap", cssVar:'"Inter", ui-sans-serif, sans-serif', monoVar:'"JetBrains Mono", ui-monospace, monospace' },
     { id:"plus-jakarta", name:"Plus Jakarta", sans:"Plus Jakarta Sans", mono:"Space Mono", tag:"Friendly", googleUrl:"https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap", cssVar:'"Plus Jakarta Sans", ui-sans-serif, sans-serif', monoVar:'"Space Mono", ui-monospace, monospace' },
@@ -1272,6 +1311,27 @@ button { font: inherit; color: inherit; cursor: pointer; }
     { id:"outfit", name:"Outfit", sans:"Outfit", mono:"Fira Code", tag:"Geometric", googleUrl:"https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap", cssVar:'"Outfit", ui-sans-serif, sans-serif', monoVar:'"Fira Code", ui-monospace, monospace' },
     { id:"playfair", name:"Playfair", sans:"Playfair Display", mono:"DM Mono", tag:"Editorial", googleUrl:"https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap", cssVar:'"Playfair Display", Georgia, serif', monoVar:'"DM Mono", ui-monospace, monospace' }
   ];
+
+  /* ── Curated popular Google Fonts ── */
+  var GOOGLE_FONTS = [
+    "Roboto","Open Sans","Lato","Montserrat","Poppins","Raleway","Nunito","Source Sans 3",
+    "Ubuntu","Merriweather","Rubik","Work Sans","Manrope","Karla","Josefin Sans","Quicksand",
+    "Mulish","Barlow","Cabin","Libre Franklin","Sora","Space Grotesk","Albert Sans","Red Hat Display",
+    "Lexend","Urbanist","Figtree","Onest","Instrument Sans","General Sans",
+    "Noto Sans","IBM Plex Sans","Fira Sans","Exo 2","Signika","Archivo","Overpass",
+    "Nunito Sans","Titillium Web","Mukta","Heebo","Asap","Assistant","Jost","Sarabun",
+    "Noto Serif","Merriweather","Lora","Libre Baskerville","Source Serif 4","Crimson Text",
+    "EB Garamond","Cormorant Garamond","Bitter","Arvo","Vollkorn","Spectral",
+    "Playfair Display","DM Serif Display","Fraunces","Bodoni Moda","Newsreader",
+    "Oswald","Bebas Neue","Anton","League Spartan","Fjalla One","Barlow Condensed",
+    "Roboto Condensed","PT Sans Narrow","Yanone Kaffeesatz","Teko",
+    "Roboto Mono","Fira Code","JetBrains Mono","Source Code Pro","IBM Plex Mono",
+    "Space Mono","DM Mono","Inconsolata","Ubuntu Mono","Red Hat Mono",
+    "Caveat","Dancing Script","Pacifico","Satisfy","Great Vibes","Lobster","Comfortaa"
+  ];
+
+  /* backward-compat alias */
+  var FONTS = FONT_PAIRINGS;
 
   var root = document.documentElement;
   var overlay = document.getElementById("loadingOverlay");
@@ -1686,23 +1746,201 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
   renderColorItems();
 
-  /* ═══ Sidebar: font selector ═══ */
-  var fontSelect = document.getElementById("fontSelect");
-  FONTS.forEach(function(f) {
-    var opt = document.createElement("option");
-    opt.value = f.id;
-    opt.textContent = f.name + " · " + f.tag;
-    fontSelect.appendChild(opt);
-  });
-  if (fontConf && fontConf.id) fontSelect.value = fontConf.id;
+  /* ═══ Font Picker — shared logic ═══ */
+  function makeGoogleFontConf(fontName) {
+    var id = fontName.toLowerCase().replace(/\s+/g, "-");
+    var urlName = fontName.replace(/\s+/g, "+");
+    return {
+      id: id, name: fontName, sans: fontName, mono: "Geist Mono", tag: "Google Fonts",
+      googleUrl: "https://fonts.googleapis.com/css2?family=" + urlName + ":wght@300;400;500;600;700&display=swap",
+      cssVar: '"' + fontName + '", ui-sans-serif, sans-serif',
+      monoVar: '"Geist Mono", ui-monospace, monospace',
+      isCustom: true
+    };
+  }
 
-  fontSelect.addEventListener("change", function() {
-    var f = FONTS.find(function(x) { return x.id === fontSelect.value; });
-    if (!f) return;
+  function filterFonts(query) {
+    var q = query.toLowerCase().trim();
+    var pairings = FONT_PAIRINGS.filter(function(f) {
+      return f.name.toLowerCase().indexOf(q) !== -1 || f.tag.toLowerCase().indexOf(q) !== -1;
+    });
+    var google = GOOGLE_FONTS.filter(function(name) {
+      return name.toLowerCase().indexOf(q) !== -1;
+    }).slice(0, 20);
+    return { pairings: pairings, google: google };
+  }
+
+  function renderDropdown(dropdown, query, activeId) {
+    var results = query ? filterFonts(query) : { pairings: FONT_PAIRINGS, google: [] };
+    var html = "";
+
+    if (results.pairings.length > 0) {
+      html += '<div class="font-picker__group-label">Recommended Pairings</div>';
+      results.pairings.forEach(function(f) {
+        var cls = "font-picker__item" + (f.id === activeId ? " active" : "");
+        html += '<div class="' + cls + '" data-type="pairing" data-id="' + f.id + '">';
+        html += '<span class="font-picker__item-name">' + f.name + '</span>';
+        html += '<span class="font-picker__item-tag">' + f.tag + '</span>';
+        html += '</div>';
+      });
+    }
+
+    if (query && results.google.length > 0) {
+      html += '<div class="font-picker__group-label">Google Fonts</div>';
+      results.google.forEach(function(name) {
+        var gId = name.toLowerCase().replace(/\s+/g, "-");
+        var cls = "font-picker__item" + (gId === activeId ? " active" : "");
+        html += '<div class="' + cls + '" data-type="google" data-name="' + name + '">';
+        html += '<span class="font-picker__item-name">' + name + '</span>';
+        html += '<span class="font-picker__item-tag">Sans</span>';
+        html += '</div>';
+      });
+    }
+
+    if (!html) {
+      html = '<div class="font-picker__empty">No fonts found. Try a different name.</div>';
+    }
+
+    dropdown.innerHTML = html;
+  }
+
+  function previewFontInEl(fontName, el) {
+    if (!el) return;
+    var urlName = fontName.replace(/\s+/g, "+");
+    var previewLink = document.querySelector('link[data-font-preview]');
+    if (previewLink) previewLink.remove();
+    var link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "https://fonts.googleapis.com/css2?family=" + urlName + ":wght@400;500&display=swap";
+    link.setAttribute("data-font-preview", "1");
+    document.head.appendChild(link);
+    el.style.fontFamily = '"' + fontName + '", sans-serif';
+  }
+
+  function initFontPicker(inputEl, dropdownEl, previewEl, onSelect) {
+    var isOpen = false;
+    var savedDisplayVal = "";
+
+    function open() {
+      renderDropdown(dropdownEl, inputEl.value, fontConf ? fontConf.id : "");
+      dropdownEl.classList.add("open");
+      isOpen = true;
+    }
+    function close() {
+      dropdownEl.classList.remove("open");
+      isOpen = false;
+    }
+
+    inputEl.addEventListener("focus", function() {
+      savedDisplayVal = inputEl.value;
+      inputEl.value = "";
+      inputEl.placeholder = "Search Google Fonts...";
+      open();
+    });
+
+    inputEl.addEventListener("input", function() {
+      open();
+    });
+
+    dropdownEl.addEventListener("mousedown", function(e) {
+      e.preventDefault(); /* prevent blur from firing before click */
+    });
+
+    dropdownEl.addEventListener("click", function(e) {
+      var item = e.target.closest(".font-picker__item");
+      if (!item) return;
+      var type = item.getAttribute("data-type");
+      var f;
+      if (type === "pairing") {
+        var id = item.getAttribute("data-id");
+        f = FONT_PAIRINGS.find(function(x) { return x.id === id; });
+      } else if (type === "google") {
+        var name = item.getAttribute("data-name");
+        f = makeGoogleFontConf(name);
+      }
+      if (f) {
+        inputEl.value = f.name + (f.tag ? " · " + f.tag : "");
+        onSelect(f);
+      }
+      close();
+    });
+
+    inputEl.addEventListener("blur", function() {
+      setTimeout(function() {
+        close();
+        /* restore display value if nothing was typed/selected */
+        if (!inputEl.value && savedDisplayVal) {
+          inputEl.value = savedDisplayVal;
+        }
+      }, 150);
+    });
+
+    /* keyboard navigation */
+    inputEl.addEventListener("keydown", function(e) {
+      if (!isOpen) return;
+      var items = dropdownEl.querySelectorAll(".font-picker__item");
+      var idx = Array.prototype.indexOf.call(items, dropdownEl.querySelector(".highlighted"));
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (idx >= 0) items[idx].classList.remove("highlighted");
+        idx = Math.min(idx + 1, items.length - 1);
+        items[idx].classList.add("highlighted");
+        items[idx].scrollIntoView({ block: "nearest" });
+        /* live preview on hover */
+        var name = items[idx].getAttribute("data-name") || items[idx].querySelector(".font-picker__item-name").textContent;
+        if (previewEl) previewFontInEl(name, previewEl);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (idx >= 0) items[idx].classList.remove("highlighted");
+        idx = Math.max(idx - 1, 0);
+        items[idx].classList.add("highlighted");
+        items[idx].scrollIntoView({ block: "nearest" });
+        var name2 = items[idx].getAttribute("data-name") || items[idx].querySelector(".font-picker__item-name").textContent;
+        if (previewEl) previewFontInEl(name2, previewEl);
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (idx >= 0) { items[idx].click(); }
+      } else if (e.key === "Escape") {
+        close();
+        inputEl.blur();
+      }
+    });
+
+    /* live preview on hover */
+    dropdownEl.addEventListener("mouseover", function(e) {
+      var item = e.target.closest(".font-picker__item");
+      if (!item || !previewEl) return;
+      var name = item.getAttribute("data-name") || item.querySelector(".font-picker__item-name").textContent;
+      previewFontInEl(name, previewEl);
+    });
+
+    /* Set initial display value */
+    if (fontConf) {
+      inputEl.value = fontConf.name + (fontConf.tag ? " · " + fontConf.tag : "");
+    }
+  }
+
+  function applyFont(f) {
     fontConf = f;
     loadFont(f);
+    try { localStorage.setItem("pp-font", JSON.stringify(f)); } catch(_) {}
     markDirty();
+    /* Update preview element */
+    var prev = document.getElementById("fontPreview");
+    if (prev) prev.style.fontFamily = f.cssVar;
+  }
+
+  /* ═══ Init desktop font picker ═══ */
+  var fontSearchInput = document.getElementById("fontSearch");
+  var fontDropdown = document.getElementById("fontDropdown");
+  var fontPreviewEl = document.getElementById("fontPreview");
+  initFontPicker(fontSearchInput, fontDropdown, fontPreviewEl, function(f) {
+    applyFont(f);
+    /* sync mobile */
+    var mInput = document.getElementById("mobileFontSearch");
+    if (mInput) mInput.value = f.name + (f.tag ? " · " + f.tag : "");
   });
+  if (fontPreviewEl && fontConf) fontPreviewEl.style.fontFamily = fontConf.cssVar;
 
   /* ═══ Helpers ═══ */
   function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
@@ -2523,7 +2761,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
   /* ═══ Mobile: sync color list with desktop ═══ */
   var mobileColorsList = document.getElementById("mobileColorsList");
   var mobileAddColorBtn = document.getElementById("mobileAddColorBtn");
-  var mobileFontSelect = document.getElementById("mobileFontSelect");
   var mobileRegenBtn = document.getElementById("mobileRegenBtn");
 
   /* Mirror renderColorItems for mobile */
@@ -2605,19 +2842,15 @@ button { font: inherit; color: inherit; cursor: pointer; }
     });
   }
 
-  /* Mobile font selector — populate & sync */
-  if (mobileFontSelect) {
-    FONTS.forEach(function(f) {
-      var opt = document.createElement("option");
-      opt.value = f.id; opt.textContent = f.name + " · " + f.tag;
-      mobileFontSelect.appendChild(opt);
-    });
-    if (fontConf && fontConf.id) mobileFontSelect.value = fontConf.id;
-    mobileFontSelect.addEventListener("change", function() {
-      var f = FONTS.find(function(x) { return x.id === mobileFontSelect.value; });
-      if (!f) return;
-      fontConf = f; loadFont(f); markDirty();
-      if (fontSelect) fontSelect.value = f.id;
+  /* Mobile font picker — init & sync */
+  var mobileFontSearchInput = document.getElementById("mobileFontSearch");
+  var mobileFontDropdown = document.getElementById("mobileFontDropdown");
+  if (mobileFontSearchInput && mobileFontDropdown) {
+    initFontPicker(mobileFontSearchInput, mobileFontDropdown, null, function(f) {
+      applyFont(f);
+      /* sync desktop */
+      if (fontSearchInput) fontSearchInput.value = f.name + (f.tag ? " · " + f.tag : "");
+      if (fontPreviewEl) fontPreviewEl.style.fontFamily = f.cssVar;
     });
   }
 
