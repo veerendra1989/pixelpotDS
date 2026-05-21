@@ -295,8 +295,32 @@ button { font: inherit; color: inherit; cursor: pointer; }
    HERO
    ═══════════════════════════════════════════ */
 .ds-hero { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--r-3); padding: 40px 36px; margin-bottom: 40px; position: relative; overflow: hidden; }
-.hero__theme-toggle { position: absolute; top: 16px; right: 16px; z-index: 2; display: flex; align-items: center; gap: 2px; padding: 3px; background: var(--bg-3); border: 1px solid var(--line); border-radius: 99px; }
-:root[data-theme="light"] .hero__theme-toggle { background: var(--bg-2); }
+.hero__theme-toggle { display: none; }
+
+/* ═══ Floating theme toggle ═══ */
+.theme-toggle-float {
+  position: fixed; bottom: 24px; right: 24px; z-index: 999;
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px; border-radius: 999px;
+  border: 1px solid var(--line-2); background: var(--bg-1);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18), 0 0 0 1px var(--line);
+  cursor: pointer; transition: box-shadow 0.2s, transform 0.15s, border-color 0.2s;
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  font-family: inherit;
+}
+.theme-toggle-float:hover {
+  box-shadow: 0 6px 32px rgba(0,0,0,0.24), 0 0 0 1px var(--brand);
+  border-color: var(--brand); transform: translateY(-2px);
+}
+.theme-toggle-float__icon {
+  width: 20px; height: 20px; color: var(--ink);
+  display: grid; place-items: center; transition: color 0.2s;
+}
+.theme-toggle-float__label {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
+  color: var(--ink-2); text-transform: uppercase;
+  font-family: var(--f-mono); user-select: none;
+}
 .ds-hero::before { display: none; }
 .ds-hero h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; position: relative; z-index: 1; }
 .ds-hero p { font-size: 14px; color: var(--ink-3); max-width: 560px; line-height: 1.7; position: relative; z-index: 1; }
@@ -325,15 +349,19 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* ── Preview Card ── */
 .ds-preview { background: var(--card-bg); border: 1px solid var(--line); border-radius: var(--r-3); padding: 24px; margin-bottom: 12px; overflow: hidden; }
+.ds-preview--visible { overflow: visible; }
 .ds-preview-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--ink-4); margin-bottom: 12px; }
 .ds-preview-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 .ds-preview-col { display: flex; flex-direction: column; gap: 12px; }
 
 /* ── Code Spec ── */
 .ds-spec { background: #0a0a0c; color: #c8c5bd; border-radius: var(--r-2); padding: 14px 18px; font-family: var(--f-mono); font-size: 12px; line-height: 1.8; overflow-x: auto; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.06); }
+:root[data-theme="light"] .ds-spec { background: var(--bg-1); color: var(--ink-2); border-color: var(--line-2); }
 .ds-spec .k { color: var(--brand-text, var(--brand)); }
 .ds-spec .v { color: oklch(0.82 0.12 85); }
+:root[data-theme="light"] .ds-spec .v { color: oklch(0.45 0.12 85); }
 .ds-spec .c { color: #5a574f; font-style: italic; }
+:root[data-theme="light"] .ds-spec .c { color: var(--ink-4); }
 
 /* ═══════════════════════════════════════════
    1. COLORS
@@ -386,8 +414,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .c-btn--primary { background: var(--brand); color: var(--brand-ink); }
 .c-btn--primary:hover { opacity: 0.9; }
 .c-btn--primary:active { transform: scale(0.98); }
-.c-btn--secondary { background: transparent; color: var(--ink); border: 1.5px solid var(--brand); }
-.c-btn--secondary:hover { background: var(--brand-faint); }
+.c-btn--secondary { background: transparent; color: var(--brand-text, var(--brand)); border: 1.5px solid var(--brand); }
+.c-btn--secondary:hover { background: var(--brand-faint); color: var(--brand-text, var(--brand)); }
 .c-btn--ghost { background: transparent; color: var(--brand-text, var(--brand)); border: none; padding: 0 12px; }
 .c-btn--ghost:hover { background: var(--brand-faint); }
 .c-btn--danger { background: var(--neg-soft); color: var(--neg); border: 1px solid oklch(0.70 0.18 25 / 0.2); }
@@ -395,6 +423,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .c-btn--sm { height: 30px; padding: 0 12px; font-size: 12px; }
 .c-btn--lg { height: 42px; padding: 0 20px; font-size: 14px; }
 .c-btn:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+.c-btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.c-input:focus-visible, .c-select:focus-visible, .c-textarea:focus-visible { outline: none; }
 
 /* Inputs */
 .c-input { height: 44px; padding: 0 12px; border: 1px solid var(--line-2); border-radius: var(--r-2); font-family: inherit; font-size: 13px; color: var(--ink); background: var(--bg-1); outline: none; transition: all 0.15s; width: 100%; }
@@ -427,6 +457,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* Toggle */
 .c-toggle { width: 40px; height: 22px; border-radius: 99px; background: var(--bg-4); border: none; position: relative; cursor: pointer; transition: background 0.15s; flex-shrink: 0; }
 .c-toggle.on { background: var(--brand); }
+.c-toggle:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 .c-toggle::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform 0.15s; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
 .c-toggle.on::after { transform: translateX(18px); }
 
@@ -590,14 +621,16 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .c-card-content { padding: 16px; }
 .c-card-content h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
 .c-card-content p { font-size: 13px; color: var(--ink-3); line-height: 1.5; }
-.c-card-actions { padding: 8px 16px; display: flex; gap: 8px; border-top: 1px solid var(--line); }
+.c-card-actions { padding: 8px 16px; display: flex; gap: 8px; border-top: 1px solid var(--line); justify-content: flex-end; }
 
 .c-expansion { border: 1px solid var(--line); border-radius: var(--r-2); overflow: hidden; }
 .c-expansion + .c-expansion { margin-top: -1px; }
 .c-expansion-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: var(--card-bg); cursor: pointer; font-size: 14px; font-weight: 500; }
+.c-expansion-header:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
 .c-expansion-header svg { color: var(--ink-4); transition: transform 0.2s; }
 .c-expansion-header.open svg { transform: rotate(180deg); }
-.c-expansion-body { padding: 0 16px 14px; font-size: 13px; color: var(--ink-3); line-height: 1.6; background: var(--card-bg); }
+.c-expansion-body { padding: 8px 16px 14px; font-size: 13px; color: var(--ink-3); line-height: 1.6; background: var(--card-bg); }
+.c-expansion-body .c-expansion-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; }
 
 .c-bottom-sheet { background: var(--card-bg); border-radius: var(--r-3) var(--r-3) 0 0; border: 1px solid var(--line); border-bottom: none; box-shadow: var(--shadow-lg); max-width: 400px; }
 .c-bottom-sheet-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--ink-4); margin: 10px auto; }
@@ -671,6 +704,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .c-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 99px; font-size: 12px; font-weight: 500; border: 1px solid var(--line-2); color: var(--ink-2); background: var(--card-bg); cursor: pointer; transition: all 0.12s; }
 .c-chip:hover { background: var(--bg-3); }
 .c-chip.selected { background: var(--brand-soft); border-color: var(--brand); color: var(--brand-text, var(--brand)); }
+.c-chip:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
 .c-chip-remove { display: flex; cursor: pointer; color: var(--ink-4); }
 .c-chip-remove:hover { color: var(--neg); }
 
@@ -703,8 +737,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .c-dialog-body { padding: 0 24px 20px; font-size: 13px; color: var(--ink-3); line-height: 1.6; }
 .c-dialog-actions { padding: 8px 16px 16px; display: flex; justify-content: flex-end; gap: 8px; }
 
-.c-snackbar { display: inline-flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: var(--r-2); background: var(--ink); color: var(--bg); font-size: 13px; box-shadow: var(--shadow-md); }
-.c-snackbar-action { font-size: 13px; font-weight: 600; color: var(--brand); cursor: pointer; background: none; border: none; font-family: inherit; }
+.c-snackbar { display: inline-flex; align-items: center; gap: 12px; padding: 12px 20px; border-radius: var(--r-2); background: var(--ink); color: var(--bg); font-size: 13px; box-shadow: var(--shadow-md); min-width: 280px; justify-content: space-between; }
+.c-snackbar-action { font-size: 13px; font-weight: 600; color: var(--brand); cursor: pointer; background: none; border: none; font-family: inherit; white-space: nowrap; margin-left: 8px; }
 
 .c-tooltip-wrap { position: relative; display: inline-flex; }
 .c-tooltip { position: absolute; padding: 6px 10px; border-radius: 6px; background: var(--ink); color: var(--bg); font-size: 12px; white-space: nowrap; pointer-events: none; }
@@ -738,6 +772,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .c-sidenav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--r-1); font-size: 13px; color: var(--ink-3); cursor: pointer; border: none; background: none; font-family: inherit; width: 100%; text-align: left; transition: all 0.12s; }
 .c-sidenav-item:hover { background: var(--bg-3); color: var(--ink); }
 :root[data-theme="light"] .c-sidenav-item:hover { background: var(--bg-2); }
+.c-sidenav-item:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
 .c-sidenav-item.active { background: var(--brand-faint); color: var(--brand-text, var(--brand)); font-weight: 500; }
 .c-sidenav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
 .c-sidenav-body { flex: 1; padding: 20px; background: var(--card-bg); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--ink-3); }
@@ -746,6 +781,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .c-tab { padding: 12px 20px; font-size: 13px; font-weight: 500; color: var(--ink-3); cursor: pointer; border: none; background: none; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.15s; font-family: inherit; display: flex; align-items: center; gap: 6px; }
 .c-tab:hover { color: var(--ink); }
 .c-tab.active { color: var(--brand-text, var(--brand)); border-bottom-color: var(--brand); }
+.c-tab:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
 .c-tab svg { width: 16px; height: 16px; }
 
 .c-paginator { display: flex; align-items: center; gap: 16px; font-size: 13px; color: var(--ink-2); }
@@ -852,13 +888,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
   /* ── Content adjustments ── */
   .ds-body { padding: 20px 16px 80px; }
   .ds-hero { padding: 24px 18px; border-radius: 12px; }
-  .ds-hero h1 { font-size: 20px; }
+  .ds-hero h1 { font-size: 20px; padding-right: 64px; }
   .ds-hero p { font-size: 13px; }
   .ds-hero-stats { gap: 16px; flex-wrap: wrap; }
   .ds-hero-stat-val { font-size: 22px; }
   .hero__chips { flex-wrap: wrap; gap: 6px; }
   .hero__chip { font-size: 10px; padding: 3px 8px; }
-  .hero__theme-toggle { top: 12px; right: 12px; }
+  /* hero theme toggle hidden — floating toggle used instead */
 
   /* Section headers */
   .ds-section { margin-bottom: 32px; }
@@ -920,6 +956,14 @@ button { font: inherit; color: inherit; cursor: pointer; }
   /* Tables overflow */
   .breakpoint-table { display: block; overflow-x: auto; }
   .ds-spec { overflow-x: auto; white-space: pre; }
+
+  /* Snackbar & Dialog */
+  .c-snackbar { min-width: unset; max-width: 100%; font-size: 12px; padding: 10px 14px; }
+  .c-dialog { max-width: 100%; }
+  .modal-container { max-width: 100%; }
+
+  /* Expansion panel */
+  .c-expansion-header { padding: 12px 14px; font-size: 13px; }
 
   /* Sidenav component */
   .c-sidenav { flex-direction: column; height: auto; }
@@ -1147,7 +1191,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 <body>
 
 <!-- LOADING OVERLAY -->
-<div class="loading-overlay" id="loadingOverlay">
+<div class="loading-overlay" id="loadingOverlay" style="display:none">
   <div class="lo-grid"></div>
   <div class="lo-center">
     <div class="lo-orb-wrap">
@@ -1160,7 +1204,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 </div>
 
 <!-- SIDEBAR -->
-<aside class="sidebar" id="sidebar" style="opacity:0">
+<aside class="sidebar" id="sidebar" style="opacity:1">
   <div class="sidebar__logo">
     <span class="brand-accent">#</span>hex<span class="brand-accent">to</span>design
   </div>
@@ -1294,7 +1338,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 </nav>
 
 <!-- MAIN -->
-<div class="main-content" id="mainContent" style="opacity:0">
+<div class="main-content" id="mainContent" style="opacity:1">
   <div id="app"></div>
 </div>
 
@@ -1346,8 +1390,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   var dsRaw = localStorage.getItem("pp-ds");
   var needsGeneration = !dsRaw || brandParam;
 
-  var hex = brandParam ? ("#" + brandParam.replace("#","")) : (localStorage.getItem("pp-brand") || "#E8B26B");
-  if (!/^#[0-9a-fA-F]{6}$/.test(hex)) hex = "#E8B26B";
+  var hex = brandParam ? ("#" + brandParam.replace("#","")) : (localStorage.getItem("pp-brand") || "#7B5BFF");
+  if (!/^#[0-9a-fA-F]{6}$/.test(hex)) hex = "#7B5BFF";
 
   var fontConf;
   try { fontConf = JSON.parse(localStorage.getItem("pp-font")); } catch(e) {}
@@ -1406,30 +1450,24 @@ button { font: inherit; color: inherit; cursor: pointer; }
     var payload = { hex: brandHex };
     if (font) payload.font = { sans: font.sans, mono: font.mono, cssVar: font.cssVar, monoVar: font.monoVar };
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", API_BASE + "/generate", true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState !== 4) return;
-      if (xhr.status === 200) {
-        try {
-          var ds = JSON.parse(xhr.responseText);
-          try {
-            localStorage.setItem("pp-ds", JSON.stringify(ds));
-            localStorage.setItem("pp-brand", brandHex);
-            localStorage.setItem("pp-font", JSON.stringify(font));
-          } catch(e) {}
-          callback(null, ds);
-        } catch(e) {
-          callback(new Error("Failed to parse response"));
-        }
-      } else if (xhr.status === 429) {
-        callback(new Error("Rate limit exceeded. Please wait a moment and try again."));
-      } else {
-        callback(new Error("Generation failed (HTTP " + xhr.status + ")"));
-      }
-    };
-    xhr.send(JSON.stringify(payload));
+    fetch(API_BASE + "/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }).then(function(resp) {
+      if (resp.status === 429) throw new Error("Rate limit exceeded. Please wait a moment and try again.");
+      if (!resp.ok) throw new Error("Generation failed (HTTP " + resp.status + ")");
+      return resp.json();
+    }).then(function(ds) {
+      try {
+        localStorage.setItem("pp-ds", JSON.stringify(ds));
+        localStorage.setItem("pp-brand", brandHex);
+        localStorage.setItem("pp-font", JSON.stringify(font));
+      } catch(e) {}
+      callback(null, ds);
+    }).catch(function(err) {
+      callback(err);
+    });
   }
 
   var ds;
@@ -1452,18 +1490,26 @@ button { font: inherit; color: inherit; cursor: pointer; }
     });
   }
 
+  /* _pendingDs is set here if cached data exists; initRender is deferred
+     until brandColors and other globals are initialised further below. */
+  var _pendingDs = null;
+
   if (needsGeneration) {
-    runLoadingAnimation(hex, function() {
-      /* reveal happens after API returns — loading bar fills while we wait */
-    });
+    /* Loading animation disabled for now — skip straight to generation */
+    overlay.style.display = "none";
+    sidebar.style.opacity = "1";
+    mainContent.style.opacity = "1";
     generateDSAsync(hex, fontConf, function(err, result) {
-      if (err) { stepEl.textContent = "Error: " + err.message; return; }
-      initRender(result, true);
+      if (err) { alert("Generation failed: " + err.message); return; }
+      initRender(result, false);
     });
   } else {
     try { ds = JSON.parse(dsRaw); } catch(e) { ds = null; }
     if (ds) {
-      initRender(ds, false);
+      _pendingDs = ds; /* deferred — see below after brandColors init */
+      overlay.style.display = "none";
+      sidebar.style.opacity = "1";
+      mainContent.style.opacity = "1";
     } else {
       generateDSAsync(hex, fontConf, function(err, result) {
         if (err) { stepEl.textContent = "Error: " + err.message; return; }
@@ -1532,8 +1578,37 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
   document.getElementById("app").addEventListener("click", function(e) {
     var btn = e.target.closest(".sidebar__theme-btn");
-    if (btn && btn.dataset.mode) setTheme(btn.dataset.mode);
+    if (btn && btn.dataset.mode) { setTheme(btn.dataset.mode); renderFloatingToggle(); }
   });
+
+  /* ═══ Floating theme toggle ═══ */
+  var _floatEl = document.createElement("div");
+  _floatEl.id = "theme-toggle-portal";
+  document.body.appendChild(_floatEl);
+
+  function renderFloatingToggle() {
+    var isDark = currentTheme === "dark";
+    _floatEl.innerHTML = "";
+    var btn = document.createElement("button");
+    btn.className = "theme-toggle-float";
+    btn.title = isDark ? "Switch to light mode" : "Switch to dark mode";
+    btn.setAttribute("aria-label", "Toggle theme");
+    btn.innerHTML =
+      '<span class="theme-toggle-float__icon">' +
+        (isDark
+          ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21 13a9 9 0 1 1-10-10 7 7 0 0 0 10 10z"/></svg>'
+          : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>'
+        ) +
+      '</span>' +
+      '<span class="theme-toggle-float__label">' + (isDark ? "Light" : "Dark") + '</span>';
+    btn.addEventListener("click", function() {
+      var next = isDark ? "light" : "dark";
+      setTheme(next);
+      renderFloatingToggle();
+    });
+    _floatEl.appendChild(btn);
+  }
+  renderFloatingToggle();
 
   /* ═══ Color name suggestion ═══ */
   function suggestColorName(hexVal) {
@@ -1745,6 +1820,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
   });
 
   renderColorItems();
+
+  /* ═══ Flush deferred render (cached DS loaded before brandColors existed) ═══ */
+  if (_pendingDs) {
+    initRender(_pendingDs, false);
+    _pendingDs = null;
+  }
 
   /* ═══ Font Picker — shared logic ═══ */
   function makeGoogleFontConf(fontName) {
@@ -2202,7 +2283,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
     h += '<div class="c-alert c-alert--neg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Export requires payment.</div>';
     h += '<div class="c-alert c-alert--info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Preview is watermarked. Export for production files.</div>';
     h += '</div></div></div>';
-    h += '<div class="ds-subsection"><div class="ds-subsection-title">Tooltip</div><div class="ds-preview"><div class="ds-preview-row"><div class="tooltip-demo"><button class="c-btn c-btn--secondary">Hover me</button><div class="tooltip-bubble">Tooltip content</div></div></div></div></div>';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Tooltip</div><div class="ds-preview ds-preview--visible"><div class="ds-preview-row"><div class="tooltip-demo"><button class="c-btn c-btn--secondary">Hover me</button><div class="tooltip-bubble">Tooltip content</div></div></div></div></div>';
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Modal</div><div class="ds-preview" style="padding:0"><div class="modal-backdrop">';
     h += '<div class="modal-container"><div class="modal-header"><div class="modal-title">Export design system</div><button class="c-btn c-btn--secondary c-btn--sm" style="width:28px;height:28px;padding:0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>';
     h += '<div class="modal-body">Your design system includes CSS variables, Tailwind config, JSON tokens, and brand guidelines. One-time payment of $49.</div>';
@@ -2262,7 +2343,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
     h += '</div></div></div>';
 
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Bottom sheet</div><div class="ds-preview"><div style="display:flex;gap:20px;align-items:flex-end">';
-    h += '<div class="c-bottom-sheet"><div class="c-bottom-sheet-handle"></div><div class="c-bottom-sheet-content"><h3>Export options</h3><p>Choose format and download your design tokens.</p><div style="display:flex;gap:8px;margin-top:12px"><button class="c-btn c-btn--primary c-btn--sm">Download ZIP</button><button class="c-btn c-btn--secondary c-btn--sm">Copy CSS</button></div></div></div>';
+    h += '<div class="c-bottom-sheet"><div class="c-bottom-sheet-handle"></div><div class="c-bottom-sheet-content"><h3>Export options</h3><p>Choose format and download your design tokens.</p><div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end"><button class="c-btn c-btn--secondary c-btn--sm">Copy CSS</button><button class="c-btn c-btn--primary c-btn--sm">Download ZIP</button></div></div></div>';
     h += '</div></div></div>';
 
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Dividers</div><div class="ds-preview"><div style="max-width:400px;display:flex;flex-direction:column;gap:12px">';
@@ -2401,7 +2482,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
     h += '<div class="c-snackbar" style="background:var(--neg)">Export failed — check your connection <button class="c-snackbar-action" style="color:#fff;opacity:0.9">Retry</button></div>';
     h += '</div></div></div>';
 
-    h += '<div class="ds-subsection"><div class="ds-subsection-title">Tooltip</div><div class="ds-preview"><div style="display:grid;grid-template-columns:1fr 1fr;gap:40px 80px;max-width:400px;padding:40px 60px">';
+    h += '<div class="ds-subsection"><div class="ds-subsection-title">Tooltip</div><div class="ds-preview ds-preview--visible"><div style="display:grid;grid-template-columns:1fr 1fr;gap:40px 80px;max-width:400px;padding:40px 60px">';
     h += '<div style="display:flex;justify-content:center"><div class="c-tooltip-wrap"><button class="c-btn c-btn--secondary c-btn--sm">Top</button><div class="c-tooltip c-tooltip--top">Top tooltip</div></div></div>';
     h += '<div style="display:flex;justify-content:center"><div class="c-tooltip-wrap"><button class="c-btn c-btn--secondary c-btn--sm">Right</button><div class="c-tooltip c-tooltip--right">Right</div></div></div>';
     h += '<div style="display:flex;justify-content:center"><div class="c-tooltip-wrap"><button class="c-btn c-btn--secondary c-btn--sm">Bottom</button><div class="c-tooltip c-tooltip--bottom">Bottom</div></div></div>';
@@ -2606,8 +2687,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
     h += '<div class="ds-section-header"><span class="ds-section-num">25</span><h2 class="ds-section-title">Theme comparison</h2></div>';
     h += '<p class="ds-section-desc">Side-by-side dark &amp; light preview — proves your system works on any background.</p>';
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Card component</div><div class="ds-preview" style="padding:0"><div class="theme-split">';
-    h += '<div class="theme-split__pane theme-split__pane--dark"><div class="theme-split__label">Dark theme</div><div class="theme-card"><div class="theme-card__title">Project overview</div><div class="theme-card__desc">Track your design tokens across 3 platforms.</div><input class="theme-card__input" value="My design system" readonly/><div style="display:flex;gap:8px"><button class="theme-card__btn" style="background:' + b500 + ';color:' + (isLight(b500) ? "#111" : "#fff") + '">Save changes</button><button class="theme-card__btn" style="background:#2a2d36;color:#f3f1ec">Cancel</button></div></div></div>';
-    h += '<div class="theme-split__pane theme-split__pane--light"><div class="theme-split__label">Light theme</div><div class="theme-card"><div class="theme-card__title">Project overview</div><div class="theme-card__desc">Track your design tokens across 3 platforms.</div><input class="theme-card__input" value="My design system" readonly/><div style="display:flex;gap:8px"><button class="theme-card__btn" style="background:' + b500 + ';color:' + (isLight(b500) ? "#111" : "#fff") + '">Save changes</button><button class="theme-card__btn" style="background:#e5e2da;color:#14120e">Cancel</button></div></div></div>';
+    h += '<div class="theme-split__pane theme-split__pane--dark"><div class="theme-split__label">Dark theme</div><div class="theme-card"><div class="theme-card__title">Project overview</div><div class="theme-card__desc">Track your design tokens across 3 platforms.</div><input class="theme-card__input" value="My design system" readonly/><div style="display:flex;gap:8px;justify-content:flex-end"><button class="theme-card__btn" style="background:' + b500 + ';color:' + (isLight(b500) ? "#111" : "#fff") + '">Save changes</button><button class="theme-card__btn" style="background:#2a2d36;color:#f3f1ec">Cancel</button></div></div></div>';
+    h += '<div class="theme-split__pane theme-split__pane--light"><div class="theme-split__label">Light theme</div><div class="theme-card"><div class="theme-card__title">Project overview</div><div class="theme-card__desc">Track your design tokens across 3 platforms.</div><input class="theme-card__input" value="My design system" readonly/><div style="display:flex;gap:8px;justify-content:flex-end"><button class="theme-card__btn" style="background:' + b500 + ';color:' + (isLight(b500) ? "#111" : "#fff") + '">Save changes</button><button class="theme-card__btn" style="background:#e5e2da;color:#14120e">Cancel</button></div></div></div>';
     h += '</div></div></div>';
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Alert &amp; badges</div><div class="ds-preview" style="padding:0"><div class="theme-split">';
     h += '<div class="theme-split__pane theme-split__pane--dark"><div class="theme-split__label">Dark</div><div style="padding:10px 14px;background:oklch(0.40 0.10 155/0.12);border-radius:8px;border:1px solid oklch(0.50 0.12 155/0.3);margin-bottom:10px"><span style="color:#7cd4a8;font-size:13px;font-weight:500">&#10003; System generated successfully.</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><span style="display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:99px;background:' + b500 + ';color:' + (isLight(b500)?"#111":"#fff") + ';font-size:11px;font-weight:600">Brand</span><span style="display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:99px;background:oklch(0.50 0.18 25/0.15);color:#f09070;font-size:11px;font-weight:600">Error</span><span style="display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:99px;background:oklch(0.55 0.14 75/0.15);color:#d4b85a;font-size:11px;font-weight:600">Warning</span></div></div>';

@@ -21,7 +21,7 @@
   <script src="/shield.js"></script>
   <script>
     (function() {
-      var b = (localStorage.getItem("pp-brand") || "E8B26B").replace("#","");
+      var b = (localStorage.getItem("pp-brand") || "7B5BFF").replace("#","");
       window.location.replace("preview.html?brand=" + b);
     })();
   </script>
@@ -400,7 +400,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
       <div class="field__label">Brand color</div>
       <div class="color-row" id="colorRow">
         <label class="color-swatch" id="colorSwatch">
-          <input type="color" id="colorPicker" value="#E8B26B"/>
+          <input type="color" id="colorPicker" value="#7B5BFF"/>
         </label>
         <span class="color-hash">#</span>
         <input
@@ -409,8 +409,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
           type="text"
           maxlength="6"
           spellcheck="false"
-          placeholder="E8B26B"
-          value="E8B26B"
+          placeholder="7B5BFF"
+          value="7B5BFF"
         />
       </div>
       <div class="field__hint" id="colorHint"></div>
@@ -584,7 +584,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
   /* ── Init color from localStorage ── */
   function initColor() {
-    let hex = "#E8B26B";
+    let hex = "#7B5BFF";
     try {
       const stored = localStorage.getItem("pp-brand");
       if (stored && /^#[0-9a-fA-F]{6}$/.test(stored)) hex = stored;
