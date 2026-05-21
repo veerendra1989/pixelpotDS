@@ -651,6 +651,32 @@ body.grain::before {
 }
 .hex-input button:hover { background: var(--brand); color: var(--brand-ink); transform: scale(1.02); }
 
+/* ── Color Preview Strip ── */
+.hex-preview-strip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+}
+.hex-preview-strip__color {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  flex: none;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.1);
+  transition: background 0.2s;
+}
+.hex-preview-strip__label {
+  font-family: var(--f-mono);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+}
+
 .hex-suggestions {
   display: flex;
   gap: 8px;
@@ -1624,16 +1650,18 @@ body.grain::before {
     min-height: 3.1em;
   }
 
-  /* Hex input: centered, bigger pill, faster glow, no generate button */
+  /* Hex input: centered, bigger pill, faster glow */
   .hex-input {
-    padding: 10px;
+    padding: 8px;
     margin-top: 24px;
     align-self: center;
     animation-duration: 1.5s;
   }
-  .hex-input__swatch { width: 44px; height: 44px; }
-  .hex-input input { font-size: 18px; width: 120px; padding: 0 12px; height: 44px; }
-  .hex-input button { display: none; }
+  .hex-input__swatch { width: 40px; height: 40px; }
+  .hex-input input { font-size: 16px; width: 100px; padding: 0 8px; height: 40px; }
+  .hex-input button { padding: 0 18px; font-size: 13px; height: 38px; }
+  .hex-preview-strip { align-self: center; }
+  .hex-preview-strip__color { width: 36px; height: 36px; }
   .hex-suggestions { justify-content: center; margin-top: 16px; }
 
   /* CTAs: full-width, bold, stacked */
@@ -3015,13 +3043,32 @@ var {
           type: "color", value: hex,
           onChange: e => { const c = e.target.value.toUpperCase(); setHex(c); setVal(c.replace("#","")); PP.applyBrand(c); },
           style: { position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer", border: "none", padding: 0 }
-        })), /*#__PURE__*/React.createElement("input", {
+        })), /*#__PURE__*/React.createElement("span", {
+          style: { color: "var(--ink-3)", fontFamily: "var(--f-mono)", fontSize: "15px", userSelect: "none", marginRight: "-4px" }
+        }, "#"), /*#__PURE__*/React.createElement("input", {
           value: val,
-          onChange: e => { const v = e.target.value.replace("#", "").slice(0, 6).toUpperCase(); setVal(v); if (v.length === 6) commit(v); },
+          onChange: e => { const v = e.target.value.replace(/[^0-9a-fA-F]/g, "").slice(0, 6).toUpperCase(); setVal(v); if (v.length === 6) commit(v); },
+          placeholder: "E8B26B",
           spellCheck: "false", maxLength: "6"
         }), /*#__PURE__*/React.createElement("button", {
-          onClick: () => { commit(val); if (/^[0-9a-fA-F]{6}$/.test(val)) window.location.href = "preview.html?brand=" + val; }
+          onClick: () => {
+            const raw = val.replace("#", "");
+            if (/^[0-9a-fA-F]{6}$/.test(raw)) {
+              commit(raw);
+              try { localStorage.setItem("pp-brand", "#" + raw); } catch(_) {}
+              window.location.href = "preview.html?brand=" + raw;
+            }
+          }
         }, "Generate →")),
+        /*#__PURE__*/React.createElement("div", { className: "hex-preview-strip" },
+          /*#__PURE__*/React.createElement("div", {
+            className: "hex-preview-strip__color",
+            style: { background: hex }
+          }),
+          /*#__PURE__*/React.createElement("span", {
+            className: "hex-preview-strip__label"
+          }, hex.toUpperCase())
+        ),
         /*#__PURE__*/React.createElement("div", { className: "hex-suggestions" },
           /*#__PURE__*/React.createElement("span", { className: "label" }, "Try"),
           ["#E8B26B", "#7B5BFF", "#3FB984", "#E2516E", "#41A6E0", "#C9C9C9"].map(c =>
