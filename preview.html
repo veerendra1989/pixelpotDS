@@ -2070,6 +2070,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   }
 
   /* ═══ Generate via API ═══ */
+  var API_BASE = window.location.hostname === "localhost" ? "/api" : "/api";
 
   function generateDSAsync(brandHex, font, callback) {
     var payload = { hex: brandHex };
