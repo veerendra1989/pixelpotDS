@@ -7,7 +7,16 @@
   <meta name="description" content="Your complete design system — OKLCH color palettes, type scale, spacing tokens, 27 component sections, dark &amp; light themes, generated from a single brand color."/>
   <meta property="og:title" content="hextodesign — Your Design System"/>
   <meta property="og:description" content="Complete design system generated from a single brand color — palettes, typography, spacing, components &amp; export-ready tokens."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://hextodesign.com/preview"/>
   <meta property="og:image" content="https://hextodesign.com/og-image.png"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="hextodesign — Your Design System"/>
+  <meta name="twitter:description" content="Complete design system generated from a single brand color — palettes, typography, spacing, components &amp; export-ready tokens."/>
+  <meta name="twitter:image" content="https://hextodesign.com/og-image.png"/>
+  <link rel="canonical" href="https://hextodesign.com/preview"/>
+  <meta name="theme-color" content="#7B5BFF"/>
+  <meta name="robots" content="noindex, follow"/>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -624,7 +633,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .c-card-actions { padding: 8px 16px; display: flex; gap: 8px; border-top: 1px solid var(--line); justify-content: flex-end; }
 
 .c-expansion { border: 1px solid var(--line); border-radius: var(--r-2); overflow: hidden; }
-.c-expansion + .c-expansion { margin-top: -1px; }
+.c-expansion + .c-expansion { margin-top: 8px; }
 .c-expansion-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: var(--card-bg); cursor: pointer; font-size: 14px; font-weight: 500; }
 .c-expansion-header:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
 .c-expansion-header svg { color: var(--ink-4); transition: transform 0.2s; }
@@ -664,7 +673,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .c-datepicker-icon:hover { color: var(--brand); }
 
 .c-btn-toggle-group { display: inline-flex; border: 1px solid var(--line); border-radius: var(--r-2); overflow: hidden; }
-.c-btn-toggle { padding: 8px 16px; font-size: 13px; font-weight: 500; color: var(--ink-3); background: var(--card-bg); border: none; border-right: 1px solid var(--line); cursor: pointer; font-family: inherit; transition: all 0.15s; }
+.c-btn-toggle { padding: 8px 16px; font-size: 13px; font-weight: 500; color: var(--ink-3); background: var(--card-bg); border: none; border-right: 1px solid var(--line); cursor: pointer; font-family: inherit; transition: all 0.15s; display: inline-flex; align-items: center; justify-content: center; }
 .c-btn-toggle:last-child { border-right: none; }
 .c-btn-toggle:hover { background: var(--bg-2); color: var(--ink); }
 .c-btn-toggle.active { background: var(--brand); color: var(--brand-ink); }
@@ -844,6 +853,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
     padding: 16px; background: var(--bg-1);
     border-bottom: 1px solid var(--line);
     animation: slideDown 0.25s ease;
+    position: fixed; top: 64px; left: 0; right: 0; z-index: 199;
+    max-height: calc(100vh - 64px); overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
   }
   .mobile-config.open { display: flex; }
   @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
@@ -983,6 +995,14 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
   /* Export section */
   .export-grid { grid-template-columns: 1fr; }
+
+  /* Form inputs — stack on mobile */
+  .ds-preview > div[style*="grid-template-columns:1fr 1fr 1fr"] { grid-template-columns: 1fr !important; }
+  .ds-preview > div[style*="grid-template-columns: 1fr 1fr 1fr"] { grid-template-columns: 1fr !important; }
+
+  /* Token summary + Contrast audit cards — stack on mobile */
+  .ds-preview > div[style*="grid-template-columns:1fr 1fr"] { grid-template-columns: 1fr !important; }
+  .ds-preview > div[style*="grid-template-columns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
 }
 
 /* ═══ 17 GRID & LAYOUT ═══ */
@@ -1041,6 +1061,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* ═══ 21 FORM VALIDATION ═══ */
 .form-demo { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 600px; }
 .form-demo--full { grid-column: 1 / -1; }
+@media (max-width: 768px) { .form-demo { grid-template-columns: 1fr; } }
 .c-field { display: flex; flex-direction: column; gap: 4px; }
 .c-field__label { font-size: 12px; font-weight: 500; color: var(--ink-2); }
 .c-field__input { height: 40px; padding: 0 12px; border: 1px solid var(--line-2); border-radius: 6px; font-size: 13px; color: var(--ink); background: var(--bg-2); outline: none; transition: border-color 0.15s; }
@@ -1205,9 +1226,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar" style="opacity:1">
-  <div class="sidebar__logo">
+  <a href="/" class="sidebar__logo" style="text-decoration:none;color:inherit;cursor:pointer">
     <span class="brand-accent">#</span>hex<span class="brand-accent">to</span>design
-  </div>
+  </a>
   <div class="sidebar__divider"></div>
 
   <div class="sidebar__section">
@@ -1227,6 +1248,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
       <input class="font-picker__input" id="fontSearch" type="text" placeholder="Search Google Fonts..." autocomplete="off" />
       <div class="font-picker__dropdown" id="fontDropdown"></div>
     </div>
+    <div style="margin-top:8px;font-size:11px;color:var(--ink-4);font-weight:500;letter-spacing:0.02em;display:flex;align-items:center;gap:4px;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Google Font Integrated
+    </div>
+    <div style="height:24px;"></div>
     <div class="font-picker__preview-label">Preview</div>
     <div class="font-picker__preview" id="fontPreview">The quick brown fox jumps over the lazy dog</div>
   </div>
@@ -1279,9 +1305,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 <!-- MOBILE HEADER -->
 <header class="mobile-header" id="mobileHeader">
-  <div class="mobile-header__logo">
+  <a href="/" class="mobile-header__logo" style="text-decoration:none;color:inherit;cursor:pointer">
     <span class="brand-accent">#</span>hex<span class="brand-accent">to</span>design
-  </div>
+  </a>
   <div class="mobile-header__actions">
     <button class="mobile-header__icon-btn" id="mobileConfigToggle" title="Settings">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
@@ -2285,7 +2311,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
     h += '</div></div></div>';
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Tooltip</div><div class="ds-preview ds-preview--visible"><div class="ds-preview-row"><div class="tooltip-demo"><button class="c-btn c-btn--secondary">Hover me</button><div class="tooltip-bubble">Tooltip content</div></div></div></div></div>';
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Modal</div><div class="ds-preview" style="padding:0"><div class="modal-backdrop">';
-    h += '<div class="modal-container"><div class="modal-header"><div class="modal-title">Export design system</div><button class="c-btn c-btn--secondary c-btn--sm" style="width:28px;height:28px;padding:0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>';
+    h += '<div class="modal-container"><div class="modal-header"><div class="modal-title">Export design system</div><button class="c-btn c-btn--secondary c-btn--sm" style="width:28px;height:28px;padding:0;color:var(--brand);border-color:var(--brand)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>';
     h += '<div class="modal-body">Your design system includes CSS variables, Tailwind config, JSON tokens, and brand guidelines. One-time payment of $49.</div>';
     h += '<div class="modal-footer"><button class="c-btn c-btn--secondary">Cancel</button><button class="c-btn c-btn--primary">Pay &amp; export</button></div></div></div></div></div>';
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Empty state</div><div class="ds-preview"><div class="empty-state">';
