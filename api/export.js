@@ -19,12 +19,12 @@ var CORS_HEADERS = {
 
 /* Format → { fn, contentType, ext, minTier } */
 var FORMAT_MAP = {
-  css:      { fn: formatters.toCSSVariables,  contentType: "text/css",        ext: "css",   minTier: 1 },
-  json:     { fn: formatters.toJSON,          contentType: "application/json", ext: "json",  minTier: 1 },
-  tailwind: { fn: formatters.toTailwindConfig,contentType: "text/javascript", ext: "js",    minTier: 2 },
-  scss:     { fn: formatters.toSCSS,          contentType: "text/x-scss",     ext: "scss",  minTier: 2 },
-  figma:    { fn: formatters.toFigmaTokens,   contentType: "application/json", ext: "json",  minTier: 3 },
-  docs:     { fn: formatters.toDocMarkdown,   contentType: "text/markdown",   ext: "md",    minTier: 3 }
+  css:      { fn: formatters.toCSSVariables,  contentType: "text/css",        ext: "css",   minTier: 0 },
+  json:     { fn: formatters.toJSON,          contentType: "application/json", ext: "json",  minTier: 0 },
+  tailwind: { fn: formatters.toTailwindConfig,contentType: "text/javascript", ext: "js",    minTier: 0 },
+  scss:     { fn: formatters.toSCSS,          contentType: "text/x-scss",     ext: "scss",  minTier: 0 },
+  figma:    { fn: formatters.toFigmaTokens,   contentType: "application/json", ext: "json",  minTier: 0 },
+  docs:     { fn: formatters.toDocMarkdown,   contentType: "text/markdown",   ext: "md",    minTier: 0 }
 };
 
 /* Tier name → numeric level */

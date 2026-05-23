@@ -2840,13 +2840,25 @@ button { font: inherit; color: inherit; cursor: pointer; }
     Object.keys(typo.scale).forEach(function(k) { jsT += '      <span class="ek">"' + k + '"</span>: { <span class="ek">"size"</span>: <span class="ev">' + typo.scale[k].size + '</span>, <span class="ek">"weight"</span>: <span class="ev">' + typo.scale[k].weight + '</span> },\n'; });
     jsT += '    }\n  }\n}';
 
-    h += '<div class="export-tabs" id="exportTabs"><button class="export-tab export-tab--active" data-tab="css">CSS Variables</button><button class="export-tab" data-tab="tw">Tailwind</button><button class="export-tab" data-tab="json">JSON</button></div>';
+    var scssT = '<span class="ec">// SCSS Variables</span>\n';
+    Object.keys(brand).forEach(function(s) { scssT += '<span class="ek">$brand-' + s + ':</span> <span class="ev">' + brand[s].hex.toLowerCase() + '</span>;\n'; });
+    scssT += '\n<span class="ec">// Semantic</span>\n';
+    Object.keys(semantic).forEach(function(k) { scssT += '<span class="ek">$' + k + ':</span> <span class="ev">' + semantic[k].base.toLowerCase() + '</span>;\n'; });
+    scssT += '\n<span class="ec">// Typography</span>\n<span class="ek">$font-sans:</span> <span class="ev">' + esc(typo.families.cssVar) + '</span>;\n<span class="ek">$font-mono:</span> <span class="ev">' + esc(typo.families.monoVar) + '</span>;\n';
+    Object.keys(typo.scale).forEach(function(k) { scssT += '<span class="ek">$text-' + k + ':</span> <span class="ev">' + typo.scale[k].size + 'px</span>;\n'; });
+    scssT += '\n<span class="ec">// Spacing</span>\n';
+    Object.keys(spacing.tokens).forEach(function(k) { scssT += '<span class="ek">$space-' + k + ':</span> <span class="ev">' + spacing.tokens[k] + '</span>;\n'; });
+    scssT += '\n<span class="ec">// Radius</span>\n';
+    Object.keys(radius).forEach(function(k) { scssT += '<span class="ek">$radius-' + k + ':</span> <span class="ev">' + radius[k] + '</span>;\n'; });
+
+    h += '<div class="export-tabs" id="exportTabs"><button class="export-tab export-tab--active" data-tab="css">CSS</button><button class="export-tab" data-tab="tw">Tailwind</button><button class="export-tab" data-tab="scss">SCSS</button><button class="export-tab" data-tab="json">JSON</button></div>';
     h += '<div class="export-actions" id="exportActions">';
     h += '<button class="c-btn c-btn--secondary c-btn--sm" id="copyExportBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy</button>';
     h += '<button class="c-btn c-btn--primary c-btn--sm" id="downloadExportBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download</button>';
     h += '</div>';
     h += '<div class="export-code custom-scroll" id="exportCode-css">' + cssT + '</div>';
     h += '<div class="export-code custom-scroll" id="exportCode-tw" style="display:none">' + twT + '</div>';
+    h += '<div class="export-code custom-scroll" id="exportCode-scss" style="display:none">' + scssT + '</div>';
     h += '<div class="export-code custom-scroll" id="exportCode-json" style="display:none">' + jsT + '</div>';
     h += '</div></div></section>';
 
@@ -2900,7 +2912,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
           exportTabs.querySelectorAll(".export-tab").forEach(function(t) { t.classList.remove("export-tab--active"); });
           this.classList.add("export-tab--active");
           var target = this.dataset.tab;
-          ["css","tw","json"].forEach(function(id) {
+          ["css","tw","scss","json"].forEach(function(id) {
             var el = document.getElementById("exportCode-" + id);
             if (el) el.style.display = id === target ? "" : "none";
           });
@@ -2929,8 +2941,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
       downloadExportBtn.addEventListener("click", function() {
         var activeTab = document.querySelector(".export-tab--active");
         var format = activeTab ? activeTab.dataset.tab : "css";
-        var formatMap = { css: "css", tw: "tailwind", json: "json" };
-        var extMap = { css: "css", tw: "js", json: "json" };
+        var formatMap = { css: "css", tw: "tailwind", scss: "scss", json: "json" };
+        var extMap = { css: "css", tw: "js", scss: "scss", json: "json" };
         var apiFormat = formatMap[format] || "css";
         var ext = extMap[format] || "css";
         triggerExportDownload(apiFormat, ext, downloadExportBtn);
