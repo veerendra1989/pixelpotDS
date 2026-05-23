@@ -1292,13 +1292,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
     <a href="#a11y"><span class="sidebar__nav-num">24</span> A11y</a>
     <a href="#themecompare"><span class="sidebar__nav-num">25</span> Themes</a>
     <a href="#responsive"><span class="sidebar__nav-num">26</span> Responsive</a>
-    <a href="#tokens"><span class="sidebar__nav-num">27</span> Tokens</a>
+    <a href="#tokens"><span class="sidebar__nav-num">27</span> Export</a>
   </nav>
 
   <div class="sidebar__bottom">
     <button class="sidebar__export-btn" id="exportBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Download CSS — Free
+      Download — Free
     </button>
     <a class="sidebar__home-link" href="index.html">&larr; Back to homepage</a>
   </div>
@@ -1342,7 +1342,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   </button>
   <button class="sidebar__export-btn" id="mobileExportBtn" style="margin-top:8px">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-    Download CSS — Free
+    Download — Free
   </button>
 </div>
 
@@ -1365,7 +1365,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   <a href="#validation" class="mobile-tab">Validation</a>
   <a href="#a11y" class="mobile-tab">A11y</a>
   <a href="#themecompare" class="mobile-tab">Themes</a>
-  <a href="#tokens" class="mobile-tab">Tokens</a>
+  <a href="#tokens" class="mobile-tab">Export</a>
 </nav>
 
 <!-- MAIN -->
@@ -1474,57 +1474,583 @@ button { font: inherit; color: inherit; cursor: pointer; }
     setTimeout(function() { overlay.style.display = "none"; }, 700);
   }
 
-  /* ═══ Export download ═══ */
-  var API_BASE = window.location.hostname === "localhost" ? "/api" : "/api";
+  /* ═══ Export download — client-side full export ═══ */
+  var _exportData = null; /* set by renderPreview */
+
+  function buildFullCSS(d) {
+    var L = [];
+    L.push("/* ═══════════════════════════════════════════════════════════════");
+    L.push("   hextodesign — Complete Design System");
+    L.push("   Generated from " + d.source + " on " + new Date().toISOString().split("T")[0]);
+    L.push("   https://hextodesign.com");
+    L.push("   ═══════════════════════════════════════════════════════════════ */");
+    L.push("");
+
+    /* ── 1. Design Tokens (Custom Properties) ── */
+    L.push("/* ═══ DESIGN TOKENS ═══ */");
+    L.push(":root {");
+    L.push("  /* Brand palette */");
+    Object.keys(d.brand).forEach(function(s) {
+      L.push("  --brand-" + s + ": " + d.brand[s].hex + ";");
+    });
+    L.push("");
+    L.push("  /* Brand OKLCH components (for dynamic theming) */");
+    L.push("  --brand-h: " + d.hue.toFixed(1) + ";");
+    L.push("  --brand-c: " + d.chroma.toFixed(3) + ";");
+    L.push("  --brand-l: 0.78;");
+    L.push("  --brand: oklch(var(--brand-l) var(--brand-c) var(--brand-h));");
+    L.push("  --brand-soft: oklch(var(--brand-l) var(--brand-c) var(--brand-h) / 0.18);");
+    L.push("  --brand-faint: oklch(var(--brand-l) var(--brand-c) var(--brand-h) / 0.08);");
+    L.push("  --brand-ink: oklch(0.18 0.05 var(--brand-h));");
+    L.push("");
+    L.push("  /* Semantic colors */");
+    Object.keys(d.semantic).forEach(function(k) {
+      var s = d.semantic[k];
+      L.push("  --" + k + ": " + s.base + ";");
+      L.push("  --" + k + "-light: " + s.light + ";");
+      L.push("  --" + k + "-dark: " + s.dark + ";");
+    });
+    L.push("");
+    L.push("  /* Surfaces — Dark theme (default) */");
+    Object.keys(d.surfaces.dark).forEach(function(k) {
+      L.push("  --surface-" + k + ": " + d.surfaces.dark[k] + ";");
+    });
+    L.push("  --bg: " + d.surfaces.dark.bg + ";");
+    L.push("  --bg-1: " + d.surfaces.dark.bg1 + ";");
+    L.push("  --bg-2: " + d.surfaces.dark.bg2 + ";");
+    L.push("  --bg-3: " + d.surfaces.dark.bg3 + ";");
+    L.push("  --bg-4: " + d.surfaces.dark.bg4 + ";");
+    L.push("  --ink: " + d.surfaces.dark.ink + ";");
+    L.push("  --ink-2: " + d.surfaces.dark.ink2 + ";");
+    L.push("  --ink-3: " + d.surfaces.dark.ink3 + ";");
+    L.push("  --ink-4: " + d.surfaces.dark.ink4 + ";");
+    L.push("  --line: rgba(255,255,255,0.07);");
+    L.push("  --line-2: rgba(255,255,255,0.12);");
+    L.push("");
+    L.push("  /* Feedback colors */");
+    L.push("  --pos: oklch(0.78 0.14 155);");
+    L.push("  --neg: oklch(0.70 0.18 25);");
+    L.push("  --warn: oklch(0.75 0.16 75);");
+    L.push("  --info: oklch(0.65 0.14 230);");
+    L.push("  --pos-soft: oklch(0.78 0.14 155 / 0.12);");
+    L.push("  --neg-soft: oklch(0.70 0.18 25 / 0.12);");
+    L.push("  --warn-soft: oklch(0.75 0.16 75 / 0.12);");
+    L.push("  --info-soft: oklch(0.65 0.14 230 / 0.12);");
+    L.push("");
+    L.push("  /* Typography */");
+    L.push("  --font-sans: " + d.typo.families.cssVar + ";");
+    L.push("  --font-mono: " + d.typo.families.monoVar + ";");
+    Object.keys(d.typo.scale).forEach(function(k) {
+      var s = d.typo.scale[k];
+      L.push("  --text-" + k + ": " + s.size + "px;");
+      L.push("  --text-" + k + "-weight: " + s.weight + ";");
+      L.push("  --text-" + k + "-lh: " + s.lineHeight + ";");
+      L.push("  --text-" + k + "-ls: " + s.letterSpacing + ";");
+    });
+    L.push("");
+    L.push("  /* Spacing */");
+    Object.keys(d.spacing.tokens).forEach(function(k) {
+      L.push("  --space-" + String(k).replace(".", "_") + ": " + d.spacing.tokens[k] + ";");
+    });
+    L.push("");
+    L.push("  /* Radius */");
+    Object.keys(d.radius).forEach(function(k) {
+      L.push("  --radius-" + k + ": " + d.radius[k] + ";");
+    });
+    L.push("");
+    L.push("  /* Shadows */");
+    Object.keys(d.shadows).forEach(function(k) {
+      L.push("  --shadow-" + k + ": " + d.shadows[k] + ";");
+    });
+    L.push("");
+    L.push("  color-scheme: dark;");
+    L.push("}");
+    L.push("");
+
+    /* ── Light theme ── */
+    L.push("/* ═══ LIGHT THEME ═══ */");
+    L.push("[data-theme=\"light\"], .theme-light {");
+    Object.keys(d.surfaces.light).forEach(function(k) {
+      L.push("  --surface-" + k + ": " + d.surfaces.light[k] + ";");
+    });
+    L.push("  --bg: " + d.surfaces.light.bg + ";");
+    L.push("  --bg-1: " + d.surfaces.light.bg1 + ";");
+    L.push("  --bg-2: " + d.surfaces.light.bg2 + ";");
+    L.push("  --bg-3: " + d.surfaces.light.bg3 + ";");
+    L.push("  --bg-4: " + d.surfaces.light.bg4 + ";");
+    L.push("  --ink: " + d.surfaces.light.ink + ";");
+    L.push("  --ink-2: " + d.surfaces.light.ink2 + ";");
+    L.push("  --ink-3: " + d.surfaces.light.ink3 + ";");
+    L.push("  --ink-4: " + d.surfaces.light.ink4 + ";");
+    L.push("  --line: rgba(20,18,14,0.08);");
+    L.push("  --line-2: rgba(20,18,14,0.14);");
+    L.push("  --brand-l: 0.62;");
+    L.push("  --brand-c: 0.16;");
+    L.push("  --pos: oklch(0.52 0.14 155);");
+    L.push("  --neg: oklch(0.50 0.18 25);");
+    L.push("  --warn: oklch(0.55 0.14 75);");
+    L.push("  --info: oklch(0.50 0.14 230);");
+    L.push("  color-scheme: light;");
+    L.push("}");
+    L.push("");
+
+    /* ── 2. Base / Reset ── */
+    L.push("/* ═══ BASE ═══ */");
+    L.push("*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }");
+    L.push("body { font-family: var(--font-sans); background: var(--bg); color: var(--ink); line-height: 1.6; -webkit-font-smoothing: antialiased; }");
+    L.push("");
+
+    /* ── 3. Typography classes ── */
+    L.push("/* ═══ TYPOGRAPHY ═══ */");
+    Object.keys(d.typo.scale).forEach(function(k) {
+      var s = d.typo.scale[k];
+      L.push(".text-" + k + " { font-size: " + s.size + "px; font-weight: " + s.weight + "; line-height: " + s.lineHeight + "; letter-spacing: " + s.letterSpacing + "; }");
+    });
+    L.push(".font-mono { font-family: var(--font-mono); }");
+    L.push("");
+
+    /* ── 4. Buttons ── */
+    L.push("/* ═══ BUTTONS ═══ */");
+    L.push(".btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border: none; border-radius: var(--radius-md); font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.15s ease; text-decoration: none; }");
+    L.push(".btn:disabled { opacity: 0.5; cursor: not-allowed; }");
+    L.push(".btn-primary { background: var(--brand); color: var(--brand-ink); }");
+    L.push(".btn-primary:hover { filter: brightness(1.1); }");
+    L.push(".btn-secondary { background: transparent; color: var(--ink); border: 1px solid var(--line-2); }");
+    L.push(".btn-secondary:hover { border-color: var(--brand); color: var(--brand); }");
+    L.push(".btn-ghost { background: transparent; color: var(--ink-2); border: none; }");
+    L.push(".btn-ghost:hover { color: var(--brand); background: var(--brand-faint); }");
+    L.push(".btn-danger { background: var(--neg); color: #fff; }");
+    L.push(".btn-danger:hover { filter: brightness(1.1); }");
+    L.push(".btn-sm { padding: 6px 14px; font-size: 12px; }");
+    L.push(".btn-lg { padding: 14px 28px; font-size: 16px; }");
+    L.push(".btn-icon { width: 36px; height: 36px; padding: 0; border-radius: var(--radius-md); }");
+    L.push("");
+
+    /* ── 5. Form Elements ── */
+    L.push("/* ═══ FORM ELEMENTS ═══ */");
+    L.push(".input, .select, .textarea { width: 100%; padding: 10px 14px; font-size: 14px; font-family: inherit; color: var(--ink); background: var(--bg-1); border: 1px solid var(--line-2); border-radius: var(--radius-md); outline: none; transition: border-color 0.15s, box-shadow 0.15s; }");
+    L.push(".input:focus, .select:focus, .textarea:focus { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft); }");
+    L.push(".input::placeholder { color: var(--ink-4); }");
+    L.push(".textarea { min-height: 100px; resize: vertical; }");
+    L.push(".select { appearance: none; background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E\"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }");
+    L.push(".label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-2); margin-bottom: 6px; }");
+    L.push(".input-error { border-color: var(--neg); }");
+    L.push(".input-success { border-color: var(--pos); }");
+    L.push(".helper-text { font-size: 12px; color: var(--ink-3); margin-top: 4px; }");
+    L.push(".helper-text-error { color: var(--neg); }");
+    L.push("");
+
+    /* ── 6. Checkbox, Radio, Toggle ── */
+    L.push("/* ═══ SELECTION CONTROLS ═══ */");
+    L.push(".checkbox, .radio { width: 18px; height: 18px; accent-color: var(--brand); cursor: pointer; }");
+    L.push(".toggle { position: relative; width: 44px; height: 24px; background: var(--bg-3); border-radius: 12px; border: none; cursor: pointer; transition: background 0.2s; }");
+    L.push(".toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: white; transition: transform 0.2s; }");
+    L.push(".toggle.active, .toggle:checked { background: var(--brand); }");
+    L.push(".toggle.active::after, .toggle:checked::after { transform: translateX(20px); }");
+    L.push("");
+
+    /* ── 7. Cards ── */
+    L.push("/* ═══ CARDS & CONTAINERS ═══ */");
+    L.push(".card { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 24px; }");
+    L.push(".card-hover:hover { border-color: var(--brand); box-shadow: var(--shadow-md); }");
+    L.push(".card-header { font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }");
+    L.push(".card-body { font-size: 14px; color: var(--ink-2); }");
+    L.push(".card-footer { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); display: flex; gap: 8px; justify-content: flex-end; }");
+    L.push("");
+
+    /* ── 8. Badges / Pills ── */
+    L.push("/* ═══ BADGES ═══ */");
+    L.push(".badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; font-size: 11px; font-weight: 600; border-radius: var(--radius-full); }");
+    L.push(".badge-brand { background: var(--brand-soft); color: var(--brand); }");
+    L.push(".badge-success { background: var(--pos-soft); color: var(--pos); }");
+    L.push(".badge-warning { background: var(--warn-soft); color: var(--warn); }");
+    L.push(".badge-danger { background: var(--neg-soft); color: var(--neg); }");
+    L.push(".badge-info { background: var(--info-soft); color: var(--info); }");
+    L.push(".badge-outline { background: transparent; border: 1px solid var(--line-2); color: var(--ink-2); }");
+    L.push("");
+
+    /* ── 9. Navigation ── */
+    L.push("/* ═══ NAVIGATION ═══ */");
+    L.push(".nav { display: flex; align-items: center; gap: 4px; }");
+    L.push(".nav-item { padding: 8px 16px; font-size: 14px; font-weight: 500; color: var(--ink-3); border-radius: var(--radius-md); cursor: pointer; transition: all 0.15s; }");
+    L.push(".nav-item:hover { color: var(--ink); background: var(--bg-2); }");
+    L.push(".nav-item.active { color: var(--brand); background: var(--brand-faint); }");
+    L.push(".tabs { display: flex; border-bottom: 1px solid var(--line); }");
+    L.push(".tab { padding: 10px 20px; font-size: 14px; font-weight: 500; color: var(--ink-3); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; }");
+    L.push(".tab:hover { color: var(--ink); }");
+    L.push(".tab.active { color: var(--brand); border-bottom-color: var(--brand); }");
+    L.push(".breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-3); }");
+    L.push(".breadcrumb-separator { color: var(--ink-4); }");
+    L.push(".breadcrumb-current { color: var(--ink); font-weight: 600; }");
+    L.push("");
+
+    /* ── 10. Alerts / Toasts ── */
+    L.push("/* ═══ ALERTS & TOASTS ═══ */");
+    L.push(".alert { display: flex; align-items: flex-start; gap: 12px; padding: 14px 18px; border-radius: var(--radius-md); font-size: 14px; }");
+    L.push(".alert-success { background: var(--pos-soft); color: var(--pos); border: 1px solid var(--pos); }");
+    L.push(".alert-warning { background: var(--warn-soft); color: var(--warn); border: 1px solid var(--warn); }");
+    L.push(".alert-error { background: var(--neg-soft); color: var(--neg); border: 1px solid var(--neg); }");
+    L.push(".alert-info { background: var(--info-soft); color: var(--info); border: 1px solid var(--info); }");
+    L.push(".toast { position: fixed; bottom: 24px; right: 24px; padding: 14px 20px; background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); font-size: 14px; color: var(--ink); z-index: 1000; }");
+    L.push("");
+
+    /* ── 11. Modal / Dialog ── */
+    L.push("/* ═══ MODAL ═══ */");
+    L.push(".modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 999; }");
+    L.push(".modal { background: var(--bg-1); border: 1px solid var(--line); border-radius: var(--radius-xl); padding: 32px; max-width: 480px; width: 100%; box-shadow: var(--shadow-2xl); }");
+    L.push(".modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }");
+    L.push(".modal-title { font-size: 18px; font-weight: 700; color: var(--ink); }");
+    L.push(".modal-body { font-size: 14px; color: var(--ink-2); margin-bottom: 24px; }");
+    L.push(".modal-footer { display: flex; gap: 8px; justify-content: flex-end; }");
+    L.push("");
+
+    /* ── 12. Tables ── */
+    L.push("/* ═══ TABLES ═══ */");
+    L.push(".table { width: 100%; border-collapse: collapse; font-size: 14px; }");
+    L.push(".table th { text-align: left; padding: 10px 16px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-3); border-bottom: 1px solid var(--line-2); }");
+    L.push(".table td { padding: 12px 16px; border-bottom: 1px solid var(--line); color: var(--ink-2); }");
+    L.push(".table tr:hover td { background: var(--bg-2); }");
+    L.push("");
+
+    /* ── 13. Tooltips ── */
+    L.push("/* ═══ TOOLTIPS ═══ */");
+    L.push(".tooltip { position: relative; }");
+    L.push(".tooltip::after { content: attr(data-tooltip); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); padding: 6px 12px; background: var(--ink); color: var(--bg); font-size: 12px; font-weight: 500; border-radius: var(--radius-sm); white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.15s; }");
+    L.push(".tooltip:hover::after { opacity: 1; }");
+    L.push("");
+
+    /* ── 14. Progress / Indicators ── */
+    L.push("/* ═══ INDICATORS ═══ */");
+    L.push(".progress { width: 100%; height: 6px; background: var(--bg-3); border-radius: var(--radius-full); overflow: hidden; }");
+    L.push(".progress-fill { height: 100%; background: var(--brand); border-radius: var(--radius-full); transition: width 0.3s ease; }");
+    L.push(".progress-success .progress-fill { background: var(--pos); }");
+    L.push(".progress-warning .progress-fill { background: var(--warn); }");
+    L.push(".progress-danger .progress-fill { background: var(--neg); }");
+    L.push(".spinner { width: 24px; height: 24px; border: 2.5px solid var(--line-2); border-top-color: var(--brand); border-radius: 50%; animation: spin 0.6s linear infinite; }");
+    L.push("@keyframes spin { to { transform: rotate(360deg); } }");
+    L.push(".skeleton { background: linear-gradient(90deg, var(--bg-2) 25%, var(--bg-3) 50%, var(--bg-2) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: var(--radius-sm); }");
+    L.push("@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }");
+    L.push(".dot { width: 8px; height: 8px; border-radius: 50%; }");
+    L.push(".dot-success { background: var(--pos); }");
+    L.push(".dot-warning { background: var(--warn); }");
+    L.push(".dot-danger { background: var(--neg); }");
+    L.push("");
+
+    /* ── 15. Avatar ── */
+    L.push("/* ═══ AVATAR ═══ */");
+    L.push(".avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--brand-soft); color: var(--brand); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; overflow: hidden; }");
+    L.push(".avatar img { width: 100%; height: 100%; object-fit: cover; }");
+    L.push(".avatar-sm { width: 28px; height: 28px; font-size: 11px; }");
+    L.push(".avatar-lg { width: 56px; height: 56px; font-size: 20px; }");
+    L.push(".avatar-group { display: flex; }");
+    L.push(".avatar-group .avatar { margin-left: -8px; border: 2px solid var(--bg); }");
+    L.push(".avatar-group .avatar:first-child { margin-left: 0; }");
+    L.push("");
+
+    /* ── 16. Divider ── */
+    L.push("/* ═══ DIVIDER ═══ */");
+    L.push(".divider { height: 1px; background: var(--line); margin: 16px 0; }");
+    L.push("");
+
+    /* ── 17. Tag / Chip ── */
+    L.push("/* ═══ TAGS ═══ */");
+    L.push(".tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; font-size: 12px; font-weight: 500; color: var(--ink-2); background: var(--bg-3); border-radius: var(--radius-full); }");
+    L.push(".tag-brand { background: var(--brand-faint); color: var(--brand); }");
+    L.push(".tag-removable::after { content: '×'; margin-left: 4px; cursor: pointer; opacity: 0.6; }");
+    L.push(".tag-removable::after:hover { opacity: 1; }");
+    L.push("");
+
+    /* ── 18. Dropdown ── */
+    L.push("/* ═══ DROPDOWN ═══ */");
+    L.push(".dropdown { position: relative; display: inline-block; }");
+    L.push(".dropdown-menu { position: absolute; top: calc(100% + 4px); left: 0; min-width: 180px; background: var(--bg-1); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); padding: 6px; z-index: 100; }");
+    L.push(".dropdown-item { display: flex; align-items: center; gap: 8px; padding: 8px 12px; font-size: 14px; color: var(--ink-2); border-radius: var(--radius-md); cursor: pointer; transition: background 0.1s; }");
+    L.push(".dropdown-item:hover { background: var(--brand-faint); color: var(--brand); }");
+    L.push(".dropdown-divider { height: 1px; background: var(--line); margin: 4px 0; }");
+    L.push("");
+
+    /* ── 19. Command Palette ── */
+    L.push("/* ═══ COMMAND PALETTE ═══ */");
+    L.push(".cmd-palette { position: fixed; top: 20%; left: 50%; transform: translateX(-50%); width: 520px; max-width: 90%; background: var(--bg-1); border: 1px solid var(--line); border-radius: var(--radius-xl); box-shadow: var(--shadow-2xl); z-index: 1000; overflow: hidden; }");
+    L.push(".cmd-input { width: 100%; padding: 16px 20px; font-size: 16px; background: transparent; border: none; border-bottom: 1px solid var(--line); color: var(--ink); outline: none; }");
+    L.push(".cmd-item { display: flex; align-items: center; gap: 12px; padding: 10px 20px; font-size: 14px; color: var(--ink-2); cursor: pointer; }");
+    L.push(".cmd-item:hover, .cmd-item.active { background: var(--brand-faint); color: var(--brand); }");
+    L.push(".cmd-kbd { font-size: 11px; padding: 2px 6px; background: var(--bg-3); border-radius: 4px; color: var(--ink-3); font-family: var(--font-mono); }");
+    L.push("");
+
+    /* ── 20. File upload ── */
+    L.push("/* ═══ FILE UPLOAD ═══ */");
+    L.push(".file-upload { border: 2px dashed var(--line-2); border-radius: var(--radius-lg); padding: 40px; text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s; }");
+    L.push(".file-upload:hover, .file-upload.dragover { border-color: var(--brand); background: var(--brand-faint); }");
+    L.push(".file-upload-label { font-size: 14px; color: var(--ink-2); }");
+    L.push(".file-upload-label strong { color: var(--brand); }");
+    L.push("");
+
+    /* ── 21. Grid / Layout ── */
+    L.push("/* ═══ LAYOUT ═══ */");
+    L.push(".container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }");
+    L.push(".row { display: flex; flex-wrap: wrap; gap: 16px; }");
+    L.push(".col { flex: 1; min-width: 0; }");
+    L.push(".grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }");
+    L.push(".grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }");
+    L.push(".grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }");
+    L.push("@media (max-width: 768px) {");
+    L.push("  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }");
+    L.push("}");
+    L.push("");
+
+    /* ── 22. Motion ── */
+    L.push("/* ═══ MOTION / TRANSITIONS ═══ */");
+    L.push(".transition-fast { transition: all 0.1s ease; }");
+    L.push(".transition-normal { transition: all 0.2s ease; }");
+    L.push(".transition-slow { transition: all 0.4s ease; }");
+    L.push(".hover-lift:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }");
+    L.push(".hover-glow:hover { box-shadow: 0 0 20px var(--brand-soft); }");
+    L.push(".fade-in { animation: fadeIn 0.3s ease forwards; }");
+    L.push("@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }");
+    L.push(".slide-in { animation: slideIn 0.3s ease forwards; }");
+    L.push("@keyframes slideIn { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }");
+    L.push("");
+
+    /* ── 23. Utility classes ── */
+    L.push("/* ═══ UTILITIES ═══ */");
+    L.push(".text-brand { color: var(--brand); }");
+    L.push(".text-muted { color: var(--ink-3); }");
+    L.push(".text-success { color: var(--pos); }");
+    L.push(".text-warning { color: var(--warn); }");
+    L.push(".text-danger { color: var(--neg); }");
+    L.push(".bg-brand { background: var(--brand); }");
+    L.push(".bg-brand-soft { background: var(--brand-soft); }");
+    L.push(".bg-surface-1 { background: var(--bg-1); }");
+    L.push(".bg-surface-2 { background: var(--bg-2); }");
+    L.push(".border { border: 1px solid var(--line); }");
+    L.push(".border-brand { border-color: var(--brand); }");
+    L.push(".rounded-sm { border-radius: var(--radius-sm); }");
+    L.push(".rounded { border-radius: var(--radius-md); }");
+    L.push(".rounded-lg { border-radius: var(--radius-lg); }");
+    L.push(".rounded-xl { border-radius: var(--radius-xl); }");
+    L.push(".rounded-full { border-radius: var(--radius-full); }");
+    L.push(".shadow-sm { box-shadow: var(--shadow-sm); }");
+    L.push(".shadow-md { box-shadow: var(--shadow-md); }");
+    L.push(".shadow-lg { box-shadow: var(--shadow-lg); }");
+    L.push(".flex { display: flex; }");
+    L.push(".flex-col { flex-direction: column; }");
+    L.push(".items-center { align-items: center; }");
+    L.push(".justify-center { justify-content: center; }");
+    L.push(".justify-between { justify-content: space-between; }");
+    L.push(".gap-1 { gap: 4px; }");
+    L.push(".gap-2 { gap: 8px; }");
+    L.push(".gap-3 { gap: 12px; }");
+    L.push(".gap-4 { gap: 16px; }");
+    L.push(".gap-6 { gap: 24px; }");
+    L.push(".gap-8 { gap: 32px; }");
+    L.push(".w-full { width: 100%; }");
+    L.push(".hidden { display: none; }");
+    L.push("");
+
+    /* ── 24. Accessibility ── */
+    L.push("/* ═══ ACCESSIBILITY ═══ */");
+    L.push(".sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }");
+    L.push(".focus-visible:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }");
+    L.push("@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }");
+    L.push("");
+
+    /* ── 25. Contrast reference ── */
+    L.push("/* ═══ CONTRAST RATIOS ═══ */");
+    Object.keys(d.contrast).forEach(function(k) {
+      var c = d.contrast[k];
+      L.push("/* " + k + ": " + c.ratio.toFixed(2) + ":1 — " + c.grade + " */");
+    });
+    L.push("");
+    L.push("/* End of hextodesign design system */");
+
+    return L.join("\n");
+  }
+
+  function buildFullTailwind(d) {
+    var L = [];
+    L.push("/** hextodesign — Tailwind CSS Config");
+    L.push(" *  Generated from " + d.source + " on " + new Date().toISOString().split("T")[0]);
+    L.push(" *  https://hextodesign.com */");
+    L.push("");
+    L.push("module.exports = {");
+    L.push("  theme: {");
+    L.push("    extend: {");
+    L.push("      colors: {");
+    L.push("        brand: {");
+    Object.keys(d.brand).forEach(function(s) {
+      L.push("          " + s + ": \"" + d.brand[s].hex + "\",");
+    });
+    L.push("        },");
+    Object.keys(d.semantic).forEach(function(k) {
+      var s = d.semantic[k];
+      L.push("        " + k + ": {");
+      L.push("          DEFAULT: \"" + s.base + "\",");
+      L.push("          light: \"" + s.light + "\",");
+      L.push("          dark: \"" + s.dark + "\",");
+      L.push("        },");
+    });
+    L.push("        surface: {");
+    L.push("          light: {");
+    Object.keys(d.surfaces.light).forEach(function(k) { L.push("            " + k + ": \"" + d.surfaces.light[k] + "\","); });
+    L.push("          },");
+    L.push("          dark: {");
+    Object.keys(d.surfaces.dark).forEach(function(k) { L.push("            " + k + ": \"" + d.surfaces.dark[k] + "\","); });
+    L.push("          },");
+    L.push("        },");
+    L.push("      },");
+    L.push("      fontFamily: {");
+    L.push("        sans: [" + d.typo.families.cssVar.split(",").map(function(f) { return "\"" + f.trim().replace(/"/g,"") + "\""; }).join(", ") + "],");
+    L.push("        mono: [" + d.typo.families.monoVar.split(",").map(function(f) { return "\"" + f.trim().replace(/"/g,"") + "\""; }).join(", ") + "],");
+    L.push("      },");
+    L.push("      fontSize: {");
+    Object.keys(d.typo.scale).forEach(function(k) {
+      var s = d.typo.scale[k];
+      L.push("        \"" + k + "\": [\"" + s.size + "px\", { lineHeight: \"" + s.lineHeight + "\", letterSpacing: \"" + s.letterSpacing + "\", fontWeight: \"" + s.weight + "\" }],");
+    });
+    L.push("      },");
+    L.push("      spacing: {");
+    Object.keys(d.spacing.tokens).forEach(function(k) {
+      L.push("        \"" + k + "\": \"" + d.spacing.tokens[k] + "\",");
+    });
+    L.push("      },");
+    L.push("      borderRadius: {");
+    Object.keys(d.radius).forEach(function(k) {
+      L.push("        \"" + k + "\": \"" + d.radius[k] + "\",");
+    });
+    L.push("      },");
+    L.push("      boxShadow: {");
+    Object.keys(d.shadows).forEach(function(k) {
+      L.push("        \"" + k + "\": \"" + d.shadows[k] + "\",");
+    });
+    L.push("      },");
+    L.push("    },");
+    L.push("  },");
+    L.push("};");
+    return L.join("\n");
+  }
+
+  function buildFullSCSS(d) {
+    var L = [];
+    L.push("// hextodesign — SCSS Design System");
+    L.push("// Generated from " + d.source + " on " + new Date().toISOString().split("T")[0]);
+    L.push("// https://hextodesign.com");
+    L.push("");
+    L.push("// ═══ Brand Palette ═══");
+    Object.keys(d.brand).forEach(function(s) { L.push("$brand-" + s + ": " + d.brand[s].hex + ";"); });
+    L.push("");
+    L.push("$brand-colors: (");
+    Object.keys(d.brand).forEach(function(s) { L.push("  \"" + s + "\": $brand-" + s + ","); });
+    L.push(");");
+    L.push("");
+    L.push("// ═══ Semantic Colors ═══");
+    Object.keys(d.semantic).forEach(function(k) {
+      var s = d.semantic[k];
+      L.push("$" + k + ": " + s.base + ";");
+      L.push("$" + k + "-light: " + s.light + ";");
+      L.push("$" + k + "-dark: " + s.dark + ";");
+    });
+    L.push("");
+    L.push("// ═══ Surfaces ═══");
+    L.push("$surfaces-light: (");
+    Object.keys(d.surfaces.light).forEach(function(k) { L.push("  \"" + k + "\": " + d.surfaces.light[k] + ","); });
+    L.push(");");
+    L.push("$surfaces-dark: (");
+    Object.keys(d.surfaces.dark).forEach(function(k) { L.push("  \"" + k + "\": " + d.surfaces.dark[k] + ","); });
+    L.push(");");
+    L.push("");
+    L.push("// ═══ Typography ═══");
+    L.push("$font-sans: " + d.typo.families.cssVar + ";");
+    L.push("$font-mono: " + d.typo.families.monoVar + ";");
+    L.push("$type-scale: (");
+    Object.keys(d.typo.scale).forEach(function(k) {
+      var s = d.typo.scale[k];
+      L.push("  \"" + k + "\": (size: " + s.size + "px, weight: " + s.weight + ", lh: " + s.lineHeight + ", ls: " + s.letterSpacing + "),");
+    });
+    L.push(");");
+    L.push("");
+    L.push("// ═══ Spacing ═══");
+    L.push("$spacing: (");
+    Object.keys(d.spacing.tokens).forEach(function(k) { L.push("  \"" + String(k).replace(".", "_") + "\": " + d.spacing.tokens[k] + ","); });
+    L.push(");");
+    L.push("");
+    L.push("// ═══ Radius ═══");
+    Object.keys(d.radius).forEach(function(k) { L.push("$radius-" + k + ": " + d.radius[k] + ";"); });
+    L.push("");
+    L.push("// ═══ Shadows ═══");
+    Object.keys(d.shadows).forEach(function(k) { L.push("$shadow-" + k + ": " + d.shadows[k] + ";"); });
+    L.push("");
+    L.push("// ═══ Mixins ═══");
+    L.push("@mixin brand-button { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border: none; border-radius: $radius-md; font-size: 14px; font-weight: 600; cursor: pointer; background: $brand-500; color: #fff; &:hover { filter: brightness(1.1); } }");
+    L.push("@mixin card { background: map-get($surfaces-dark, \"bg2\"); border: 1px solid rgba(255,255,255,0.07); border-radius: $radius-lg; padding: 24px; }");
+    L.push("@mixin input-base { width: 100%; padding: 10px 14px; font-size: 14px; border: 1px solid rgba(255,255,255,0.12); border-radius: $radius-md; background: map-get($surfaces-dark, \"bg1\"); &:focus { border-color: $brand-500; box-shadow: 0 0 0 3px rgba($brand-500, 0.18); } }");
+    L.push("");
+    L.push("// ═══ Contrast Ratios ═══");
+    Object.keys(d.contrast).forEach(function(k) {
+      var c = d.contrast[k];
+      L.push("// " + k + ": " + c.ratio.toFixed(2) + ":1 — " + c.grade);
+    });
+    return L.join("\n");
+  }
+
+  function buildFullJSON(d) {
+    var obj = {
+      meta: { generator: "hextodesign", version: "1.0.0", created: new Date().toISOString(), source: d.source, url: "https://hextodesign.com" },
+      color: {
+        brand: d.brand,
+        semantic: d.semantic,
+        surface: d.surfaces,
+        hue: d.hue,
+        chroma: d.chroma
+      },
+      typography: d.typo,
+      spacing: d.spacing,
+      radius: d.radius,
+      shadow: d.shadows,
+      contrast: d.contrast,
+      components: {
+        buttons: { primary: { bg: "var(--brand)", color: "var(--brand-ink)", radius: "var(--radius-md)" }, secondary: { bg: "transparent", border: "var(--line-2)", color: "var(--ink)" }, ghost: { bg: "transparent", color: "var(--ink-2)" }, danger: { bg: "var(--neg)", color: "#fff" } },
+        badges: { brand: { bg: "var(--brand-soft)", color: "var(--brand)" }, success: { bg: "var(--pos-soft)", color: "var(--pos)" }, warning: { bg: "var(--warn-soft)", color: "var(--warn)" }, danger: { bg: "var(--neg-soft)", color: "var(--neg)" } },
+        cards: { default: { bg: "var(--bg-2)", border: "var(--line)", radius: "var(--radius-lg)", padding: "24px" } },
+        inputs: { default: { bg: "var(--bg-1)", border: "var(--line-2)", radius: "var(--radius-md)", focusBorder: "var(--brand)", focusRing: "var(--brand-soft)" } },
+        alerts: { success: { bg: "var(--pos-soft)", border: "var(--pos)" }, warning: { bg: "var(--warn-soft)", border: "var(--warn)" }, error: { bg: "var(--neg-soft)", border: "var(--neg)" }, info: { bg: "var(--info-soft)", border: "var(--info)" } }
+      }
+    };
+    return JSON.stringify(obj, null, 2);
+  }
 
   function triggerExportDownload(format, ext, btnEl) {
-    var brandHex = brandColors && brandColors[0] ? brandColors[0].hex : "#7B5BFF";
-    var fontRaw = null;
-    try { fontRaw = JSON.parse(localStorage.getItem("pp-font")); } catch(e) {}
-
-    var payload = { hex: brandHex, format: format, tier: "starter" };
-    if (fontRaw) payload.font = fontRaw;
+    if (!_exportData) { alert("Generate a design system first"); return; }
+    var content;
+    if (format === "css") content = buildFullCSS(_exportData);
+    else if (format === "tailwind") content = buildFullTailwind(_exportData);
+    else if (format === "scss") content = buildFullSCSS(_exportData);
+    else if (format === "json") content = buildFullJSON(_exportData);
+    else { content = buildFullCSS(_exportData); ext = "css"; }
 
     var origHTML = btnEl.innerHTML;
     btnEl.disabled = true;
-    btnEl.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 0.6s linear infinite"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg> Downloading...';
 
-    fetch(API_BASE + "/export", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    }).then(function(resp) {
-      if (resp.status === 429) throw new Error("Rate limit exceeded. Please wait and try again.");
-      if (resp.status === 403) throw new Error("This format requires a paid tier.");
-      if (!resp.ok) throw new Error("Export failed (HTTP " + resp.status + ")");
-      return resp.text();
-    }).then(function(content) {
-      /* Track download */
-      try {
-        var count = parseInt(localStorage.getItem("pp-downloads") || "0", 10);
-        localStorage.setItem("pp-downloads", (count + 1).toString());
-      } catch(e) {}
+    /* Track download */
+    try {
+      var count = parseInt(localStorage.getItem("pp-downloads") || "0", 10);
+      localStorage.setItem("pp-downloads", (count + 1).toString());
+    } catch(e) {}
 
-      /* Trigger file download */
-      var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement("a");
-      a.href = url;
-      a.download = "design-tokens." + ext;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+    /* Trigger file download */
+    var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "design-system." + ext;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 
-      /* Success feedback */
-      btnEl.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Downloaded!';
-      setTimeout(function() { btnEl.innerHTML = origHTML; btnEl.disabled = false; }, 2500);
-    }).catch(function(err) {
-      btnEl.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> ' + err.message;
-      btnEl.style.borderColor = "var(--neg)";
-      btnEl.style.color = "var(--neg)";
-      setTimeout(function() { btnEl.innerHTML = origHTML; btnEl.disabled = false; btnEl.style.borderColor = ""; btnEl.style.color = ""; }, 3500);
-    });
+    /* Success feedback */
+    btnEl.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Downloaded!';
+    setTimeout(function() { btnEl.innerHTML = origHTML; btnEl.disabled = false; }, 2500);
   }
 
   /* Sidebar export button */
@@ -2136,6 +2662,21 @@ button { font: inherit; color: inherit; cursor: pointer; }
     var radius = ds.radius;
     var shadows = ds.shadow;
     var contrast = ds.contrast;
+
+    /* Store data for export builders */
+    _exportData = {
+      source: ds.meta.source,
+      brand: brand,
+      semantic: semantic,
+      surfaces: surfaces,
+      typo: typo,
+      spacing: spacing,
+      radius: radius,
+      shadows: shadows,
+      contrast: contrast,
+      hue: ds.color.hue,
+      chroma: ds.color.chroma
+    };
 
     root.style.setProperty("--brand-h", ds.color.hue.toFixed(1));
     root.style.setProperty("--brand-c", Math.min(0.20, Math.max(0.06, ds.color.chroma)).toFixed(3));
@@ -2810,8 +3351,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
     /* ═══ 27 TOKEN EXPORT ═══ */
     h += '<section class="ds-section" id="tokens">';
-    h += '<div class="ds-section-header"><span class="ds-section-num">27</span><h2 class="ds-section-title">Token export</h2></div>';
-    h += '<p class="ds-section-desc">Preview of your design tokens in CSS variables, Tailwind config, and raw JSON.</p>';
+    h += '<div class="ds-section-header"><span class="ds-section-num">27</span><h2 class="ds-section-title">Export</h2></div>';
+    h += '<p class="ds-section-desc">Complete design system export — tokens, component classes, dark/light themes, utilities, and more. Download includes everything on this page.</p>';
     h += '<div class="ds-subsection"><div class="ds-subsection-title">Export preview</div><div class="ds-preview" style="padding:0">';
     var cssT = '<span class="ec">/* Brand colors */</span>\n';
     Object.keys(brand).forEach(function(s) { cssT += '<span class="ek">--brand-' + s + ':</span> <span class="ev">' + brand[s].hex.toLowerCase() + '</span>;\n'; });
