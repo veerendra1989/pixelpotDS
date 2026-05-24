@@ -39,23 +39,23 @@
       {
         "@type": "Offer",
         "name": "Starter",
-        "price": "19",
+        "price": "0",
         "priceCurrency": "USD",
-        "description": "CSS variables and JSON design tokens export"
+        "description": "CSS variables and JSON design tokens export — free for early users"
       },
       {
         "@type": "Offer",
         "name": "Pro",
-        "price": "39",
+        "price": "0",
         "priceCurrency": "USD",
-        "description": "Tailwind config, SCSS variables, and brand guidelines PDF"
+        "description": "Tailwind config, SCSS variables, and full ZIP bundle — free for early users"
       },
       {
         "@type": "Offer",
         "name": "Studio",
-        "price": "69",
+        "price": "0",
         "priceCurrency": "USD",
-        "description": "Figma tokens, documentation template, and lifetime updates"
+        "description": "Figma tokens, documentation, and priority support — free for early users"
       }
     ],
     "screenshot": "https://hextodesign.com/og-image.png",
@@ -6186,7 +6186,7 @@ var {
     return React.createElement("div", { className: cls },
       t.badge && React.createElement("span", { className: "price__badge" }, t.badge),
       React.createElement("div", { className: "price__name" }, t.name),
-      React.createElement("div", { className: "price__amount" }, React.createElement("sup", null, "$"), t.price),
+      React.createElement("div", { className: "price__amount" }, t.price === "0" ? "Free" : [React.createElement("sup", { key: "s" }, "$"), t.price]),
       React.createElement("div", { className: "price__tag" }, t.tag),
       React.createElement("ul", { className: "price__list" },
         t.features.map(function(f, i) {
@@ -6206,9 +6206,9 @@ var {
       {
         name: "Free",
         price: "0",
-        tag: "Full preview — fall in love with your system before you buy.",
+        tag: "Full preview — fall in love with your system.",
         featured: false,
-        badge: null,
+        badge: "free for limited users",
         features: [
           "Full color palette preview",
           "Type scale & spacing preview",
@@ -6220,47 +6220,46 @@ var {
       },
       {
         name: "Starter",
-        price: "19",
+        price: "0",
         tag: "Essential tokens for your next project. No friction.",
         featured: false,
-        badge: null,
+        badge: "free for limited users",
         features: [
           "Everything in Free",
           "CSS custom properties file",
           "JSON design tokens (W3C DTCG)",
           "One brand color palette",
-          "One-time purchase, yours forever"
+          "Download & export"
         ],
         cta: { label: "Get Starter", href: "#playground" }
       },
       {
         name: "Pro",
-        price: "39",
+        price: "0",
         tag: "The complete toolkit for developers and design teams.",
         featured: true,
-        badge: "most popular",
+        badge: "free for limited users",
         features: [
           "Everything in Starter",
           "Tailwind config file",
           "SCSS variables & mixins",
           "All brand color palettes",
           "Semantic color tokens",
-          "Brand guidelines PDF",
-          "One-time purchase, yours forever"
+          "Full ZIP bundle download"
         ],
         cta: { label: "Get Pro", href: "#playground" }
       },
       {
         name: "Studio",
-        price: "69",
+        price: "0",
         tag: "For agencies and teams building at scale.",
         featured: false,
-        badge: null,
+        badge: "free for limited users",
         features: [
           "Everything in Pro",
           "Figma Tokens (Style Dictionary)",
           "Design system docs template",
-          "Lifetime updates for your color",
+          "Documentation markdown",
           "Priority support"
         ],
         cta: { label: "Get Studio", href: "#playground" }
@@ -6279,9 +6278,9 @@ var {
       React.createElement("span", { className: "eyebrow" },
         React.createElement("span", { className: "dot" }), " Pricing"),
       React.createElement("h2", { className: "section-title" },
-        "Pick your tier. ", React.createElement("em", null, "Pay once.")),
+        "Everything is ", React.createElement("em", null, "free. For now.")),
       React.createElement("p", { className: "section-sub" },
-        "No subscriptions. No recurring fees. Every tier is a one-time purchase — your design system, yours forever.")
+        "We're opening all tiers for free to early users. No payment, no signup — just generate and download.")
     )),
     React.createElement("div", {
       className: "pricing",
@@ -6298,19 +6297,19 @@ var {
     const [open, setOpen] = useState(0);
     const items = [{
       q: "What do the different tiers include?",
-      a: "Free gives you a full interactive preview. Starter ($19) adds CSS variables and JSON tokens. Pro ($39) includes Tailwind config, SCSS, all brand palettes, and a brand guidelines PDF. Studio ($69) adds Figma Tokens, a docs template, and lifetime updates."
+      a: "Free gives you a full interactive preview. Starter adds CSS variables and JSON tokens. Pro includes Tailwind config, SCSS, all brand palettes, and semantic tokens. Studio adds Figma Tokens, docs template, and priority support. All tiers are currently free for early users."
     }, {
       q: "Do I need to know design to use this?",
       a: "Not at all. Just paste your brand hex code and we handle everything — color theory, contrast ratios, spacing rhythm, typography hierarchy. The output is production-ready."
     }, {
-      q: "Can I preview before paying?",
-      a: "Yes. The playground is completely free with no signup. You see your full design system preview before any payment. We only charge when you want to download the actual token files."
+      q: "Is everything really free?",
+      a: "Yes — for now. We're letting early users access all tiers for free while we refine the product. No payment required, no signup, just generate and download. Pricing will be introduced later."
     }, {
       q: "What formats are the export files in?",
-      a: "Depending on your tier: CSS custom properties, Tailwind config, SCSS variables, JSON tokens in W3C DTCG format, Figma Tokens in Style Dictionary format, and a brand guidelines PDF."
+      a: "CSS custom properties, Tailwind config, SCSS variables & mixins, JSON tokens in W3C DTCG format, Figma Tokens in Style Dictionary format, and full documentation in Markdown."
     }, {
-      q: "Is this a subscription?",
-      a: "No. Every tier is a one-time payment. You get the files, they're yours forever. No recurring charges, no lock-in, no account needed after purchase."
+      q: "Will I lose access when pricing is introduced?",
+      a: "No. Any files you download are yours forever. When we introduce pricing, you'll still be able to preview for free — only exports will require a purchase."
     }];
     return /*#__PURE__*/React.createElement("section", {
       className: "section"
@@ -6384,7 +6383,7 @@ var {
         margin: "0 auto",
         textAlign: "center"
       }
-    }, "Free to preview. From $19 to own. No signup, no subscription, no nonsense."), /*#__PURE__*/React.createElement("div", {
+    }, "100% free for early users. No signup, no payment, no nonsense."), /*#__PURE__*/React.createElement("div", {
       style: {
         display: "flex",
         gap: 12,
