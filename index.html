@@ -986,6 +986,11 @@ body.grain::before {
 }
 .price__list li .ico--dim { color: var(--ink-4); }
 .price__cta { margin-top: auto; }
+.price__strike { font-size: 28px; text-decoration: line-through; color: var(--ink-4); font-weight: 400; margin-right: 10px; }
+.price__free { color: var(--pos, #04AB62); }
+.price--disabled { opacity: 0.45; pointer-events: none; filter: grayscale(0.5); }
+.price--disabled .price__badge { background: var(--ink-3); }
+.price__coming { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); margin-top: 6px; }
 .price__badge {
   position: absolute;
   top: -10px;
@@ -6183,10 +6188,21 @@ var {
     var t = props.tier;
     var cls = "price" + (t.featured ? " price--feature" : "");
     var chk = function() { return React.createElement("span", { className: "ico" }, React.createElement(Icon.check, null)); };
+    if (t.disabled) cls += " price--disabled";
+    var priceEl;
+    if (t.originalPrice && t.originalPrice !== "0") {
+      priceEl = React.createElement("div", { className: "price__amount price__free" },
+        React.createElement("span", { className: "price__strike" }, "$" + t.originalPrice),
+        "Free"
+      );
+    } else {
+      priceEl = React.createElement("div", { className: "price__amount" }, t.price === "0" ? "Free" : [React.createElement("sup", { key: "s" }, "$"), t.price]);
+    }
     return React.createElement("div", { className: cls },
       t.badge && React.createElement("span", { className: "price__badge" }, t.badge),
       React.createElement("div", { className: "price__name" }, t.name),
-      React.createElement("div", { className: "price__amount" }, t.price === "0" ? "Free" : [React.createElement("sup", { key: "s" }, "$"), t.price]),
+      priceEl,
+      t.comingSoon && React.createElement("div", { className: "price__coming" }, "Coming soon"),
       React.createElement("div", { className: "price__tag" }, t.tag),
       React.createElement("ul", { className: "price__list" },
         t.features.map(function(f, i) {
@@ -6194,7 +6210,7 @@ var {
         })
       ),
       React.createElement("a", {
-        href: t.cta.href,
+        href: t.disabled ? "#" : t.cta.href,
         className: "btn " + (t.featured ? "btn--primary" : "btn--ghost") + " price__cta",
         style: { justifyContent: "center" }
       }, t.cta.label, " ", React.createElement(Icon.arrow, { className: "arr" }))
@@ -6221,6 +6237,7 @@ var {
       {
         name: "Starter",
         price: "0",
+        originalPrice: "19",
         tag: "Essential tokens for your next project. No friction.",
         featured: false,
         badge: "free for limited users",
@@ -6236,6 +6253,7 @@ var {
       {
         name: "Pro",
         price: "0",
+        originalPrice: "39",
         tag: "The complete toolkit for developers and design teams.",
         featured: true,
         badge: "free for limited users",
@@ -6252,17 +6270,20 @@ var {
       {
         name: "Studio",
         price: "0",
+        originalPrice: "69",
         tag: "For agencies and teams building at scale.",
         featured: false,
-        badge: "free for limited users",
+        badge: "coming soon",
+        disabled: true,
+        comingSoon: true,
         features: [
           "Everything in Pro",
           "Figma Tokens (Style Dictionary)",
+          "Figma Variables plugin",
           "Design system docs template",
-          "Documentation markdown",
           "Priority support"
         ],
-        cta: { label: "Get Studio", href: "#playground" }
+        cta: { label: "Coming Soon", href: "#" }
       }
     ];
 
