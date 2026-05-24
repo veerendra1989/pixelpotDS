@@ -21,7 +21,8 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         preview: resolve(__dirname, 'preview.html'),
-        generate: resolve(__dirname, 'generate.html')
+        generate: resolve(__dirname, 'generate.html'),
+        analytics: resolve(__dirname, 'analytics.html')
       }
     },
     // Minify + mangle all variable names in production

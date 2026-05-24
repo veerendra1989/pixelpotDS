@@ -8,7 +8,7 @@
       "source": "/api/(.*)",
       "headers": [
         { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "POST, OPTIONS" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
         { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
       ]
     },
@@ -30,10 +30,19 @@
     "api/export.js": {
       "maxDuration": 10,
       "memory": 128
+    },
+    "api/track.js": {
+      "maxDuration": 5,
+      "memory": 128
+    },
+    "api/analytics.js": {
+      "maxDuration": 10,
+      "memory": 128
     }
   },
   "rewrites": [
     { "source": "/preview", "destination": "/preview.html" },
-    { "source": "/generate", "destination": "/generate.html" }
+    { "source": "/generate", "destination": "/generate.html" },
+    { "source": "/analytics", "destination": "/analytics.html" }
   ]
 }

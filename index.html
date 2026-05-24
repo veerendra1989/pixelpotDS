@@ -1834,7 +1834,7 @@ body.grain::before {
   .hex-suggestions button { width: 28px; height: 28px; border-radius: 8px; }
   .hex-suggestions .label { font-size: 10px; margin-right: 2px; }
 }
-</style></head>
+</style><script src="/tracker.js" defer></script></head>
 <body class="grain"><div id="root"></div>
 <script>
 // ===== Canvas mouse-trail animation =====
@@ -3043,6 +3043,7 @@ var {
             if (/^[0-9a-fA-F]{6}$/.test(raw)) {
               commit(raw);
               try { localStorage.setItem("pp-brand", "#" + raw); } catch(_) {}
+              if (window.htd) htd.track("cta_click", { location: "hero" });
               window.location.href = "preview.html?brand=" + raw;
             }
           }
@@ -3638,7 +3639,7 @@ var {
   /*#__PURE__*/React.createElement("a", {
     className: "btn btn--primary pg-generate__btn",
     href: "#",
-    onClick: function(e) { e.preventDefault(); try { var h = document.documentElement.style.getPropertyValue("--brand-h") || "286"; localStorage.setItem("pp-brand-hue", h); } catch(_) {} var b = localStorage.getItem("pp-brand") || "7B5BFF"; window.location.href = "preview.html?brand=" + b.replace("#",""); }
+    onClick: function(e) { e.preventDefault(); try { var h = document.documentElement.style.getPropertyValue("--brand-h") || "286"; localStorage.setItem("pp-brand-hue", h); } catch(_) {} if (window.htd) htd.track("cta_click", { location: "playground" }); var b = localStorage.getItem("pp-brand") || "7B5BFF"; window.location.href = "preview.html?brand=" + b.replace("#",""); }
   }, "Generate my design system →")
 )));
   }
